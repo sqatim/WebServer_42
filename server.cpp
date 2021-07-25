@@ -14,7 +14,7 @@ int main(int argc, char const *argv[])
     int addrlen = sizeof(address);
     
     // Only this line has been changed. Everything is same.
-    char *hello = "index.html 500000 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+    char *hello = "/index.html HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 25\n\nHello world!";
     int fd = open("index.html", O_RDONLY);
     char buf[5000000];
     // Creating socket file descriptor
@@ -32,7 +32,7 @@ int main(int argc, char const *argv[])
     memset(address.sin_zero, '\0', sizeof address.sin_zero);
     
     
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0)
+    if (bind(server_fd, (struct sockaddr *)&address , sizeof(address))<0)
     {
         perror("In bind");
         exit(EXIT_FAILURE);
@@ -50,11 +50,12 @@ int main(int argc, char const *argv[])
             perror("In accept");
             exit(EXIT_FAILURE);
         }
-        
         char buffer[30000] = {0};
         valread = read( new_socket , buffer, 30000);
         read(fd, buf, 5000000);
         printf("%s\n",buffer );
+        printf("%s\n", buf, 5000000);
+        printf("amine haddad\n");
         write(new_socket , buf , 5000000);
         printf("------------------Hello message sent-------------------");
         close(new_socket);
