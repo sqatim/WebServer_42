@@ -5,17 +5,17 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <fcntl.h>
-
-#define PORT 3000
+#define PORT 80
 int main(int argc, char const *argv[])
 {
-    int server_fd, new_socket; long valread;
+    int server_fd, new_socket;
+    long valread;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    
+
     // Only this line has been changed. Everything is same.
-    char *hello = "/index.html HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 25\n\nHello world!";
-    int fd = open("index.html", O_RDONLY);
+    // char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 25\n\nHello world!";
+    int fd = open("index.html", O_RDWR);
     char buf[5000000];
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -23,16 +23,14 @@ int main(int argc, char const *argv[])
         perror("In socket");
         exit(EXIT_FAILURE);
     }
-    
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons( PORT );
-    
-    memset(address.sin_zero, '\0', sizeof address.sin_zero);
-    
-    
-    if (bind(server_fd, (struct sockaddr *)&address , sizeof(address))<0)
+    address.sin_port = htons(PORT);
+
+    // memset(address.sin_zero, '\0', sizeof address.sin_zero);
+
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         perror("In bind");
         exit(EXIT_FAILURE);
@@ -42,23 +40,25 @@ int main(int argc, char const *argv[])
         perror("In listen");
         exit(EXIT_FAILURE);
     }
-    while(1)
+    while (1)
     {
         printf("\n+++++++ Waiting for new connection ++++++++\n\n");
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
         {
             perror("In accept");
             exit(EXIT_FAILURE);
         }
-        char buffer[30000] = {0};
-        valread = read( new_socket , buffer, 30000);
-        read(fd, buf, 5000000);
-        printf("%s\n",buffer );
-        printf("%s\n", buf, 5000000);
-        printf("amine haddad\n");
-        write(new_socket , buf , 5000000);
+        char *buffer = new char[30000];
+        // valread = read(new_socket, buffer, 30000);
+        read(fd, buffer, 30000);
+        // printf("%s\n", buffer);
+        // send(new_socket, buffer, strlen(buffer), 0);
+        write(new_socket, buffer, strlen(buffer));
+        // write(new_socket, hello, strlen(hello));
+        // printf("%s\n", buf, 5000000);
+        // printf("amine haddad\n");
         printf("------------------Hello message sent-------------------");
-        close(new_socket);
+        // close(new_socket);
     }
     return 0;
 }
