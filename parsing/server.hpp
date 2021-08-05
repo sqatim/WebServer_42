@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/02 17:23:20 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/04 18:37:07 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ public:
     server(/* args */);
     ~server();
 };
-
+// std::string *ft_split(std::string amine, char c);
 
 
 #endif
