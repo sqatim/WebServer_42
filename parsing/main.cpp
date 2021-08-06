@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:41 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/05 13:41:16 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/06 13:59:42 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,21 @@
 
 void CountWords4(void)
 {
-    typedef std::map<std::string, std::string> FreqMap;
+    typedef std::multimap<std::string, std::string> FreqMap;
     std::string word;
     FreqMap wf;
     std::ifstream infile("webserv.conf");
     std::fstream file;
-    std::string  t, q, filename;
+    std::string filename;
     filename = "webserv.conf";
     file.open(filename.c_str());
     while (file >> word)
     {
-        // std::cout << "{" << word << "}"<<std::endl;
+        if (word == "server" || word == "}" || word == "{")
+            continue;
         std::string key = word;
         file >> word;
-        wf[key] = word;
+        wf.insert(std::pair<std::string , std::string>(key, word));
     }
     for (FreqMap::iterator it = wf.begin(); it != wf.end(); it++)
         std::cout << it->first << " " << it->second << std::endl;
