@@ -1,6 +1,6 @@
 #include "Server.class.hpp"
 
-Server::Server()
+Server::Server() : m_addrlen(sizeof(m_address))
 {
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
@@ -55,15 +55,39 @@ void Server::initialiseStructure()
     return;
 }
 
+std::string readingTheFile(std::string filename)
+{
+    std::ifstream myReadFile(filename);
+    std::string text;
+    std::string line;
+
+    text = "\0";
+    while (std::getline(myReadFile, line))
+    {
+        text += line;
+        if (!myReadFile.eof())
+            text += "\n";
+    }
+    myReadFile.close();
+    return (text);
+}
+
 void Server::manipulation()
 {
     // to delete
-    int fd = open("index.html", O_RDWR);
-    char *html = new char[5000000];
+    std::string response;
+    std::string file;
+    std::string ss = "\0";
+    // Parse parse;
+    int i = 0;
+
+    m_response.body = readingTheFile("index.html");
+    m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
+    response = responseConcatenation(m_response.header, m_response.body);
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
     /*                                                                        */
-    /* # it puts the server socket in a passive mode, where it waits for      */ 
+    /* # it puts the server socket in a passive mode, where it waits for      */
     /*  the client to approach the server to make a connection.               */
     /*                                                                        */
     /*   the backlog, defines the maximum lenght to which the queue of        */
@@ -74,14 +98,27 @@ void Server::manipulation()
     /**************************************************************************/
     if ((listen(this->m_socketFd, 5)) < 0)
         throw std::string("Listen Failed");
-    if ((m_newSocket = accept(this->m_socketFd, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_address)) < 0)
-        throw std::string("Accept Failed");
-    char buffer[30000] = {0};
-    read(this->m_newSocket, buffer, 30000);
-    read(fd, html, 5000000);
-    printf("%s\n", buffer);
-    write(this->m_newSocket, html, 5000000);
-    delete[] html;
+    while (1)
+    {
+        std::string request;
+        if ((m_newSocket = accept(this->m_socketFd, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+            throw std::string("Accept Failed");
+        /* JUST FOR TEST */
+        /* JUST FOR TEST */
+        // while ((i = get_next_line(this->m_newSocket, request)) > 0)
+        // {
+        //     ss += request;
+        // }
+        // ss += request;
+        // std::cout << ss << std::endl;
+        char buffer[30000] = {0};
+        read(this->m_newSocket, buffer, 30000);
+        // std::cout << response.length() << std::endl;
+        printf("|%d|\n%s\n", this->m_newSocket, buffer);
+        write(this->m_newSocket, response.c_str(), response.length());
+        close(m_newSocket);
+    }
+    // delete[] buffer;
 }
 
 int Server::getSocketFd()
