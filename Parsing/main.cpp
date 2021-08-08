@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:41 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 17:09:16 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/08 18:27:35 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,18 @@ int main()
         }
     }
     get_attributs(&serv, wf);
-    std::cout << serv.getlisten() << std::endl;
-    std::cout << serv.gethost() << std::endl;
-    std::cout << serv.getroot() << std::endl;
-    std::cout << serv.getserver_name() << std::endl;
-    std::cout << serv.getclient_max_body_size() << std::endl;
-    int i = 0;
-    while (i < serv.getcount_error_page())
-    {
-        std::cout << serv.geterror_page()[i] << std::endl;
-        i++;
-    }
-    std::cout << serv.getcount_location() << std::endl;
+    // std::cout << serv.getlisten() << std::endl;
+    // std::cout << serv.gethost() << std::endl;
+    // std::cout << serv.getroot() << std::endl;
+    // std::cout << serv.getserver_name() << std::endl;
+    // std::cout << serv.getclient_max_body_size() << std::endl;
+    // int i = 0;
+    // while (i < serv.getcount_error_page())
+    // {
+    //     std::cout << serv.geterror_page()[i] << std::endl;
+    //     i++;
+    // }
+    // std::cout << serv.getcount_location() << std::endl;
     add_locations(&serv);
     return 0;
 }

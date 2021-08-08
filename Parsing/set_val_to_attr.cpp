@@ -6,21 +6,21 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/08 16:35:38 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/08 19:00:04 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-void    add_locations(Parse *serv)
+void Parse::add_locations()
 {
     std::fstream file;
     std::string filename;
     std::string word;
 
-    file.open(serv->file.c_str());
+    file.open(this->file.c_str());
     // se serv->getcount_location() ;
-    t_location * loc = new t_location[serv->getcount_location()];
+    t_location *loc = new t_location[this->count_location];
     int i = 0;
     while (file >> word)
     {
@@ -31,9 +31,9 @@ void    add_locations(Parse *serv)
             while (file >> word)
             {
                 if (word == "{")
-                    continue ;
+                    continue;
                 if (word == "}")
-                    break ;
+                    break;
                 if (word == "autoindex")
                 {
                     file >> word;
@@ -73,47 +73,45 @@ void    add_locations(Parse *serv)
             i++;
         }
     }
-    serv->setlocation(loc);
+    this->location = loc;
     i = 0;
-    while (i < serv->getcount_location())
+    while (i < this->count_location)
     {
-        std::cout << serv->getlocation()[i].name << std::endl;
-        if (serv->getlocation()[i].auto_index.length() > 0)
+        std::cout << this->location[i].name << std::endl;
+        if (this->location[i].auto_index.length() > 0)
         {
-            std::cout << serv->getlocation()[i].auto_index << std::endl;
+            std::cout << this->location[i].auto_index << std::endl;
         }
-        if (serv->getlocation()[i].index.length() > 0)
+        if (this->location[i].index.length() > 0)
         {
-            std::cout << serv->getlocation()[i].index << std::endl;
+            std::cout << this->location[i].index << std::endl;
         }
-        if (serv->getlocation()[i].allow_methods.length() > 0)
+        if (this->location[i].allow_methods.length() > 0)
         {
-            std::cout << serv->getlocation()[i].allow_methods << std::endl;
+            std::cout << this->location[i].allow_methods << std::endl;
         }
-        if (serv->getlocation()[i]._return.length() > 0)
+        if (this->location[i]._return.length() > 0)
         {
-            std::cout << serv->getlocation()[i]._return << std::endl;
+            std::cout << this->location[i]._return << std::endl;
         }
-        if (serv->getlocation()[i].fastcgi_pass.length() > 0)
+        if (this->location[i].fastcgi_pass.length() > 0)
         {
-            std::cout << serv->getlocation()[i].fastcgi_pass << std::endl;
+            std::cout << this->location[i].fastcgi_pass << std::endl;
         }
-        if (serv->getlocation()[i].upload_methods.length() > 0)
+        if (this->location[i].upload_methods.length() > 0)
         {
-            std::cout << serv->getlocation()[i].upload_methods << std::endl;
+            std::cout << this->location[i].upload_methods << std::endl;
         }
-        if (serv->getlocation()[i].upload_store.length() > 0)
+        if (this->location[i].upload_store.length() > 0)
         {
-            std::cout << serv->getlocation()[i].upload_store << std::endl;
+            std::cout << this->location[i].upload_store << std::endl;
         }
         std::cout << "=============================================" << std::endl;
         i++;
     }
 }
 
-
-
-void get_attributs(Parse *serv, FreqMap wf)
+void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
     int count_location = 0;
@@ -125,35 +123,35 @@ void get_attributs(Parse *serv, FreqMap wf)
         if (nn == "listen")
         {
             std::string aa = get_key(it->second);
-            serv->setlisten(aa);
+            this->listen = aa;
         }
         if (nn == "root")
         {
             std::string aa = get_key(it->second);
-            serv->setroot(aa);
+            this->root = aa;
         }
         if (nn == "server_name")
         {
             std::string aa = get_key(it->second);
-            serv->setserver_name(aa);
+            this->server_name = aa;
         }
         if (nn == "host")
         {
             std::string aa = get_key(it->second);
-            serv->sethost(aa);
+            this->host = aa;
         }
         if (nn == "client_max_body_size")
         {
             std::string aa = get_key(it->second);
-            serv->setclient_max_body_size(aa);
+            this->client_max_body_size = aa;
         }
         if (nn == "error_page")
             count_error_page++;
         if (nn == "location")
             count_location++;
     }
-    serv->setcount_error_page(count_error_page);
-    serv->setcount_location(count_location);
+    this->count_error_page = count_error_page;
+    this->count_location = count_location;
     std::string *err = new std::string[count_error_page];
     int k = 0;
     for (it = wf.begin(); it != wf.end(); ++it)
@@ -166,5 +164,5 @@ void get_attributs(Parse *serv, FreqMap wf)
             k++;
         }
     }
-    serv->seterror_page(err);
+    this->error_page = err;
 }

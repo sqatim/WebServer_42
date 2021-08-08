@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 16:35:51 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/08 19:01:39 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class Parse
 {
 protected:
     std::string listen;
-    std::string sever_name;
+    std::string server_name;
     std::string root;
     std::string *error_page;
     std::string client_max_body_size;
@@ -50,9 +50,11 @@ protected:
     int count_error_page;
 
 public:
+    void get_attributs(FreqMap wf);
+    void add_locations();
     std::string file;
     std::map<std::string, std::string> my_map;
-    Parse();
+    Parse(std::string _filename);
     void setlisten(std::string val);
     std::string getlisten();
     void setserver_name(std::string val);
@@ -77,7 +79,5 @@ public:
 std::string get_value(std::string str);
 std::string get_key(std::string str);
 int CountWords(std::string str);
-void get_attributs(Parse *serv, FreqMap wf);
-void    add_locations(Parse *serv);
 
 #endif

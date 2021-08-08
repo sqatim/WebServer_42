@@ -6,6 +6,7 @@ int main()
 {
     try
     {
+        Parse("webserv.conf");
         Server server;
         server.manipulation();
     }
