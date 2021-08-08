@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/07 23:28:51 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/08 14:58:42 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,22 @@ void server::setcount_error_page(int va)
 int  server::getcount_error_page()
 {
     return this->count_error_page;
+}
+
+void server::setcount_location(int va)
+{
+    this->count_location = va;
+}
+int  server::getcount_location()
+{
+    return this->count_location;
 } 
+
+void server::setlocation(t_location *val)
+{
+    this->location = val;
+}
+t_location *server::getlocation()
+{
+    return this->location;
+}

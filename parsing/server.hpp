@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/07 22:46:52 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/08 14:59:04 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,10 @@ protected:
     std::string client_max_body_size;
     std::string host;
     t_location *location;
+    int count_location;
     int count_error_page;
 public:
-    int count_location;
+    std::string file;
     std::map<std::string, std::string> my_map;
     server();
     void setlisten(std::string val);
@@ -66,7 +67,10 @@ public:
     std::string * geterror_page();
     void setcount_error_page(int va);
     int getcount_error_page();
-
+    void setcount_location(int va);
+    int getcount_location();
+    void setlocation(t_location *val);
+    t_location *getlocation();
     ~server();
 };
 
