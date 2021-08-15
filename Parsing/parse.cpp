@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 19:03:06 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/15 13:07:55 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,10 @@ Parse::Parse(std::string _filename) : listen(""), server_name(""), root(""), err
             wf.insert(std::pair<std::string , std::string>(get_key(word), get_value(word)));
         }
     }
+    int check = check_accolades(wf,_filename);
+    if (check != 0)
+        error("error in number of accolades");
     get_attributs(wf);
-    std::cout << this->listen << std::endl;
-    std::cout << this->host << std::endl;
-    std::cout << this->root << std::endl;
-    std::cout << this->server_name << std::endl;
-    std::cout << this->client_max_body_size << std::endl;
-    int i = 0;
-    while (i < this->count_error_page)
-    {
-        std::cout << this->error_page[i] << std::endl;
-        i++;
-    }
-    std::cout << this->count_location << std::endl;
     add_locations(); 
 }
 

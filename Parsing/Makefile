@@ -5,6 +5,7 @@ OBJ_PATH= objects
 SRC_NAME = parse.cpp\
 			set_val_to_attr.cpp\
 			tools.cpp\
+			check_error.cpp \
 
 
 

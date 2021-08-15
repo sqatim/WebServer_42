@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 19:01:39 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/15 13:08:17 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ public:
 std::string get_value(std::string str);
 std::string get_key(std::string str);
 int CountWords(std::string str);
-
+int check_accolades(FreqMap wf, std::string filename);
+void error(std::string str);
 #endif
