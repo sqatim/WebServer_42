@@ -6,13 +6,13 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/15 13:07:55 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/18 20:31:56 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(std::string _filename) : listen(""), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
+Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
 {
     FreqMap wf;
     std::string word;
@@ -32,7 +32,7 @@ Parse::Parse(std::string _filename) : listen(""), server_name(""), root(""), err
     }
     int check = check_accolades(wf,_filename);
     if (check != 0)
-        error("error in number of accolades");
+        error("Error in number of accolades");
     get_attributs(wf);
     add_locations(); 
 }
@@ -41,12 +41,12 @@ Parse::~Parse()
 {
 }
 
-void Parse::setlisten(std::string val)
+void Parse::setlisten( std::vector<std::string>val)
 {
     this->listen = val;
 }
 
-std::string Parse::getlisten()
+ std::vector<std::string> Parse::getlisten()
 {
     return this->listen;
 }

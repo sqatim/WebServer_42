@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/08 19:00:04 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/18 20:40:41 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,56 +74,56 @@ void Parse::add_locations()
         }
     }
     this->location = loc;
-    i = 0;
-    while (i < this->count_location)
-    {
-        std::cout << this->location[i].name << std::endl;
-        if (this->location[i].auto_index.length() > 0)
-        {
-            std::cout << this->location[i].auto_index << std::endl;
-        }
-        if (this->location[i].index.length() > 0)
-        {
-            std::cout << this->location[i].index << std::endl;
-        }
-        if (this->location[i].allow_methods.length() > 0)
-        {
-            std::cout << this->location[i].allow_methods << std::endl;
-        }
-        if (this->location[i]._return.length() > 0)
-        {
-            std::cout << this->location[i]._return << std::endl;
-        }
-        if (this->location[i].fastcgi_pass.length() > 0)
-        {
-            std::cout << this->location[i].fastcgi_pass << std::endl;
-        }
-        if (this->location[i].upload_methods.length() > 0)
-        {
-            std::cout << this->location[i].upload_methods << std::endl;
-        }
-        if (this->location[i].upload_store.length() > 0)
-        {
-            std::cout << this->location[i].upload_store << std::endl;
-        }
-        std::cout << "=============================================" << std::endl;
-        i++;
-    }
+    // i = 0;
+    // while (i < this->count_location)
+    // {
+    //     std::cout << this->location[i].name << std::endl;
+    //     if (this->location[i].auto_index.length() > 0)
+    //     {
+    //         std::cout << this->location[i].auto_index << std::endl;
+    //     }
+    //     if (this->location[i].index.length() > 0)
+    //     {
+    //         std::cout << this->location[i].index << std::endl;
+    //     }
+    //     if (this->location[i].allow_methods.length() > 0)
+    //     {
+    //         std::cout << this->location[i].allow_methods << std::endl;
+    //     }
+    //     if (this->location[i]._return.length() > 0)
+    //     {
+    //         std::cout << this->location[i]._return << std::endl;
+    //     }
+    //     if (this->location[i].fastcgi_pass.length() > 0)
+    //     {
+    //         std::cout << this->location[i].fastcgi_pass << std::endl;
+    //     }
+    //     if (this->location[i].upload_methods.length() > 0)
+    //     {
+    //         std::cout << this->location[i].upload_methods << std::endl;
+    //     }
+    //     if (this->location[i].upload_store.length() > 0)
+    //     {
+    //         std::cout << this->location[i].upload_store << std::endl;
+    //     }
+    //     std::cout << "=============================================" << std::endl;
+    //     i++;
+    // }
 }
 
 void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
     int count_location = 0;
+    count_listen = 0;
     std::unordered_multimap<std::string, std::string>::iterator it;
     for (it = wf.begin(); it != wf.end(); ++it)
     {
         std::string nn = get_key(it->first);
-        std::cout << "{" << nn << "}\n";
+        // std::cout << "{" << nn << "}\n";
         if (nn == "listen")
         {
-            std::string aa = get_key(it->second);
-            this->listen = aa;
+            listen.push_back(get_key(it->second));
         }
         if (nn == "root")
         {
@@ -163,6 +163,13 @@ void Parse::get_attributs(FreqMap wf)
             err[k] = aa;
             k++;
         }
+    }
+    /* here is the vector of listen but not in ordre*/
+    int l = 0;
+    while (l < listen.size())
+    {
+        std::cout << listen[l] << std::endl;
+        l++;
     }
     this->error_page = err;
 }

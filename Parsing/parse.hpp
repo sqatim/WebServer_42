@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/15 13:08:17 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/18 20:29:14 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef struct s_location
 class Parse
 {
 protected:
-    std::string listen;
+    std::vector<std::string> listen;
     std::string server_name;
     std::string root;
     std::string *error_page;
@@ -47,6 +47,7 @@ protected:
     std::string host;
     t_location *location;
     int count_location;
+    int count_listen;
     int count_error_page;
 
 public:
@@ -55,8 +56,8 @@ public:
     std::string file;
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
-    void setlisten(std::string val);
-    std::string getlisten();
+    void setlisten( std::vector<std::string> val);
+    std::vector<std::string> getlisten();
     void setserver_name(std::string val);
     std::string getserver_name();
     void setroot(std::string val);
