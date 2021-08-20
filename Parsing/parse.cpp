@@ -6,13 +6,13 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/18 20:31:56 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/20 19:33:10 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
+Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(0), client_max_body_size(""), host(""), location(NULL)
 {
     FreqMap wf;
     std::string word;
@@ -88,11 +88,11 @@ std::string Parse::getclient_max_body_size()
     return this->client_max_body_size;
 }
 
-void Parse::seterror_page(std::string *val)
+void Parse::seterror_page(std::vector<std::string>val)
 {
     this->error_page = val;
 }
-std::string *Parse::geterror_page()
+std::vector<std::string>Parse::geterror_page()
 {
     return this->error_page;
 }

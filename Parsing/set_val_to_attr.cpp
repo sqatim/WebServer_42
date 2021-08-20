@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/18 20:40:41 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/20 19:43:01 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void Parse::add_locations()
     std::string word;
 
     file.open(this->file.c_str());
-    // se serv->getcount_location() ;
     t_location *loc = new t_location[this->count_location];
     int i = 0;
     while (file >> word)
@@ -120,7 +119,6 @@ void Parse::get_attributs(FreqMap wf)
     for (it = wf.begin(); it != wf.end(); ++it)
     {
         std::string nn = get_key(it->first);
-        // std::cout << "{" << nn << "}\n";
         if (nn == "listen")
         {
             listen.push_back(get_key(it->second));
@@ -146,30 +144,26 @@ void Parse::get_attributs(FreqMap wf)
             this->client_max_body_size = aa;
         }
         if (nn == "error_page")
-            count_error_page++;
+        {
+            this->error_page.push_back(it->second);
+        }
+            // count_error_page++;
         if (nn == "location")
             count_location++;
     }
-    this->count_error_page = count_error_page;
     this->count_location = count_location;
-    std::string *err = new std::string[count_error_page];
-    int k = 0;
-    for (it = wf.begin(); it != wf.end(); ++it)
-    {
-        std::string nn = get_key(it->first);
-        if (nn == "error_page")
-        {
-            std::string aa = it->second;
-            err[k] = aa;
-            k++;
-        }
-    }
     /* here is the vector of listen but not in ordre*/
-    int l = 0;
-    while (l < listen.size())
-    {
-        std::cout << listen[l] << std::endl;
-        l++;
-    }
-    this->error_page = err;
+    // int l = 0;
+    // while (l < listen.size())
+    // {
+    //     std::cout << listen[l] << std::endl;
+    //     l++;
+    // }
+    // /* here is the vector of listen but not in ordre*/
+    // l = 0;
+    // while (l < error_page.size())
+    // {
+    //     std::cout << error_page[l] << std::endl;
+    //     l++;
+    // }
 }
