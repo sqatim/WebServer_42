@@ -32,10 +32,10 @@ public:
     // Server(int port);
     Server(Parse parse);
     int getSocketFd();
-    int checkForFileDescriptor(int current);
+    int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
-    void initialiseStructure(Parse Parse);
-    void manipulation();
+    void initialiseStructure(t_listen listenParse);
+    void manipulation(Parse parse);
     ~Server();
 };
 

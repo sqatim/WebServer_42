@@ -16,73 +16,30 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
     /*     - IPROTO_TCP : TCP                                                 */
     /*     - IPROTO_UDP : UCP                                                 */
     /**************************************************************************/
-    this->m_socketFd = new int;
-    if ((this->m_socketFd[0] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-        throw std::string("Socket Failed To Create");
-    initialiseStructure(parse);
-    /**************************************************************************/
-    /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
-    /*                                                                        */
-    /*   # after Creation of the socket, bind function binds the socket to    */
-    /* the adress and port number specified in addr (costum data structure)   */
-    /**************************************************************************/
-    if ((bind(this->m_socketFd[0], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
-        throw std::string("Bind Failed");
-    std::cout << "Listener on port " << parse.getlisten()[0] << std::endl;
-    if ((listen(this->m_socketFd[0], 3)) < 0)
-        throw std::string("Listen Failed");
-    std::cout << "Waiting for connections ..." << std::endl;
+    int i;
+    this->m_socketFd = new int[parse.getlisten().size()];
+    for (i = 0; i < parse.getlisten().size(); i++)
+    {
+        if ((this->m_socketFd[i] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+            throw std::string("Socket Failed To Create");
+        initialiseStructure(parse.getlisten()[i]);
+        /**************************************************************************/
+        /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
+        /*                                                                        */
+        /*   # after Creation of the socket, bind function binds the socket to    */
+        /* the adress and port number specified in addr (costum data structure)   */
+        /**************************************************************************/
+        if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
+            throw std::string("Bind Failed");
+        std::cout << "Listener on port " << parse.getlisten()[i].port << std::endl;
+        if ((listen(this->m_socketFd[i], 3)) < 0)
+            throw std::string("Listen Failed");
+    }
+    this->m_maxFd = this->m_socketFd[i - 1];
 }
-void checkListen(std::string listenParse, std::string **listen)
-{
-    int check;
 
-    check = 1;
-    for (int i = 0; listenParse.c_str()[i]; i++)
-    {
-        if (listenParse.c_str()[i] == ':')
-            check = 2;
-    }
-    if (check == 1)
-    {
-        // std::cout << "Port bohdo" << std::endl;
-        (*listen)[0] = "0.0.0.0";
-        (*listen)[1] = listenParse;
-    }
-    if (check == 2)
-    {
-        // std::cout << "bjuj" << std::endl;
-        int i;
-        (*listen)[0] = "";
-        for (i = 0; listenParse.c_str()[i] != ':'; i++)
-        {
-            (*listen)[0] += listenParse.c_str()[i];
-        }
-        (*listen)[0][i] = '\0';
-        (*listen)[1] = "";
-        for (i = i + 1; listenParse.c_str()[i] != ';'; i++)
-        {
-            (*listen)[1] += listenParse.c_str()[i];
-            // std::cout << listenParse.c_str()[i] << std::endl;
-        }
-        (*listen)[1][i] = '\0';
-    }
-    return;
-}
-void function(std::vector<std::string> listenParse, std::string *listen)
+void Server::initialiseStructure(t_listen listen)
 {
-    // akantesti bhad condition
-    if (!isdigit(listenParse[0][0]))
-    {
-        // std::cout << "ghalta a weld 3amu" << std::endl;
-        listen[0] = "0.0.0.0";
-        listen[0] = "80";
-    }
-    checkListen(listenParse[0], &listen);
-}
-void Server::initialiseStructure(Parse parse)
-{
-    std::string listen[2];
     int port;
     /**************************************************************************/
     /* struct SOCKADDR_IN{short sin_family; u_short sin_port;\                */
@@ -103,15 +60,10 @@ void Server::initialiseStructure(Parse parse)
     /*           in the socket connection                                     */
     /* # siz_zero   : usualy set to 0                                         */
     /**************************************************************************/
-    function(parse.getlisten(), listen);
-    // std::cout << listen[0].c_str() << std::endl;
-    // std::cout << " stoi port " << stoi(listen[1]) << std::endl;
-    // port = (uint16_t)stoi(parse.getlisten()[0]);
     this->m_address.sin_family = AF_INET;
-    port = stoi(listen[1]);
+    port = stoi(listen.port);
     this->m_address.sin_port = htons(port);
-    this->m_address.sin_addr.s_addr = inet_addr(listen[0].c_str());
-    // this->m_address.sin_addr.s_addr = INADDR_ANY;
+    this->m_address.sin_addr.s_addr = inet_addr(listen.adress_ip.c_str());
     return;
 }
 
@@ -132,17 +84,16 @@ std::string readingTheFile(std::string filename)
     return (text);
 }
 
-int Server::checkForFileDescriptor(int current)
+int Server::checkForFileDescriptor(int current, int size)
 {
-    // count number of listen to insert here <3
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < size; i++)
     {
         if (current == this->m_socketFd[i])
             return (1);
     }
     return (0);
 }
-void Server::manipulation()
+void Server::manipulation(Parse parse)
 {
     // to delete
     std::string response;
@@ -172,21 +123,21 @@ void Server::manipulation()
     /*  the client may receive an error with an indication of ECONNREFUSED.   */
     /**************************************************************************/
     FD_ZERO(&this->m_currentSocket);
-    this->m_maxFd = this->m_socketFd[0];
+    std::cout << "Waiting for connections ..." << std::endl;
     while (1)
     {
-        // here i need to change 1 with the number of listen
-        for (int k = 0; k < 1; k++)
-            FD_SET(this->m_socketFd[0], &this->m_currentSocket);
+        for (int i = 0; i < parse.getlisten().size(); i++)
+            FD_SET(this->m_socketFd[i], &this->m_currentSocket);
         readySockets = this->m_currentSocket;
         std::string request;
         if (select(this->m_maxFd + 1, &this->m_currentSocket, NULL, NULL, NULL) < 0)
             throw std::string("mushkil f select");
+        std::cout << this->m_socketFd[parse.getlisten().size() - 1] << std::endl;
         for (int i = 0; i <= this->m_maxFd; i++)
         {
             if (FD_ISSET(i, &this->m_currentSocket))
             {
-                if (checkForFileDescriptor(i))
+                if (checkForFileDescriptor(i, parse.getlisten().size()))
                 {
                     std::cout << "i  ==> " << i << std::endl;
                     if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
