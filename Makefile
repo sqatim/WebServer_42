@@ -13,8 +13,8 @@ OBJ_PATH_SERVER= objectsServer
 SRC_NAME_SERVER= serverMain.cpp\
 				Server.class.cpp\
 				server.cpp\
-				get_next_line.cpp\
-				get_next_line_utils.cpp\
+				ft_split.cpp\
+				getWord.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\

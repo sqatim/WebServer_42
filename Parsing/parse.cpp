@@ -6,13 +6,13 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 19:03:06 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/22 22:06:32 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(std::string _filename) : listen(""), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
+Parse::Parse(std::string _filename) : listen("0.0.0.0:8000"), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
 {
     FreqMap wf;
     std::string word;
@@ -37,12 +37,12 @@ Parse::Parse(std::string _filename) : listen(""), server_name(""), root(""), err
     std::cout << this->server_name << std::endl;
     std::cout << this->client_max_body_size << std::endl;
     int i = 0;
-    while (i < this->count_error_page)
-    {
-        std::cout << this->error_page[i] << std::endl;
-        i++;
-    }
-    std::cout << this->count_location << std::endl;
+    // while (i < this->count_error_page)
+    // {
+    //     std::cout << this->error_page[i] << std::endl;
+    //     i++;
+    // }
+    // std::cout << this->count_location << std::endl;
     add_locations(); 
 }
 

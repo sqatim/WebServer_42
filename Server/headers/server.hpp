@@ -21,4 +21,6 @@ typedef struct s_response
 
 t_header affectationHeader(std::string status, std::string type1, std::string type2, int length);
 std::string responseConcatenation(t_header header, std::string body);
+char			**ft_split(std::string s, char c);
+std::string getWord(char *str,  int nLine, int nWord);
 #endif

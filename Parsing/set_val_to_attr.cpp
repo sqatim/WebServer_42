@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/08 19:00:04 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/22 13:18:11 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,40 +75,40 @@ void Parse::add_locations()
     }
     this->location = loc;
     i = 0;
-    while (i < this->count_location)
-    {
-        std::cout << this->location[i].name << std::endl;
-        if (this->location[i].auto_index.length() > 0)
-        {
-            std::cout << this->location[i].auto_index << std::endl;
-        }
-        if (this->location[i].index.length() > 0)
-        {
-            std::cout << this->location[i].index << std::endl;
-        }
-        if (this->location[i].allow_methods.length() > 0)
-        {
-            std::cout << this->location[i].allow_methods << std::endl;
-        }
-        if (this->location[i]._return.length() > 0)
-        {
-            std::cout << this->location[i]._return << std::endl;
-        }
-        if (this->location[i].fastcgi_pass.length() > 0)
-        {
-            std::cout << this->location[i].fastcgi_pass << std::endl;
-        }
-        if (this->location[i].upload_methods.length() > 0)
-        {
-            std::cout << this->location[i].upload_methods << std::endl;
-        }
-        if (this->location[i].upload_store.length() > 0)
-        {
-            std::cout << this->location[i].upload_store << std::endl;
-        }
-        std::cout << "=============================================" << std::endl;
-        i++;
-    }
+    // while (i < this->count_location)
+    // {
+    //     std::cout << this->location[i].name << std::endl;
+    //     if (this->location[i].auto_index.length() > 0)
+    //     {
+    //         std::cout << this->location[i].auto_index << std::endl;
+    //     }
+    //     if (this->location[i].index.length() > 0)
+    //     {
+    //         std::cout << this->location[i].index << std::endl;
+    //     }
+    //     if (this->location[i].allow_methods.length() > 0)
+    //     {
+    //         std::cout << this->location[i].allow_methods << std::endl;
+    //     }
+    //     if (this->location[i]._return.length() > 0)
+    //     {
+    //         std::cout << this->location[i]._return << std::endl;
+    //     }
+    //     if (this->location[i].fastcgi_pass.length() > 0)
+    //     {
+    //         std::cout << this->location[i].fastcgi_pass << std::endl;
+    //     }
+    //     if (this->location[i].upload_methods.length() > 0)
+    //     {
+    //         std::cout << this->location[i].upload_methods << std::endl;
+    //     }
+    //     if (this->location[i].upload_store.length() > 0)
+    //     {
+    //         std::cout << this->location[i].upload_store << std::endl;
+    //     }
+    //     std::cout << "=============================================" << std::endl;
+    //     i++;
+    // }
 }
 
 void Parse::get_attributs(FreqMap wf)

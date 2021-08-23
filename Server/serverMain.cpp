@@ -6,8 +6,9 @@ int main()
 {
     try
     {
-        Parse("webserv.conf");
-        Server server;
+        Parse parse("webserv.conf");
+        Server server(parse);
+
         server.manipulation();
     }
     catch(std::string error)
