@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/23 14:19:32 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/23 14:58:45 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,12 @@ Parse::~Parse()
 {
 }
 
-void Parse::setlisten( std::vector<std::string>val)
+void Parse::setlisten( std::vector<t_listen>val)
 {
     this->listen = val;
 }
 
- std::vector<std::string> Parse::getlisten()
+ std::vector<t_listen> Parse::getlisten()
 {
     return this->listen;
 }
