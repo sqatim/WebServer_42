@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/20 19:43:01 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/23 15:35:32 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,34 @@ void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
     int count_location = 0;
+    t_listen lis;
     count_listen = 0;
     std::unordered_multimap<std::string, std::string>::iterator it;
+    for (it = wf.begin(); it != wf.end(); ++it)
+    {
+        int find_eol;
+        find_eol = get_key(it->second).find(";");
+        if (find_eol > 0)
+            it->second = get_key(it->second).substr(0,find_eol);
+    }
     for (it = wf.begin(); it != wf.end(); ++it)
     {
         std::string nn = get_key(it->first);
         if (nn == "listen")
         {
-            listen.push_back(get_key(it->second));
+            int search_ip = 0;
+            int len  = get_key(it->second).size();
+            lis.adress_ip = "0.0.0.0";
+            lis.port = "80";
+            search_ip = get_key(it->second).find(":");
+            if (search_ip > 0)
+            {
+                lis.adress_ip = get_key(it->second).substr(0, search_ip);
+                lis.port = get_key(it->second).substr(search_ip + 1, len);
+            }
+            else  if (search_ip < 0)
+                lis.port = get_key(it->second);
+            listen.push_back(lis);
         }
         if (nn == "root")
         {
@@ -147,18 +167,18 @@ void Parse::get_attributs(FreqMap wf)
         {
             this->error_page.push_back(it->second);
         }
-            // count_error_page++;
         if (nn == "location")
             count_location++;
     }
     this->count_location = count_location;
     /* here is the vector of listen but not in ordre*/
-    // int l = 0;
-    // while (l < listen.size())
-    // {
-    //     std::cout << listen[l] << std::endl;
-    //     l++;
-    // }
+    int l = 0;
+    while (l < listen.size())
+    {
+        std::cout << "port: " << listen[l].port << std::endl;
+        std::cout << "adress ip: " << listen[l].adress_ip << std::endl;
+        l++;
+    }
     // /* here is the vector of listen but not in ordre*/
     // l = 0;
     // while (l < error_page.size())
