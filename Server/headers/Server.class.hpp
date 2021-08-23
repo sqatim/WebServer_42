@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <cctype>
 #include <cstring>
 #include <fstream>
 // 7ta nshuf blanhum man ba3d
@@ -12,12 +14,14 @@
 #include "server.hpp"
 #include "../../Parsing/parse.hpp"
 
-#define PORT 5000
+// #define PORT 5000
 
 class Server
 {
 private:
-    int m_socketFd;
+    int *m_socketFd;
+    int m_maxFd;
+    fd_set m_currentSocket;
     int m_newSocket;
     struct sockaddr_in m_address;
     int m_addrlen;
@@ -25,10 +29,12 @@ private:
 
 public:
     // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
-    Server(/* args */);
+    // Server(int port);
+    Server(Parse parse);
     int getSocketFd();
+    int checkForFileDescriptor(int current);
     struct sockaddr_in getAddress();
-    void initialiseStructure(void);
+    void initialiseStructure(Parse Parse);
     void manipulation();
     ~Server();
 };
