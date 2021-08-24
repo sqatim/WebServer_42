@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/23 14:58:19 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/24 15:44:46 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ public:
     ~Parse();
 };
 
+int check_keys(FreqMap wf);
 std::string get_value(std::string str);
 std::string get_key(std::string str);
 int CountWords(std::string str);

@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/23 14:58:45 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/24 15:54:59 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@ Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), erro
     int check = check_accolades(wf,_filename);
     if (check != 0)
         error("Error in number of accolades");
+    check = check_keys(wf);
+    std::cout << check << std::endl;
+    if (check == 0)
+        error("Error in keys"); 
     get_attributs(wf);
     add_locations(); 
 }
