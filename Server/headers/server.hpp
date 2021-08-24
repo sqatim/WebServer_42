@@ -3,7 +3,6 @@
 
 #include <fstream>
 #include <iostream>
-#include "get_next_line.hpp"
 
 typedef struct s_header
 {

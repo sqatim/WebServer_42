@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/22 13:18:11 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/24 11:56:25 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void Parse::add_locations()
     std::string word;
 
     file.open(this->file.c_str());
-    // se serv->getcount_location() ;
     t_location *loc = new t_location[this->count_location];
     int i = 0;
     while (file >> word)
@@ -74,7 +73,7 @@ void Parse::add_locations()
         }
     }
     this->location = loc;
-    i = 0;
+    // i = 0;
     // while (i < this->count_location)
     // {
     //     std::cout << this->location[i].name << std::endl;
@@ -115,15 +114,34 @@ void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
     int count_location = 0;
+    t_listen lis;
+    count_listen = 0;
     std::unordered_multimap<std::string, std::string>::iterator it;
     for (it = wf.begin(); it != wf.end(); ++it)
     {
+        int find_eol;
+        find_eol = get_key(it->second).find(";");
+        if (find_eol > 0)
+            it->second = get_key(it->second).substr(0,find_eol);
+    }
+    for (it = wf.begin(); it != wf.end(); ++it)
+    {
         std::string nn = get_key(it->first);
-        std::cout << "{" << nn << "}\n";
         if (nn == "listen")
         {
-            std::string aa = get_key(it->second);
-            this->listen = aa;
+            int search_ip = 0;
+            int len  = get_key(it->second).size();
+            lis.adress_ip = "0.0.0.0";
+            lis.port = "80";
+            search_ip = get_key(it->second).find(":");
+            if (search_ip > 0)
+            {
+                lis.adress_ip = get_key(it->second).substr(0, search_ip);
+                lis.port = get_key(it->second).substr(search_ip + 1, len);
+            }
+            else  if (search_ip < 0)
+                lis.port = get_key(it->second);
+            listen.push_back(lis);
         }
         if (nn == "root")
         {
@@ -146,23 +164,26 @@ void Parse::get_attributs(FreqMap wf)
             this->client_max_body_size = aa;
         }
         if (nn == "error_page")
-            count_error_page++;
+        {
+            this->error_page.push_back(it->second);
+        }
         if (nn == "location")
             count_location++;
     }
-    this->count_error_page = count_error_page;
     this->count_location = count_location;
-    std::string *err = new std::string[count_error_page];
-    int k = 0;
-    for (it = wf.begin(); it != wf.end(); ++it)
+    /* here is the vector of listen but not in ordre*/
+    int l = 0;
+    while (l < listen.size())
     {
-        std::string nn = get_key(it->first);
-        if (nn == "error_page")
-        {
-            std::string aa = it->second;
-            err[k] = aa;
-            k++;
-        }
+        std::cout << "port: " << listen[l].port << std::endl;
+        std::cout << "adress ip: " << listen[l].adress_ip << std::endl;
+        l++;
     }
-    this->error_page = err;
+    // /* here is the vector of listen but not in ordre*/
+    // l = 0;
+    // while (l < error_page.size())
+    // {
+    //     std::cout << error_page[l] << std::endl;
+    //     l++;
+    // }
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/08 19:01:39 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/23 14:58:19 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,24 @@ typedef struct s_location
     std::string name;
 } t_location;
 
+typedef struct s_listen
+{
+    std::string adress_ip;
+    std::string port;
+} t_listen;
+
 class Parse
 {
 protected:
-    std::string listen;
+    std::vector<t_listen> listen;
     std::string server_name;
     std::string root;
-    std::string *error_page;
+    std::vector<std::string> error_page;
     std::string client_max_body_size;
     std::string host;
     t_location *location;
     int count_location;
+    int count_listen;
     int count_error_page;
 
 public:
@@ -55,8 +62,8 @@ public:
     std::string file;
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
-    void setlisten(std::string val);
-    std::string getlisten();
+    void setlisten( std::vector<t_listen> val);
+    std::vector<t_listen> getlisten();
     void setserver_name(std::string val);
     std::string getserver_name();
     void setroot(std::string val);
@@ -65,8 +72,8 @@ public:
     std::string gethost();
     void setclient_max_body_size(std::string val);
     std::string getclient_max_body_size();
-    void seterror_page(std::string *val);
-    std::string *geterror_page();
+    void seterror_page(std::vector<std::string> val);
+    std::vector<std::string> geterror_page();
     void setcount_error_page(int va);
     int getcount_error_page();
     void setcount_location(int va);
@@ -79,5 +86,6 @@ public:
 std::string get_value(std::string str);
 std::string get_key(std::string str);
 int CountWords(std::string str);
-
+int check_accolades(FreqMap wf, std::string filename);
+void error(std::string str);
 #endif

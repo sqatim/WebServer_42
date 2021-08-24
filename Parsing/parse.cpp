@@ -6,13 +6,13 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/22 22:06:32 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/24 11:56:06 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(std::string _filename) : listen("0.0.0.0:8000"), server_name(""), root(""), error_page(NULL), client_max_body_size(""), host(""), location(NULL)
+Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(0), client_max_body_size(""), host(""), location(NULL)
 {
     FreqMap wf;
     std::string word;
@@ -30,19 +30,10 @@ Parse::Parse(std::string _filename) : listen("0.0.0.0:8000"), server_name(""), r
             wf.insert(std::pair<std::string , std::string>(get_key(word), get_value(word)));
         }
     }
+    int check = check_accolades(wf,_filename);
+    if (check != 0)
+        error("Error in number of accolades");
     get_attributs(wf);
-    std::cout << this->listen << std::endl;
-    std::cout << this->host << std::endl;
-    std::cout << this->root << std::endl;
-    std::cout << this->server_name << std::endl;
-    std::cout << this->client_max_body_size << std::endl;
-    int i = 0;
-    // while (i < this->count_error_page)
-    // {
-    //     std::cout << this->error_page[i] << std::endl;
-    //     i++;
-    // }
-    // std::cout << this->count_location << std::endl;
     add_locations(); 
 }
 
@@ -50,12 +41,12 @@ Parse::~Parse()
 {
 }
 
-void Parse::setlisten(std::string val)
+void Parse::setlisten( std::vector<t_listen>val)
 {
     this->listen = val;
 }
 
-std::string Parse::getlisten()
+ std::vector<t_listen> Parse::getlisten()
 {
     return this->listen;
 }
@@ -97,11 +88,11 @@ std::string Parse::getclient_max_body_size()
     return this->client_max_body_size;
 }
 
-void Parse::seterror_page(std::string *val)
+void Parse::seterror_page(std::vector<std::string>val)
 {
     this->error_page = val;
 }
-std::string *Parse::geterror_page()
+std::vector<std::string>Parse::geterror_page()
 {
     return this->error_page;
 }
