@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/24 15:44:46 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/25 16:27:29 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ protected:
     std::vector<std::string> error_page;
     std::string client_max_body_size;
     std::string host;
-    t_location *location;
+    std::vector<t_location> location;
     int count_location;
     int count_listen;
     int count_error_page;
@@ -78,8 +78,8 @@ public:
     int getcount_error_page();
     void setcount_location(int va);
     int getcount_location();
-    void setlocation(t_location *val);
-    t_location *getlocation();
+    void setlocation(std::vector<t_location> val);
+    std::vector<t_location> getlocation();
     ~Parse();
 };
 
@@ -90,3 +90,4 @@ int CountWords(std::string str);
 int check_accolades(FreqMap wf, std::string filename);
 void error(std::string str);
 #endif
+

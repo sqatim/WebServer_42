@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/24 14:11:17 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/25 17:13:25 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,17 @@ void Parse::add_locations()
     std::fstream file;
     std::string filename;
     std::string word;
-
+    t_location our_location;
+    
     file.open(this->file.c_str());
-    t_location *loc = new t_location[this->count_location];
     int i = 0;
     while (file >> word)
     {
+        memset(&our_location,0,sizeof(our_location));
         if (word == "location")
         {
             file >> word;
-            loc[i].name = word;
+            our_location.name = word;
             while (file >> word)
             {
                 if (word == "{")
@@ -36,45 +37,46 @@ void Parse::add_locations()
                 if (word == "autoindex")
                 {
                     file >> word;
-                    loc[i].auto_index = word;
+                    our_location.auto_index = word;
                 }
                 if (word == "index")
                 {
                     file >> word;
-                    loc[i].index = word;
+                    our_location.index = word;
                 }
                 if (word == "allow_methods")
                 {
                     file >> word;
-                    loc[i].allow_methods = word;
+                    our_location.allow_methods = word;
                 }
                 if (word == "return")
                 {
                     file >> word;
-                    loc[i]._return = word;
+                    our_location._return = word;
                 }
                 if (word == "fastcgi_pass")
                 {
                     file >> word;
-                    loc[i].fastcgi_pass = word;
+                    our_location.fastcgi_pass = word;
                 }
                 if (word == "upload_methods")
                 {
                     file >> word;
-                    loc[i].upload_methods = word;
+                    our_location.upload_methods = word;
                 }
                 if (word == "upload_store")
                 {
                     file >> word;
-                    loc[i].upload_store = word;
+                    our_location.upload_store = word;
                 }
             }
+            this->location.push_back(our_location);
             i++;
         }
     }
-    this->location = loc;
+    // this->location = loc;
     // i = 0;
-    // while (i < this->count_location)
+    // while (i < this->location.size())
     // {
     //     std::cout << this->location[i].name << std::endl;
     //     if (this->location[i].auto_index.length() > 0)
@@ -176,7 +178,7 @@ void Parse::get_attributs(FreqMap wf)
     while (l < listen.size())
     {
         std::cout << "port: " << listen[l].port << std::endl;
-        std::cout << "adress ip: " << listen[l].adress_ip << std::endl;
+        std::cout << "address ip: " << listen[l].adress_ip << std::endl;
         l++;
     }
     // /* here is the vector of listen but not in ordre*/
