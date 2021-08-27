@@ -19,6 +19,7 @@
 class Server
 {
 private:
+    t_content m_content;
     int *m_socketFd;
     int m_maxFd;
     fd_set m_currentSocket;
@@ -36,6 +37,7 @@ public:
     struct sockaddr_in getAddress();
     void initialiseStructure(t_listen listenParse);
     void manipulation(Parse parse);
+    void manageRequest(std::string word, Parse parse, int socket);
     ~Server();
 };
 

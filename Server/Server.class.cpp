@@ -3,6 +3,8 @@
 
 Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
 {
+    this->m_content.root = parse.getroot();
+    this->m_content.index = "default.html";
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
     /*                                                                        */
@@ -67,22 +69,6 @@ void Server::initialiseStructure(t_listen listen)
     return;
 }
 
-std::string readingTheFile(std::string filename)
-{
-    std::ifstream myReadFile(filename);
-    std::string text;
-    std::string line;
-
-    text = "\0";
-    while (std::getline(myReadFile, line))
-    {
-        text += line;
-        if (!myReadFile.eof())
-            text += "\n";
-    }
-    myReadFile.close();
-    return (text);
-}
 
 int Server::checkForFileDescriptor(int current, int size)
 {
@@ -97,6 +83,7 @@ void Server::manipulation(Parse parse)
 {
     // to delete
     std::string response;
+    std::string word;
     int result;
     std::string file;
     std::string ss = "\0";
@@ -107,9 +94,7 @@ void Server::manipulation(Parse parse)
     int i = 0;
     int max_listen = 1;
 
-    m_response.body = readingTheFile("index.html");
-    m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
-    response = responseConcatenation(m_response.header, m_response.body);
+
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
     /*                                                                        */
@@ -124,27 +109,26 @@ void Server::manipulation(Parse parse)
     /**************************************************************************/
     FD_ZERO(&this->m_currentSocket);
     std::cout << "Waiting for connections ..." << std::endl;
+    std::cout << "=====================================" << std::endl;
+    for (int i = 0; i < parse.getlisten().size(); i++)
+        FD_SET(this->m_socketFd[i], &this->m_currentSocket);
     while (1)
     {
-        for (int i = 0; i < parse.getlisten().size(); i++)
-            FD_SET(this->m_socketFd[i], &this->m_currentSocket);
         readySockets = this->m_currentSocket;
         std::string request;
-        if (select(this->m_maxFd + 1, &this->m_currentSocket, NULL, NULL, NULL) < 0)
+        if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
             throw std::string("mushkil f select");
-        std::cout << this->m_socketFd[parse.getlisten().size() - 1] << std::endl;
         for (int i = 0; i <= this->m_maxFd; i++)
         {
-            if (FD_ISSET(i, &this->m_currentSocket))
+            if (FD_ISSET(i, &readySockets))
             {
                 if (checkForFileDescriptor(i, parse.getlisten().size()))
                 {
-                    std::cout << "i  ==> " << i << std::endl;
+                    std::cout << "i ==> " << i << std::endl;
                     if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
                         throw std::string("Accept Failed");
-                    // hta nzid shi hwayj man ba3d
                     std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
-                    FD_SET(this->m_newSocket, &this->m_currentSocket);
+                    FD_SET(this->m_newSocket, &readySockets);
                     std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
                     if (this->m_newSocket > this->m_maxFd)
                         this->m_maxFd = this->m_newSocket;
@@ -154,17 +138,17 @@ void Server::manipulation(Parse parse)
                     std::cout << "client_socket " << i << std::endl;
                     char buffer[1024] = {0};
                     if ((result = read(i, buffer, 1024)) == 0)
-                    {
                         std::cout << "disconnected" << std::endl;
-                    }
                     else
                     {
                         buffer[result] = '\0';
-                        std::cout << getWord(buffer, 0, 1) << std::endl;
-                        send(i, response.c_str(), response.length(), 0);
+                        word = getWord(buffer,0, 1);
+                        // manageRequest(word, parse, i);
+                        printf("%s\n", buffer);
+                        // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
                     close(i);
-                    FD_CLR(i, &this->m_currentSocket);
+                    FD_CLR(i, &readySockets);
                 }
             }
         }

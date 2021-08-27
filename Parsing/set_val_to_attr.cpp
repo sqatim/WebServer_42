@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/24 11:56:25 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/08/25 13:22:31 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void Parse::add_locations()
         }
     }
     this->location = loc;
-    // i = 0;
+    i = 0;
     // while (i < this->count_location)
     // {
     //     std::cout << this->location[i].name << std::endl;

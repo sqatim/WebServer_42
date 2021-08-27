@@ -4,6 +4,15 @@
 #include <fstream>
 #include <iostream>
 
+typedef struct s_content
+{
+    std::string root;
+    std::string index;
+    std::string locationReturn;
+    std::string statusReturn;
+    std::string optionalModifier;
+}               t_content;
+
 typedef struct s_header
 {
     std::string version;
@@ -22,4 +31,5 @@ t_header affectationHeader(std::string status, std::string type1, std::string ty
 std::string responseConcatenation(t_header header, std::string body);
 char			**ft_split(std::string s, char c);
 std::string getWord(char *str,  int nLine, int nWord);
+// void manageRequest(std::string word, Parse parse);
 #endif
