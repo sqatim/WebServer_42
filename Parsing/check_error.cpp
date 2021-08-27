@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 16:49:42 by amine             #+#    #+#             */
-/*   Updated: 2021/08/24 15:53:58 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/25 17:18:58 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ int check_accolades(FreqMap wf, std::string filename)
 int check_keys(FreqMap wf)
 {
     std::unordered_multimap<std::string, std::string>::iterator it;
-    // std::cout << "sahbi asaadi" << std::endl;
     for (it = wf.begin(); it != wf.end(); ++it)
     {
         std::string nn = get_key(it->first);

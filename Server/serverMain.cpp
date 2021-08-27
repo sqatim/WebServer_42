@@ -1,7 +1,6 @@
 #include <arpa/inet.h>
 #include "Server.class.hpp"
 
-
 int main()
 {
     // try

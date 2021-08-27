@@ -6,11 +6,39 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/25 17:13:25 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/27 14:46:54 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
+
+
+FreqMap delete_semi_colomn(FreqMap wf)
+{
+    std::unordered_multimap<std::string, std::string>::iterator it;
+
+    for (it = wf.begin(); it != wf.end(); ++it)
+    {
+        int find_semi_colomn;
+        find_semi_colomn = get_key(it->second).find(";");
+        if (find_semi_colomn > 0)
+            it->second = get_key(it->second).substr(0,find_semi_colomn);
+    }
+    return wf;
+}
+
+std::string del_sem_col_in_str(std::string str)
+{
+    int find_semi_colomn;
+    std::string ret;
+    find_semi_colomn = str.find(";");
+    if (find_semi_colomn > 0)
+    {
+        ret = str.substr(0,find_semi_colomn);
+        return ret;
+    }
+    return str;
+}
 
 void Parse::add_locations()
 {
@@ -37,44 +65,57 @@ void Parse::add_locations()
                 if (word == "autoindex")
                 {
                     file >> word;
-                    our_location.auto_index = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.auto_index = str;
                 }
                 if (word == "index")
                 {
                     file >> word;
-                    our_location.index = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.index = str;
                 }
                 if (word == "allow_methods")
                 {
                     file >> word;
-                    our_location.allow_methods = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.allow_methods = str;
                 }
                 if (word == "return")
                 {
                     file >> word;
-                    our_location._return = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location._return = str;
                 }
                 if (word == "fastcgi_pass")
                 {
                     file >> word;
-                    our_location.fastcgi_pass = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.fastcgi_pass = str;
                 }
                 if (word == "upload_methods")
                 {
                     file >> word;
-                    our_location.upload_methods = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.upload_methods = str;
                 }
                 if (word == "upload_store")
                 {
                     file >> word;
-                    our_location.upload_store = word;
+                    std::string str;
+                    str = del_sem_col_in_str(word);
+                    our_location.upload_store = str;
                 }
             }
             this->location.push_back(our_location);
             i++;
         }
     }
-    // this->location = loc;
     // i = 0;
     // while (i < this->location.size())
     // {
@@ -112,6 +153,8 @@ void Parse::add_locations()
     // }
 }
 
+
+
 void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
@@ -119,13 +162,7 @@ void Parse::get_attributs(FreqMap wf)
     t_listen lis;
     count_listen = 0;
     std::unordered_multimap<std::string, std::string>::iterator it;
-    for (it = wf.begin(); it != wf.end(); ++it)
-    {
-        int find_eol;
-        find_eol = get_key(it->second).find(";");
-        if (find_eol > 0)
-            it->second = get_key(it->second).substr(0,find_eol);
-    }
+    wf = delete_semi_colomn(wf);
     for (it = wf.begin(); it != wf.end(); ++it)
     {
         std::string nn = get_key(it->first);
@@ -174,13 +211,13 @@ void Parse::get_attributs(FreqMap wf)
     }
     this->count_location = count_location;
     /* here is the vector of listen but not in ordre*/
-    int l = 0;
-    while (l < listen.size())
-    {
-        std::cout << "port: " << listen[l].port << std::endl;
-        std::cout << "address ip: " << listen[l].adress_ip << std::endl;
-        l++;
-    }
+    // int l = 0;
+    // while (l < listen.size())
+    // {
+    //     std::cout << "port: " << listen[l].port << std::endl;
+    //     std::cout << "address ip: " << listen[l].adress_ip << std::endl;
+    //     l++;
+    // }
     // /* here is the vector of listen but not in ordre*/
     // l = 0;
     // while (l < error_page.size())
