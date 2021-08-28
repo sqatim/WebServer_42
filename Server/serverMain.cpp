@@ -5,9 +5,12 @@ int main()
 {
     // try
     // {
-        Parse("webserv.conf");
-        // Server server;
-    //     server.manipulation();
+    Parse * parse = new Parse("webserv.conf");
+    delete parse;
+    // std::cout << "hello amine\n";
+    // Server server(parse);
+
+    //     server.manipulation(parse);
     // }
     // catch(std::string error)
     // {

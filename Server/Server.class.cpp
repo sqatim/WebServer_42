@@ -1,7 +1,10 @@
 #include "Server.class.hpp"
+#define PORT 3000
 
-Server::Server() : m_addrlen(sizeof(m_address))
+Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
 {
+    this->m_content.root = parse.getroot();
+    this->m_content.index = "default.html";
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
     /*                                                                        */
@@ -15,20 +18,29 @@ Server::Server() : m_addrlen(sizeof(m_address))
     /*     - IPROTO_TCP : TCP                                                 */
     /*     - IPROTO_UDP : UCP                                                 */
     /**************************************************************************/
-    if ((this->m_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
-        throw std::string("Socket Failed To Create");
-    initialiseStructure();
-    /**************************************************************************/
-    /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
-    /*                                                                        */
-    /*   # after Creation of the socket, bind function binds the socket to    */
-    /* the adress and port number specified in addr (costum data structure)   */
-    /**************************************************************************/
-    if ((bind(this->m_socketFd, (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
-        throw std::string("Bind Failed");
+    int i;
+    this->m_socketFd = new int[parse.getlisten().size()];
+    for (i = 0; i < parse.getlisten().size(); i++)
+    {
+        if ((this->m_socketFd[i] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+            throw std::string("Socket Failed To Create");
+        initialiseStructure(parse.getlisten()[i], parse.gethost());
+        /**************************************************************************/
+        /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
+        /*                                                                        */
+        /*   # after Creation of the socket, bind function binds the socket to    */
+        /* the adress and port number specified in addr (costum data structure)   */
+        /**************************************************************************/
+        if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
+            throw std::string("Bind Failed");
+        std::cout << "Listener on port " << parse.getlisten()[i] << std::endl;
+        if ((listen(this->m_socketFd[i], 3)) < 0)
+            throw std::string("Listen Failed");
+    }
+    this->m_maxFd = this->m_socketFd[i - 1];
 }
 
-void Server::initialiseStructure()
+void Server::initialiseStructure(int port, std::string host)
 {
     /**************************************************************************/
     /* struct SOCKADDR_IN{short sin_family; u_short sin_port;\                */
@@ -50,40 +62,35 @@ void Server::initialiseStructure()
     /* # siz_zero   : usualy set to 0                                         */
     /**************************************************************************/
     this->m_address.sin_family = AF_INET;
-    this->m_address.sin_port = htons(PORT);
-    this->m_address.sin_addr.s_addr = INADDR_ANY;
+    this->m_address.sin_port = htons(port);
+    this->m_address.sin_addr.s_addr = inet_addr(host.c_str());
     return;
 }
 
-std::string readingTheFile(std::string filename)
+int Server::checkForFileDescriptor(int current, int size)
 {
-    std::ifstream myReadFile(filename);
-    std::string text;
-    std::string line;
-
-    text = "\0";
-    while (std::getline(myReadFile, line))
+    for (int i = 0; i < size; i++)
     {
-        text += line;
-        if (!myReadFile.eof())
-            text += "\n";
+        if (current == this->m_socketFd[i])
+            return (1);
     }
-    myReadFile.close();
-    return (text);
+    return (0);
 }
-
-void Server::manipulation()
+void Server::manipulation(Parse parse)
 {
     // to delete
     std::string response;
+    std::string word;
+    int result;
     std::string file;
     std::string ss = "\0";
-    // Parse parse;
+    fd_set readySockets;
+    struct timeval timeout;
+    timeout.tv_sec = 5;
+    timeout.tv_usec = 0;
     int i = 0;
+    int max_listen = 1;
 
-    m_response.body = readingTheFile("index.html");
-    m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
-    response = responseConcatenation(m_response.header, m_response.body);
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
     /*                                                                        */
@@ -96,34 +103,57 @@ void Server::manipulation()
     /*    if a connection request arrives when the queue is full/             */
     /*  the client may receive an error with an indication of ECONNREFUSED.   */
     /**************************************************************************/
-    if ((listen(this->m_socketFd, 5)) < 0)
-        throw std::string("Listen Failed");
+    FD_ZERO(&this->m_currentSocket);
+    std::cout << "Waiting for connections ..." << std::endl;
+    std::cout << "=====================================" << std::endl;
+    for (int i = 0; i < parse.getlisten().size(); i++)
+        FD_SET(this->m_socketFd[i], &this->m_currentSocket);
     while (1)
     {
+        readySockets = this->m_currentSocket;
         std::string request;
-        if ((m_newSocket = accept(this->m_socketFd, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
-            throw std::string("Accept Failed");
-        /* JUST FOR TEST */
-        /* JUST FOR TEST */
-        // while ((i = get_next_line(this->m_newSocket, request)) > 0)
-        // {
-        //     ss += request;
-        // }
-        // ss += request;
-        // std::cout << ss << std::endl;
-        char buffer[30000] = {0};
-        read(this->m_newSocket, buffer, 30000);
-        // std::cout << response.length() << std::endl;
-        printf("|%d|\n%s\n", this->m_newSocket, buffer);
-        write(this->m_newSocket, response.c_str(), response.length());
-        close(m_newSocket);
+        if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
+            throw std::string("mushkil f select");
+        for (int i = 0; i <= this->m_maxFd; i++)
+        {
+            if (FD_ISSET(i, &readySockets))
+            {
+                if (checkForFileDescriptor(i, parse.getlisten().size()))
+                {
+                    std::cout << "i ==> " << i << std::endl;
+                    if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+                        throw std::string("Accept Failed");
+                    std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
+                    FD_SET(this->m_newSocket, &readySockets);
+                    std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
+                    if (this->m_newSocket > this->m_maxFd)
+                        this->m_maxFd = this->m_newSocket;
+                }
+                else
+                {
+                    std::cout << "client_socket " << i << std::endl;
+                    char buffer[1024] = {0};
+                    if ((result = read(i, buffer, 1024)) == 0)
+                        std::cout << "disconnected" << std::endl;
+                    else
+                    {
+                        buffer[result] = '\0';
+                        word = getWord(buffer, 0, 1);
+                        manageRequest(word, parse, i);
+                        // printf("%s\n", buffer);
+                        // std::cout << getWord(buffer, 0, 1) << std::endl;
+                    }
+                    close(i);
+                    FD_CLR(i, &readySockets);
+                }
+            }
+        }
     }
-    // delete[] buffer;
 }
 
 int Server::getSocketFd()
 {
-    return (this->m_socketFd);
+    return (this->m_socketFd[0]);
 }
 
 Server::~Server()

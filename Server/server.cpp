@@ -27,6 +27,7 @@ std::string responseConcatenation(t_header header, std::string body)
     response += "Content-Length: ";
     response += header.contentLength;
     response += "\n\n";
+    // response += "Location: http://www.facebook.com";
     response += body;
     return (response);
 }
