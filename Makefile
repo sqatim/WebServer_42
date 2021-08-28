@@ -1,4 +1,3 @@
-
 #************************PARSING************************#
 PARSING= libparsing.a
 PARSING_PATH= Parsing
@@ -14,6 +13,7 @@ SRC_NAME_SERVER= serverMain.cpp\
 				server.cpp\
 				getWord.cpp\
 				ft_split.cpp\
+				manipulation.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
@@ -27,8 +27,8 @@ HDR_SERVER= $(addprefix $(HDR_SERVER_PATH)/,$(HDR_SERVER_NAME))
 H_SERVER_FLAG= -I $(HDR_SERVER_PATH)
 
 #************************Client************************#
-SRC_CLIENT_PATH= Client
-HDR_CLIENT_PATH= Client/headers
+SRC_CLIENT_PATH= ClientSource
+HDR_CLIENT_PATH= ClientSource/headers
 OBJ_PATH_CLIENT= objectsClient
 
 SRC_NAME_CLIENT= client.cpp\
@@ -48,17 +48,17 @@ LPARSING_FLAG= -L$(PARSING_PATH) Parsing/libparsing.a
 
 COMP= clang++
 
-all: parsing server client
+all: Parse WebServer client
 
-server : $(PARSING_PATH)/$(PARSING) $(OBJ_SERVER)
+WebServer : $(PARSING_PATH)/$(PARSING) $(OBJ_SERVER)
 	@$(COMP) $(H_SERVER_FLAG) $(OBJ_SERVER) $(LPARSING_FLAG) -o $@
-	@echo "Compilation of Server:  \033[1;32mOK\033[m"
+	@echo "Compilation of WebServer:  \033[1;32mOK\033[m"
 
 client : $(PARSING_PATH)/$(PARSING) $(OBJ_CLIENT)
 	@$(COMP) $(H_CLIENT_FLAG) $(OBJ_CLIENT) $(LPARSING_FLAG) -o $@
 	@echo "Compilation of Client:  \033[1;32mOK\033[m"
 
-parsing:
+Parse:
 	@make -sC $(PARSING_PATH)
 
 $(OBJ_PATH_SERVER)/%.o:  $(SRC_SERVER_PATH)/%.cpp $(HDR_SERVER)
@@ -76,8 +76,8 @@ clean:
 
 
 fclean: clean
-	@rm -rf server client
+	@rm -rf WebServer Client
 	@make fclean -C $(PARSING_PATH)
-	@echo "\033[0;31m>> Server and client are deleted.\033[0m" 
+	@echo "\033[0;31m>> WebServer and Client are deleted.\033[0m" 
 
 re : fclean all
