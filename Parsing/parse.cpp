@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/28 16:33:20 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/28 22:31:55 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,12 @@ int Parse::getcount_location()
     return this->count_location;
 }
 
-void Parse::setlocation(std::vector<t_location> val)
-{
-    this->location = val;
-}
+// void Parse::setlocation(std::vector<t_location> val)
+// {
+//     this->location = val;
+// }
 
-std::vector<t_location> Parse::getlocation()
-{
-    return this->location;
-}
+// std::vector<t_location> Parse::getlocation()
+// {
+//     return this->location;
+// }

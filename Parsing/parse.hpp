@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/28 17:06:28 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/28 22:39:27 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,28 @@ typedef struct s_ret
     char *path;
 } t_ret;
 
-typedef struct s_location
+// typedef struct s_location
+// {
+// } t_location;
+
+class location
 {
+private:
     std::string index;
     std::string auto_index;
     std::string allow_methods;
     std::string _return;
-    // std::string fastcgi_pass;
-    // std::string upload_methods;
-    // std::string upload_store;
+    std::string fastcgi_pass;
+    std::string upload_methods;
+    std::string upload_store;
     std::string name;
     std::string root;
-} t_location;
+    /* data */
+public:
+    location(/* args */);
+    ~location();
+};
+
 
 class Parse
 {
@@ -53,7 +63,7 @@ protected:
     std::vector<std::string> error_page;
     std::string client_max_body_size;
     std::string host;
-    std::vector<t_location> location;
+    std::vector<location> location;
     int count_location;
     int count_listen;
     int count_error_page;
@@ -80,8 +90,8 @@ public:
     int getcount_error_page();
     void setcount_location(int va);
     int getcount_location();
-    void setlocation(std::vector<t_location> val);
-    std::vector<t_location> getlocation();
+    // void setlocation(std::vector<location> val);
+    // std::vector<t_location> getlocation();
     ~Parse();
 };
 
