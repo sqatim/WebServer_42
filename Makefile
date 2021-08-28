@@ -1,4 +1,3 @@
-NAME= convert
 
 #************************PARSING************************#
 PARSING= libparsing.a
