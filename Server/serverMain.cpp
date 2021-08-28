@@ -8,7 +8,6 @@ int main()
     {
         Parse parse("webserv.conf");
         Server server(parse);
-
         server.manipulation(parse);
     }
     catch(std::string error)

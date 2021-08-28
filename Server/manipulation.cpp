@@ -42,6 +42,10 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
     // {
     //     // ntsana amine hta ysali l3aybat
     // }
+    if (!parse.getlocation().empty())
+    {
+        std::cout << "location khawya" << std::endl;
+    }
     if (this->m_content.root != "")
     {
         len = ft_strlen(this->m_content.root);

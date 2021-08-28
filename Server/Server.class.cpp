@@ -5,6 +5,7 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
 {
     this->m_content.root = parse.getroot();
     this->m_content.index = "default.html";
+    int opt = 1;
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
     /*                                                                        */
@@ -24,6 +25,11 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
     {
         if ((this->m_socketFd[i] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
             throw std::string("Socket Failed To Create");
+        if (setsockopt(this->m_socketFd[i], SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+                       sizeof(opt)) < 0)
+        {
+            throw std::string("SetSockopt Failed");
+        }
         initialiseStructure(parse.getlisten()[i]);
         /**************************************************************************/
         /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
@@ -69,7 +75,6 @@ void Server::initialiseStructure(t_listen listen)
     return;
 }
 
-
 int Server::checkForFileDescriptor(int current, int size)
 {
     for (int i = 0; i < size; i++)
@@ -93,7 +98,6 @@ void Server::manipulation(Parse parse)
     timeout.tv_usec = 0;
     int i = 0;
     int max_listen = 1;
-
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -142,7 +146,7 @@ void Server::manipulation(Parse parse)
                     else
                     {
                         buffer[result] = '\0';
-                        word = getWord(buffer,0, 1);
+                        word = getWord(buffer, 0, 1);
                         manageRequest(word, parse, i);
                         // printf("%s\n", buffer);
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
