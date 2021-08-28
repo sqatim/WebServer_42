@@ -6,14 +6,15 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/23 14:58:19 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/25 16:27:29 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSE_HPP
 #define PARSE_HPP
 #include <map>
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -51,7 +52,7 @@ protected:
     std::vector<std::string> error_page;
     std::string client_max_body_size;
     std::string host;
-    t_location *location;
+    std::vector<t_location> location;
     int count_location;
     int count_listen;
     int count_error_page;
@@ -78,14 +79,16 @@ public:
     int getcount_error_page();
     void setcount_location(int va);
     int getcount_location();
-    void setlocation(t_location *val);
-    t_location *getlocation();
+    void setlocation(std::vector<t_location> val);
+    std::vector<t_location> getlocation();
     ~Parse();
 };
 
+int check_keys(FreqMap wf);
 std::string get_value(std::string str);
 std::string get_key(std::string str);
 int CountWords(std::string str);
 int check_accolades(FreqMap wf, std::string filename);
 void error(std::string str);
 #endif
+

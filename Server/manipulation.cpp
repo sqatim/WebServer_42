@@ -49,10 +49,11 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
             this->m_content.root += "/";
     }
     // hadi abash ntesti;
-    this->m_content.index = "inde.html";
+    this->m_content.index = "default.html";
     this->m_content.root += this->m_content.index;
     try
     {
+        std::cout << this->m_content.root << std::endl;
         m_response.body = readingTheFile(this->m_content.root);
     }
     catch (std::ifstream::failure e)
