@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/25 16:27:29 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/28 17:06:28 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,29 @@
 
 typedef std::unordered_multimap<std::string, std::string> FreqMap;
 
+typedef struct s_ret
+{
+    int redirec;
+    char *path;
+} t_ret;
+
 typedef struct s_location
 {
     std::string index;
     std::string auto_index;
     std::string allow_methods;
     std::string _return;
-    std::string fastcgi_pass;
-    std::string upload_methods;
-    std::string upload_store;
+    // std::string fastcgi_pass;
+    // std::string upload_methods;
+    // std::string upload_store;
     std::string name;
+    std::string root;
 } t_location;
-
-typedef struct s_listen
-{
-    std::string adress_ip;
-    std::string port;
-} t_listen;
 
 class Parse
 {
 protected:
-    std::vector<t_listen> listen;
+    std::vector<int> listen;
     std::string server_name;
     std::string root;
     std::vector<std::string> error_page;
@@ -63,8 +64,8 @@ public:
     std::string file;
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
-    void setlisten( std::vector<t_listen> val);
-    std::vector<t_listen> getlisten();
+    void setlisten(std::vector<int> val);
+    std::vector<int> getlisten();
     void setserver_name(std::string val);
     std::string getserver_name();
     void setroot(std::string val);
@@ -91,4 +92,3 @@ int CountWords(std::string str);
 int check_accolades(FreqMap wf, std::string filename);
 void error(std::string str);
 #endif
-

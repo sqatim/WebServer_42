@@ -31,11 +31,21 @@ private:
 public:
     // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
     // Server(int port);
+    class NotFound
+    {
+    public:
+        std::string notFoundBody(std::string &body) throw();
+    };
+    class Forbidden
+    {
+    public:
+        std::string forbiddenBody(std::string &body) throw();
+    };
     Server(Parse parse);
     int getSocketFd();
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
-    void initialiseStructure(t_listen listenParse);
+    void initialiseStructure(int port, std::string ip);
     void manipulation(Parse parse);
     void manageRequest(std::string word, Parse parse, int socket);
     ~Server();

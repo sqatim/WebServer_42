@@ -30,7 +30,7 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
         {
             throw std::string("SetSockopt Failed");
         }
-        initialiseStructure(parse.getlisten()[i]);
+        initialiseStructure(parse.getlisten()[i], parse.gethost());
         /**************************************************************************/
         /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
         /*                                                                        */
@@ -39,16 +39,15 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
         /**************************************************************************/
         if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
             throw std::string("Bind Failed");
-        std::cout << "Listener on port " << parse.getlisten()[i].port << std::endl;
+        std::cout << "Listener on " << parse.gethost() << ":" << parse.getlisten()[i] << std::endl;
         if ((listen(this->m_socketFd[i], 3)) < 0)
             throw std::string("Listen Failed");
     }
     this->m_maxFd = this->m_socketFd[i - 1];
 }
 
-void Server::initialiseStructure(t_listen listen)
+void Server::initialiseStructure(int port, std::string ip)
 {
-    int port;
     /**************************************************************************/
     /* struct SOCKADDR_IN{short sin_family; u_short sin_port;\                */
     /*        struct in_addr sin_addr; char sin_zero[0]; };                   */
@@ -68,10 +67,10 @@ void Server::initialiseStructure(t_listen listen)
     /*           in the socket connection                                     */
     /* # siz_zero   : usualy set to 0                                         */
     /**************************************************************************/
+    std::cout << "port " << port << std::endl;
     this->m_address.sin_family = AF_INET;
-    port = stoi(listen.port);
     this->m_address.sin_port = htons(port);
-    this->m_address.sin_addr.s_addr = inet_addr(listen.adress_ip.c_str());
+    this->m_address.sin_addr.s_addr = inet_addr(ip.c_str());
     return;
 }
 

@@ -16,11 +16,16 @@ std::string readingTheFile(std::string filename)
     // https://www.cplusplus.com/reference/ios/ios/exceptions/
     // Get/set exceptions mask
     // failbit	Logical error on i/o operation	fail == true
-    myReadFile.exceptions(std::ifstream::failbit);
+    // myReadFile.exceptions(std::ifstream::badbit);
     /* code */
     std::string text;
     std::string line;
+    std::cout << "==============================" << std::endl;
+    std::cout << "Reading the file " << filename << std::endl;
+    std::cout << "==============================" << std::endl;
     myReadFile.open(filename);
+    if (!myReadFile)
+        throw Server::Forbidden();
     text = "\0";
     while (std::getline(myReadFile, line))
     {
@@ -35,40 +40,50 @@ std::string readingTheFile(std::string filename)
 void Server::manageRequest(std::string word, Parse parse, int socket)
 {
     std::string response;
-    int len;
-    // m_response.header = affectationHeader("307 Temporary Redirect", "text", "html", m_response.body.length());
-    // response = responseConcatenation(m_response.header, m_response.body);
-    // if (parse.getlocation() != NULL)
-    // {
-    //     // ntsana amine hta ysali l3aybat
-    // }
-    if (!parse.getlocation().empty())
-    {
-        std::cout << "location khawya" << std::endl;
-    }
-    if (this->m_content.root != "")
-    {
-        len = ft_strlen(this->m_content.root);
-        if (this->m_content.root[len - 1] != '/')
-            this->m_content.root += "/";
-    }
-    // hadi abash ntesti;
-    this->m_content.index = "default.html";
-    this->m_content.root += this->m_content.index;
     try
     {
-        std::cout << this->m_content.root << std::endl;
-        m_response.body = readingTheFile(this->m_content.root);
-    }
-    catch (std::ifstream::failure e)
-    {
-        std::cerr << e.what() << '\n';
-        std::cout << "a sidi ra ghalta" << std::endl;
-    }
+        std::string path;
+        int len;
 
-    m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
-    // if (m_response.body == "")
-    // std::cout << "m_content.root ==> " << this->m_content.root << std::endl;
+        path = this->m_content.root;
+        this->m_content.index = "samir.html";
+        if (path != "")
+        {
+            len = ft_strlen(path);
+            if (path[len - 1] != '/')
+                path += "/";
+        }
+        if (parse.getlocation().empty());
+        else
+        {
+            if (word != "/")
+            {
+                for (int i = 0; i < parse.getlocation().size(); i++)
+                {
+                    if (word == parse.getlocation()[i].name)
+                    {
+                        path += parse.getlocation()[i].name;
+                        if (parse.getlocation()[i].index != "")
+                            this->m_content.index = parse.getlocation()[i].index;
+                    }
+                    throw NotFound();
+                }
+            }
+        }
+        path += this->m_content.index;
+        std::cout << path << std::endl;
+        m_response.body = readingTheFile(path);
+        m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
+    }
+    catch (Server::Forbidden &e)
+    {
+        std::cout << "salut mon camarade" << std::endl;
+        m_response.header = affectationHeader(e.forbiddenBody(m_response.body), "text", "html", m_response.body.length());
+    }
+    catch (Server::NotFound &e)
+    {
+        m_response.header = affectationHeader(e.notFoundBody(m_response.body), "text", "html", m_response.body.length());
+    }
     response = responseConcatenation(m_response.header, m_response.body);
     // std::cout << "response ==> " << response << std::endl;
     send(socket, response.c_str(), response.length(), 0);

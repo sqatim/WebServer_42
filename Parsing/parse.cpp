@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/28 11:43:03 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/08/28 16:33:20 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(0), client_max_body_size(""), host(""), location(0)
+Parse::Parse(std::string _filename) : listen(0), server_name(""), root(""), error_page(0), client_max_body_size(""), host("")
 {
     FreqMap wf;
     std::string word;
@@ -45,12 +45,12 @@ Parse::~Parse()
 {
 }
 
-void Parse::setlisten( std::vector<t_listen>val)
+void Parse::setlisten( std::vector<int>val)
 {
     this->listen = val;
 }
 
-std::vector<t_listen> Parse::getlisten()
+std::vector<int> Parse::getlisten()
 {
     return this->listen;
 }

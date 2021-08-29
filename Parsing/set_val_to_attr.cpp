@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/28 11:43:14 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/08/28 17:04:56 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void Parse::add_locations()
     int i = 0;
     while (file >> word)
     {
-        memset(&our_location,0,sizeof(our_location));
+        // memset(&our_location,0,sizeof(our_location));
         if (word == "location")
         {
             file >> word;
@@ -83,34 +83,41 @@ void Parse::add_locations()
                     str = del_sem_col_in_str(word);
                     our_location.allow_methods = str;
                 }
-                if (word == "return")
+                // if (word == "return")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location._return = str;
+                // }
+                if (word == "root")
                 {
                     file >> word;
                     std::string str;
                     str = del_sem_col_in_str(word);
-                    our_location._return = str;
+                    our_location.root = str;
                 }
-                if (word == "fastcgi_pass")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.fastcgi_pass = str;
-                }
-                if (word == "upload_methods")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.upload_methods = str;
-                }
-                if (word == "upload_store")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.upload_store = str;
-                }
+                // if (word == "fastcgi_pass")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.fastcgi_pass = str;
+                // }
+                // if (word == "upload_methods")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.upload_methods = str;
+                // }
+                // if (word == "upload_store")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.upload_store = str;
+                // }
             }
             this->location.push_back(our_location);
             i++;
@@ -159,7 +166,7 @@ void Parse::get_attributs(FreqMap wf)
 {
     int count_error_page = 0;
     int count_location = 0;
-    t_listen lis;
+    // t_listen lis;
     count_listen = 0;
     std::unordered_multimap<std::string, std::string>::iterator it;
     wf = delete_semi_colomn(wf);
@@ -168,19 +175,8 @@ void Parse::get_attributs(FreqMap wf)
         std::string nn = get_key(it->first);
         if (nn == "listen")
         {
-            int search_ip = 0;
-            int len  = get_key(it->second).size();
-            lis.adress_ip = "0.0.0.0";
-            lis.port = "80";
-            search_ip = get_key(it->second).find(":");
-            if (search_ip > 0)
-            {
-                lis.adress_ip = get_key(it->second).substr(0, search_ip);
-                lis.port = get_key(it->second).substr(search_ip + 1, len);
-            }
-            else  if (search_ip < 0)
-                lis.port = get_key(it->second);
-            listen.push_back(lis);
+            std::string aa = get_key(it->second);
+            listen.push_back(std::stoi(aa));
         }
         if (nn == "root")
         {
