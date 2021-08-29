@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/28 22:32:52 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/29 18:51:31 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,84 +45,85 @@ void Parse::add_locations()
     std::fstream file;
     std::string filename;
     std::string word;
-    // t_location our_location;
     
-    // file.open(this->file.c_str());
-    // int i = 0;
-    // while (file >> word)
-    // {
-    //     // memset(&our_location,0,sizeof(our_location));
-    //     if (word == "location")
-    //     {
-    //         file >> word;
-    //         our_location.name = word;
-    //         while (file >> word)
-    //         {
-    //             if (word == "{")
-    //                 continue;
-    //             if (word == "}")
-    //                 break;
-    //             if (word == "autoindex")
-    //             {
-    //                 file >> word;
-    //                 std::string str;
-    //                 str = del_sem_col_in_str(word);
-    //                 our_location.auto_index = str;
-    //             }
-    //             if (word == "index")
-    //             {
-    //                 file >> word;
-    //                 std::string str;
-    //                 str = del_sem_col_in_str(word);
-    //                 our_location.index = str;
-    //             }
-    //             if (word == "allow_methods")
-    //             {
-    //                 file >> word;
-    //                 std::string str;
-    //                 str = del_sem_col_in_str(word);
-    //                 our_location.allow_methods = str;
-    //             }
-    //             // if (word == "return")
-    //             // {
-    //             //     file >> word;
-    //             //     std::string str;
-    //             //     str = del_sem_col_in_str(word);
-    //             //     our_location._return = str;
-    //             // }
-    //             if (word == "root")
-    //             {
-    //                 file >> word;
-    //                 std::string str;
-    //                 str = del_sem_col_in_str(word);
-    //                 our_location.root = str;
-    //             }
-    //             // if (word == "fastcgi_pass")
-    //             // {
-    //             //     file >> word;
-    //             //     std::string str;
-    //             //     str = del_sem_col_in_str(word);
-    //             //     our_location.fastcgi_pass = str;
-    //             // }
-    //             // if (word == "upload_methods")
-    //             // {
-    //             //     file >> word;
-    //             //     std::string str;
-    //             //     str = del_sem_col_in_str(word);
-    //             //     our_location.upload_methods = str;
-    //             // }
-    //             // if (word == "upload_store")
-    //             // {
-    //             //     file >> word;
-    //             //     std::string str;
-    //             //     str = del_sem_col_in_str(word);
-    //             //     our_location.upload_store = str;
-    //             // }
-    //         }
-    //         this->location.push_back(our_location);
-    //         i++;
-    //     }
-    // }
+    file.open(this->file.c_str());
+    int i = 0;
+    while (file >> word)
+    {
+        // memset(&our_location,0,sizeof(our_location));
+        LocaTion our_location;
+        // our_location.LocaTion();
+        if (word == "location")
+        {
+            file >> word;
+            our_location.setname(word);
+            // while (file >> word)
+            // {
+            //     if (word == "{")
+            //         continue;
+            //     if (word == "}")
+            //         break;
+            //     if (word == "autoindex")
+            //     {
+            //         file >> word;
+            //         std::string str;
+            //         str = del_sem_col_in_str(word);
+            //         our_location.auto_index = str;
+            //     }
+            //     if (word == "index")
+            //     {
+            //         file >> word;
+            //         std::string str;
+            //         str = del_sem_col_in_str(word);
+            //         our_location.index = str;
+            //     }
+            //     if (word == "allow_methods")
+            //     {
+            //         file >> word;
+            //         std::string str;
+            //         str = del_sem_col_in_str(word);
+            //         our_location.allow_methods = str;
+            //     }
+                // if (word == "return")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location._return = str;
+                // }
+                // if (word == "root")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.root = str;
+                // }
+                // if (word == "fastcgi_pass")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.fastcgi_pass = str;
+                // }
+                // if (word == "upload_methods")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.upload_methods = str;
+                // }
+                // if (word == "upload_store")
+                // {
+                //     file >> word;
+                //     std::string str;
+                //     str = del_sem_col_in_str(word);
+                //     our_location.upload_store = str;
+                // }
+            // }
+            this->location.push_back(our_location);
+            i++;
+        }
+    }
     // i = 0;
     // while (i < this->location.size())
     // {
