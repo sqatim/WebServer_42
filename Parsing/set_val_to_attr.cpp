@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/29 18:51:31 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/29 23:36:47 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,120 +43,46 @@ std::string del_sem_col_in_str(std::string str)
 void Parse::add_locations()
 {
     std::fstream file;
-    std::string filename;
-    std::string word;
+    // std::string filename;
+    std::string str;
     
-    file.open(this->file.c_str());
+    file.open(this->file);
     int i = 0;
-    while (file >> word)
+    // std::cout << this->file << std::endl;
+    i = 0;
+    while (getline(file, str, '\n'))
     {
-        // memset(&our_location,0,sizeof(our_location));
-        LocaTion our_location;
-        // our_location.LocaTion();
-        if (word == "location")
+        // i++;
+        // std::cout << i << std::endl;
+        LocaTion loc;
+        int find  = str.find("location");
+        if (find > 0)
         {
-            file >> word;
-            our_location.setname(word);
-            // while (file >> word)
-            // {
-            //     if (word == "{")
-            //         continue;
-            //     if (word == "}")
-            //         break;
-            //     if (word == "autoindex")
-            //     {
-            //         file >> word;
-            //         std::string str;
-            //         str = del_sem_col_in_str(word);
-            //         our_location.auto_index = str;
-            //     }
-            //     if (word == "index")
-            //     {
-            //         file >> word;
-            //         std::string str;
-            //         str = del_sem_col_in_str(word);
-            //         our_location.index = str;
-            //     }
-            //     if (word == "allow_methods")
-            //     {
-            //         file >> word;
-            //         std::string str;
-            //         str = del_sem_col_in_str(word);
-            //         our_location.allow_methods = str;
-            //     }
-                // if (word == "return")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location._return = str;
-                // }
-                // if (word == "root")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.root = str;
-                // }
-                // if (word == "fastcgi_pass")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.fastcgi_pass = str;
-                // }
-                // if (word == "upload_methods")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.upload_methods = str;
-                // }
-                // if (word == "upload_store")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.upload_store = str;
-                // }
-            // }
-            this->location.push_back(our_location);
-            i++;
+            loc.setname(get_value(str));
+            while (getline(file, str, '\n'))
+            {
+                if (str == "}")
+                    break;
+                if (get_key(str) == "index")
+                    loc.setindex(get_value(str));
+            }
         }
+        if (find > 0 )
+        {
+            this->location.push_back(loc);
+            loc.~LocaTion();
+            find = -1;
+        }
+        std::cout << str << std::endl;
     }
     // i = 0;
+    // std::cout << this->location.size() << std::endl;
     // while (i < this->location.size())
     // {
-    //     std::cout << this->location[i].name << std::endl;
-    //     if (this->location[i].auto_index.length() > 0)
-    //     {
-    //         std::cout << this->location[i].auto_index << std::endl;
-    //     }
-    //     if (this->location[i].index.length() > 0)
-    //     {
-    //         std::cout << this->location[i].index << std::endl;
-    //     }
-    //     if (this->location[i].allow_methods.length() > 0)
-    //     {
-    //         std::cout << this->location[i].allow_methods << std::endl;
-    //     }
-    //     if (this->location[i]._return.length() > 0)
-    //     {
-    //         std::cout << this->location[i]._return << std::endl;
-    //     }
-    //     if (this->location[i].fastcgi_pass.length() > 0)
-    //     {
-    //         std::cout << this->location[i].fastcgi_pass << std::endl;
-    //     }
-    //     if (this->location[i].upload_methods.length() > 0)
-    //     {
-    //         std::cout << this->location[i].upload_methods << std::endl;
-    //     }
-    //     if (this->location[i].upload_store.length() > 0)
-    //     {
-    //         std::cout << this->location[i].upload_store << std::endl;
-    //     }
-    //     std::cout << "=============================================" << std::endl;
+    //     if (this->location[i].getname().size() > 0)
+    //         std::cout << this->location[i].getname() << std::endl;
+    //     if (this->location[i].getindex().size() > 0)
+    //         std::cout << this->location[i].getindex() << std::endl;
     //     i++;
     // }
 }
