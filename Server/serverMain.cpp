@@ -5,8 +5,9 @@ int main()
 {
     // try
     // {
-    Parse * parse = new Parse("webserv.conf");
-    delete parse;
+    Parse parse("webserv.conf");
+    std::cout << parse << std::endl;
+    // delete parse;
     // std::cout << "hello amine\n";
     // Server server(parse);
 

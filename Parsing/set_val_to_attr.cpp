@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/29 23:36:47 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/30 14:54:48 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
-
 
 FreqMap delete_semi_colomn(FreqMap wf)
 {
@@ -22,7 +21,7 @@ FreqMap delete_semi_colomn(FreqMap wf)
         int find_semi_colomn;
         find_semi_colomn = get_key(it->second).find(";");
         if (find_semi_colomn > 0)
-            it->second = get_key(it->second).substr(0,find_semi_colomn);
+            it->second = get_key(it->second).substr(0, find_semi_colomn);
     }
     return wf;
 }
@@ -34,118 +33,119 @@ std::string del_sem_col_in_str(std::string str)
     find_semi_colomn = str.find(";");
     if (find_semi_colomn > 0)
     {
-        ret = str.substr(0,find_semi_colomn);
+        ret = str.substr(0, find_semi_colomn);
         return ret;
     }
     return str;
 }
 
-void Parse::add_locations()
+void add_locations()
 {
-    std::fstream file;
-    // std::string filename;
-    std::string str;
-    
-    file.open(this->file);
-    int i = 0;
-    // std::cout << this->file << std::endl;
-    i = 0;
-    while (getline(file, str, '\n'))
-    {
-        // i++;
-        // std::cout << i << std::endl;
-        LocaTion loc;
-        int find  = str.find("location");
-        if (find > 0)
-        {
-            loc.setname(get_value(str));
-            while (getline(file, str, '\n'))
-            {
-                if (str == "}")
-                    break;
-                if (get_key(str) == "index")
-                    loc.setindex(get_value(str));
-            }
-        }
-        if (find > 0 )
-        {
-            this->location.push_back(loc);
-            loc.~LocaTion();
-            find = -1;
-        }
-        std::cout << str << std::endl;
-    }
-    // i = 0;
-    // std::cout << this->location.size() << std::endl;
-    // while (i < this->location.size())
-    // {
-    //     if (this->location[i].getname().size() > 0)
-    //         std::cout << this->location[i].getname() << std::endl;
-    //     if (this->location[i].getindex().size() > 0)
-    //         std::cout << this->location[i].getindex() << std::endl;
-    //     i++;
-    // }
 }
 
-
-
-void Parse::get_attributs(FreqMap wf)
+void Parse::get_attributs(std::vector<std::string> vect)
 {
-    int count_error_page = 0;
-    int count_location = 0;
-    // t_listen lis;
-    count_listen = 0;
-    std::unordered_multimap<std::string, std::string>::iterator it;
-    wf = delete_semi_colomn(wf);
-    for (it = wf.begin(); it != wf.end(); ++it)
+    int i = 0;
+
+    while (i < vect.size())
     {
-        std::string nn = get_key(it->first);
-        if (nn == "listen")
+        if (vect[i].find("listen") > 0)
         {
-            std::string aa = get_key(it->second);
-            listen.push_back(std::stoi(aa));
+            if (get_key(vect[i]) == "listen")
+                this->listen.push_back(std::stoi(get_value(vect[i])));
         }
-        if (nn == "root")
+        if (vect[i].find("server_name") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->root = aa;
+            if (get_key(vect[i]) == "server_name")
+                this->server_name.push_back(get_value(vect[i]));
         }
-        if (nn == "server_name")
+        if (vect[i].find("error_page") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->server_name = aa;
+            if (get_key(vect[i]) == "error_page")
+                this->error_page.push_back(get_value(vect[i]));
         }
-        if (nn == "host")
+        if (vect[i].find("root") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->host = aa;
+            if (get_key(vect[i]) == "root")
+                this->root = get_value(vect[i]);
         }
-        if (nn == "client_max_body_size")
+        if (vect[i].find("client_max_body_size") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->client_max_body_size = aa;
+            if (get_key(vect[i]) == "client_max_body_size")
+                this->client_max_body_size = get_value(vect[i]);
         }
-        if (nn == "error_page")
+        if (vect[i].find("host") > 0)
         {
-            this->error_page.push_back(it->second);
+            if (get_key(vect[i]) == "host")
+                this->host = get_value(vect[i]);
         }
-        if (nn == "location")
-            count_location++;
+        std::string str = vect[i];
+        if (vect[i].find("location") != -1)
+        {
+            LocaTion loc = LocaTion();
+            loc.setname(get_value(vect[i]));
+            // int ff = vect[i].find("location");
+            // std::cout << vect[i] << "====>" << ff << std::endl;
+            // int i = i++;
+            while (i < vect.size())
+            {
+                if (vect[i].find("}") != -1)
+                {
+                    this->location.push_back(loc);
+                    loc.~LocaTion();
+                    break;
+                }
+                else
+                {
+                    if (vect[i].find("index") != -1)
+                    {
+                        if (get_key(vect[i]) == "index")
+                            loc.setindex(get_value(vect[i]));
+                    }
+                    if (vect[i].find("auto_index") != -1)
+                    {
+                        if (get_key(vect[i]) == "auto_index")
+                            loc.setauto_index(get_value(vect[i]));
+                    }
+                    if (vect[i].find("allow_methods") != -1)
+                    {
+                        if (get_key(vect[i]) == "allow_methods")
+                            loc.setallow_methods(get_value(vect[i]));
+                    }
+                    if (vect[i].find("return") != -1)
+                    {
+                        if (get_key(vect[i]) == "return")
+                            loc.set_return(get_value(vect[i]));
+                    }
+                    if (vect[i].find("fastcgi_pass") != -1)
+                    {
+                        if (get_key(vect[i]) == "fastcgi_pass")
+                            loc.setfascgi_pass(get_value(vect[i]));
+                    }
+                    if (vect[i].find("upload_methods") != -1)
+                    {
+                        if (get_key(vect[i]) == "upload_methods")
+                            loc.setupload_methods(get_value(vect[i]));
+                    }
+                    if (vect[i].find("upload_store") != -1)
+                    {
+                        if (get_key(vect[i]) == "upload_store")
+                            loc.setupload_store(get_value(vect[i]));
+                    }
+                    if (vect[i].find("name") != -1)
+                    {
+                        if (get_key(vect[i]) == "name")
+                            loc.setname(get_value(vect[i]));
+                    }
+                    if (vect[i].find("root") != -1)
+                    {
+                        if (get_key(vect[i]) == "root")
+                            loc.setroot(get_value(vect[i]));
+                    }
+                }
+                i++;
+            }
+        }
+        i++;
     }
-    this->count_location = count_location;
-    /* here is the vector of listen but not in ordre*/
-    // int l = 0;
-    // while (l < listen.size())
-    // {
-    //     std::cout << "port: " << listen[l].port << std::endl;
-    //     std::cout << "address ip: " << listen[l].adress_ip << std::endl;
-    //     l++;
-    // }
-    // /* here is the vector of listen but not in ordre*/
-    // l = 0;
-    // while (l < error_page.size())
-    // {
-    //     std::cout << error_page[l] << std::endl;
-    //     l++;
-    // }
 }

@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/08/29 16:45:53 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/30 14:53:30 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ LocaTion::LocaTion(const LocaTion & src)
     this->upload_methods = src.upload_methods;
     this->upload_store = src.upload_store;
     this->name = src.name;
-    this->root = src.name;
+    this->root = src.root;
 }
 
 LocaTion &LocaTion::operator=(const LocaTion &src)
@@ -54,7 +54,7 @@ LocaTion &LocaTion::operator=(const LocaTion &src)
     this->upload_methods = src.upload_methods;
     this->upload_store = src.upload_store;
     this->name = src.name;
-    this->root = src.name;
+    this->root = src.root;
     return *this;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/08/27 14:44:04 by amine            ###   ########.fr       */
+/*   Updated: 2021/08/30 12:11:01 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,25 @@ void error(std:: string str)
     std::cout << str << std::endl;
     exit(0);
 }
+
+int is_printable(std::string str)
+{
+    int i = 0;
+    while (i < str.size())
+    {
+        if (isprint(str[i]))
+            return 1;
+        i++;
+    }
+    return 0;
+}
+
+
+
 int CountWords(std::string str)
 {
    int i = 0;
-    int countword = 0;
+    int countword = -1;
     while (i < str.length())
     {
         if (str[i] == ' ')
