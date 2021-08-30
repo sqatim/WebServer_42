@@ -15,10 +15,12 @@ SRC_NAME_SERVER= serverMain.cpp\
 				ft_split.cpp\
 				manipulation.cpp\
 				response.cpp\
+				Request.class.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
 				server.hpp\
+				Request.class.hpp\
 				# parse.hpp\
 
 OBJ_NAME_SERVER= $(SRC_NAME_SERVER:.cpp=.o)

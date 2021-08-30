@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include "server.hpp"
+#include "Request.class.hpp"
 #include "../../Parsing/parse.hpp"
 
 // #define PORT 5000
@@ -27,6 +28,7 @@ private:
     struct sockaddr_in m_address;
     int m_addrlen;
     t_response m_response;
+    Request m_request;
 
 public:
     // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
