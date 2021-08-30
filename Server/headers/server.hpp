@@ -17,7 +17,7 @@ typedef struct s_header
 {
     std::string version;
     std::string status;
-    int contentLength;
+    std::string contentLength;
     std::string contentType;
 }               t_header;
 
@@ -31,5 +31,8 @@ t_header affectationHeader(std::string status, std::string type1, std::string ty
 std::string responseConcatenation(t_header header, std::string body);
 char			**ft_split(std::string s, char c);
 std::string getWord(char *str,  int nLine, int nWord);
+// std::string notFountBody(std::string &body);
+std::string defaultBody(std::string &body);
+// std::string forbiddenBody(std::string &body);
 // void manageRequest(std::string word, Parse parse);
 #endif

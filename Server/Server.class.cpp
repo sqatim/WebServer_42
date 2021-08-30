@@ -5,6 +5,7 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
 {
     this->m_content.root = parse.getroot();
     this->m_content.index = "default.html";
+    int opt = 1;
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
     /*                                                                        */
@@ -24,7 +25,12 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
     {
         if ((this->m_socketFd[i] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
             throw std::string("Socket Failed To Create");
-        initialiseStructure(parse.getlisten()[i]);
+        if (setsockopt(this->m_socketFd[i], SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+                       sizeof(opt)) < 0)
+        {
+            throw std::string("SetSockopt Failed");
+        }
+        initialiseStructure(parse.getlisten()[i], parse.gethost());
         /**************************************************************************/
         /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
         /*                                                                        */
@@ -33,16 +39,15 @@ Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
         /**************************************************************************/
         if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
             throw std::string("Bind Failed");
-        std::cout << "Listener on port " << parse.getlisten()[i].port << std::endl;
+        std::cout << "Listener on " << parse.gethost() << ":" << parse.getlisten()[i] << std::endl;
         if ((listen(this->m_socketFd[i], 3)) < 0)
             throw std::string("Listen Failed");
     }
     this->m_maxFd = this->m_socketFd[i - 1];
 }
 
-void Server::initialiseStructure(t_listen listen)
+void Server::initialiseStructure(int port, std::string ip)
 {
-    int port;
     /**************************************************************************/
     /* struct SOCKADDR_IN{short sin_family; u_short sin_port;\                */
     /*        struct in_addr sin_addr; char sin_zero[0]; };                   */
@@ -62,13 +67,12 @@ void Server::initialiseStructure(t_listen listen)
     /*           in the socket connection                                     */
     /* # siz_zero   : usualy set to 0                                         */
     /**************************************************************************/
+    std::cout << "port " << port << std::endl;
     this->m_address.sin_family = AF_INET;
-    port = stoi(listen.port);
     this->m_address.sin_port = htons(port);
-    this->m_address.sin_addr.s_addr = inet_addr(listen.adress_ip.c_str());
+    this->m_address.sin_addr.s_addr = inet_addr(ip.c_str());
     return;
 }
-
 
 int Server::checkForFileDescriptor(int current, int size)
 {
@@ -93,7 +97,6 @@ void Server::manipulation(Parse parse)
     timeout.tv_usec = 0;
     int i = 0;
     int max_listen = 1;
-
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -142,9 +145,9 @@ void Server::manipulation(Parse parse)
                     else
                     {
                         buffer[result] = '\0';
-                        word = getWord(buffer,0, 1);
+                        word = getWord(buffer, 0, 1);
                         manageRequest(word, parse, i);
-                        // printf("%s\n", buffer);
+                        printf("%s\n", buffer);
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
                     close(i);
