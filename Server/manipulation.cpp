@@ -46,14 +46,15 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
         int len;
 
         path = this->m_content.root;
-        this->m_content.index = "samir.html";
+        this->m_content.index = "index.html";
         if (path != "")
         {
             len = ft_strlen(path);
             if (path[len - 1] != '/')
                 path += "/";
         }
-        if (parse.getlocation().empty());
+        if (parse.getlocation().empty())
+            ;
         else
         {
             if (word != "/")

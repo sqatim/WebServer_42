@@ -17,7 +17,7 @@ typedef struct s_header
 {
     std::string version;
     std::string status;
-    int contentLength;
+    std::string contentLength;
     std::string contentType;
 }               t_header;
 

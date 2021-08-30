@@ -147,7 +147,7 @@ void Server::manipulation(Parse parse)
                         buffer[result] = '\0';
                         word = getWord(buffer, 0, 1);
                         manageRequest(word, parse, i);
-                        // printf("%s\n", buffer);
+                        printf("%s\n", buffer);
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
                     close(i);
