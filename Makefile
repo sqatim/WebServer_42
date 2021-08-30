@@ -16,6 +16,7 @@ SRC_NAME_SERVER= serverMain.cpp\
 				manipulation.cpp\
 				response.cpp\
 				Request.class.cpp\
+				Response.class.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\

@@ -1,6 +1,6 @@
 #include "Server.class.hpp"
 
-int ft_strlen(char **str)
+static int ft_strlen(char **str)
 {
     int i;
 
@@ -10,7 +10,7 @@ int ft_strlen(char **str)
     return (i);
 }
 
-std::string toString(char *string)
+static std::string toString(char *string)
 {
     std::string word(string);
     return (word);

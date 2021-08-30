@@ -1,10 +1,9 @@
 #include "Request.class.hpp"
+#include <sstream>
 
 Request::Request() : m_request(""), m_body("")
 {
 }
-
-#include "Server.class.hpp"
 
 int ft_strlen(char **str)
 {
@@ -22,40 +21,23 @@ std::string toString(char *string)
     return (word);
 }
 
-std::string parseString(std::istringstream &stringStream, int nLine, int nWord)
+void Request::getWords()
 {
-    char **tab;
-    std::string line;
-    std::string word;
-
-    for (int number = 0; number <= nLine; number++)
-        getline(stringStream, line);
-    tab = ft_split(line, ' ');
-    if (nWord >= ft_strlen(tab))
-        return ("");
-    word = toString(tab[nWord]);
-    for (int i = 0; tab[i]; i++)
-        delete tab[i];
-    delete[] tab;
-    return (word);
-}
-std::string Request::getWords(char *str, int nLine, int nWord)
-{
-    int r;
-    std::string line;
-    std::istringstream stringStream;
-    char **array;
-    std::string fileStr(str);
-    stringStream.str(fileStr);
-    getline(stringStream, line);
-    array = ft_split(line, ' ');
-    this->m_request = toString(array[0]);
-    this->m_path = toString(array[1]);
-    return (parseString(stringStream, nLine, nWord));
 }
 
 void Request::parsingRequest()
 {
+    std::string line;
+    std::istringstream stringStream;
+    char **array;
+    stringStream.str(this->m_request);
+    getline(stringStream, line);
+    array = ft_split(line, ' ');
+    this->m_method = toString(array[0]);
+    this->m_path = toString(array[1]);
+    for (int i = 0; array[i]; i++)
+        delete array[i];
+    delete[] array;
 }
 
 std::string Request::getRequest(void) const
@@ -66,6 +48,16 @@ std::string Request::getRequest(void) const
 std::string Request::getBody(void) const
 {
     return this->m_body;
+}
+
+std::string Request::getMethod(void) const
+{
+    return this->m_method;
+}
+
+std::string Request::getPath(void) const
+{
+    return this->m_path;
 }
 
 void Request::setRequest(std::string request)
