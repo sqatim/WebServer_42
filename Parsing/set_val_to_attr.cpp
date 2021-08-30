@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/30 14:54:48 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/30 16:16:08 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,13 @@ void Parse::get_attributs(std::vector<std::string> vect)
         }
         if (vect[i].find("host") > 0)
         {
+            // space before ip
+            std::string str;
             if (get_key(vect[i]) == "host")
-                this->host = get_value(vect[i]);
+            {
+                str  =  get_value(vect[i]);
+                this->host = get_key(str);
+            }
         }
         std::string str = vect[i];
         if (vect[i].find("location") != -1)

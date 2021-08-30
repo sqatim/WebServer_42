@@ -14,6 +14,7 @@ SRC_NAME_SERVER= serverMain.cpp\
 				getWord.cpp\
 				ft_split.cpp\
 				manipulation.cpp\
+				response.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
