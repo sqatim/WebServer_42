@@ -61,11 +61,11 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
             {
                 for (int i = 0; i < parse.getlocation().size(); i++)
                 {
-                    if (word == parse.getlocation()[i].name)
+                    if (word == parse.getlocation()[i].getname())
                     {
-                        path += parse.getlocation()[i].name;
-                        if (parse.getlocation()[i].index != "")
-                            this->m_content.index = parse.getlocation()[i].index;
+                        path += parse.getlocation()[i].getname();
+                        if (parse.getlocation()[i].getindex() != "")
+                            this->m_content.index = parse.getlocation()[i].getindex();
                     }
                     throw NotFound();
                 }

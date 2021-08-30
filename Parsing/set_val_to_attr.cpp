@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/28 17:04:56 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/30 15:52:05 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
-
 
 FreqMap delete_semi_colomn(FreqMap wf)
 {
@@ -22,7 +21,7 @@ FreqMap delete_semi_colomn(FreqMap wf)
         int find_semi_colomn;
         find_semi_colomn = get_key(it->second).find(";");
         if (find_semi_colomn > 0)
-            it->second = get_key(it->second).substr(0,find_semi_colomn);
+            it->second = get_key(it->second).substr(0, find_semi_colomn);
     }
     return wf;
 }
@@ -34,191 +33,124 @@ std::string del_sem_col_in_str(std::string str)
     find_semi_colomn = str.find(";");
     if (find_semi_colomn > 0)
     {
-        ret = str.substr(0,find_semi_colomn);
+        ret = str.substr(0, find_semi_colomn);
         return ret;
     }
     return str;
 }
 
-void Parse::add_locations()
+void add_locations()
 {
-    std::fstream file;
-    std::string filename;
-    std::string word;
-    t_location our_location;
-    
-    file.open(this->file.c_str());
-    int i = 0;
-    while (file >> word)
-    {
-        // memset(&our_location,0,sizeof(our_location));
-        if (word == "location")
-        {
-            file >> word;
-            our_location.name = word;
-            while (file >> word)
-            {
-                if (word == "{")
-                    continue;
-                if (word == "}")
-                    break;
-                if (word == "autoindex")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.auto_index = str;
-                }
-                if (word == "index")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.index = str;
-                }
-                if (word == "allow_methods")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.allow_methods = str;
-                }
-                // if (word == "return")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location._return = str;
-                // }
-                if (word == "root")
-                {
-                    file >> word;
-                    std::string str;
-                    str = del_sem_col_in_str(word);
-                    our_location.root = str;
-                }
-                // if (word == "fastcgi_pass")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.fastcgi_pass = str;
-                // }
-                // if (word == "upload_methods")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.upload_methods = str;
-                // }
-                // if (word == "upload_store")
-                // {
-                //     file >> word;
-                //     std::string str;
-                //     str = del_sem_col_in_str(word);
-                //     our_location.upload_store = str;
-                // }
-            }
-            this->location.push_back(our_location);
-            i++;
-        }
-    }
-    // i = 0;
-    // while (i < this->location.size())
-    // {
-    //     std::cout << this->location[i].name << std::endl;
-    //     if (this->location[i].auto_index.length() > 0)
-    //     {
-    //         std::cout << this->location[i].auto_index << std::endl;
-    //     }
-    //     if (this->location[i].index.length() > 0)
-    //     {
-    //         std::cout << this->location[i].index << std::endl;
-    //     }
-    //     if (this->location[i].allow_methods.length() > 0)
-    //     {
-    //         std::cout << this->location[i].allow_methods << std::endl;
-    //     }
-    //     if (this->location[i]._return.length() > 0)
-    //     {
-    //         std::cout << this->location[i]._return << std::endl;
-    //     }
-    //     if (this->location[i].fastcgi_pass.length() > 0)
-    //     {
-    //         std::cout << this->location[i].fastcgi_pass << std::endl;
-    //     }
-    //     if (this->location[i].upload_methods.length() > 0)
-    //     {
-    //         std::cout << this->location[i].upload_methods << std::endl;
-    //     }
-    //     if (this->location[i].upload_store.length() > 0)
-    //     {
-    //         std::cout << this->location[i].upload_store << std::endl;
-    //     }
-    //     std::cout << "=============================================" << std::endl;
-    //     i++;
-    // }
 }
 
-
-
-void Parse::get_attributs(FreqMap wf)
+void Parse::get_attributs(std::vector<std::string> vect)
 {
-    int count_error_page = 0;
-    int count_location = 0;
-    // t_listen lis;
-    count_listen = 0;
-    std::unordered_multimap<std::string, std::string>::iterator it;
-    wf = delete_semi_colomn(wf);
-    for (it = wf.begin(); it != wf.end(); ++it)
+    int i = 0;
+
+    while (i < vect.size())
     {
-        std::string nn = get_key(it->first);
-        if (nn == "listen")
+        if (vect[i].find("listen") > 0)
         {
-            std::string aa = get_key(it->second);
-            listen.push_back(std::stoi(aa));
+            if (get_key(vect[i]) == "listen")
+                this->listen.push_back(std::stoi(get_value(vect[i])));
         }
-        if (nn == "root")
+        if (vect[i].find("server_name") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->root = aa;
+            if (get_key(vect[i]) == "server_name")
+                this->server_name.push_back(get_value(vect[i]));
         }
-        if (nn == "server_name")
+        if (vect[i].find("error_page") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->server_name = aa;
+            if (get_key(vect[i]) == "error_page")
+                this->error_page.push_back(get_value(vect[i]));
         }
-        if (nn == "host")
+        if (vect[i].find("root") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->host = aa;
+            if (get_key(vect[i]) == "root")
+                this->root = get_value(vect[i]);
         }
-        if (nn == "client_max_body_size")
+        if (vect[i].find("client_max_body_size") > 0)
         {
-            std::string aa = get_key(it->second);
-            this->client_max_body_size = aa;
+            if (get_key(vect[i]) == "client_max_body_size")
+                this->client_max_body_size = get_value(vect[i]);
         }
-        if (nn == "error_page")
+        if (vect[i].find("host") > 0)
         {
-            this->error_page.push_back(it->second);
+            // space before ip
+            std::string str;
+            if (get_key(vect[i]) == "host")
+            {
+                str  =  get_value(vect[i]);
+                this->host = get_key(str);
+            }
         }
-        if (nn == "location")
-            count_location++;
+        std::string str = vect[i];
+        if (vect[i].find("location") != -1)
+        {
+            LocaTion loc = LocaTion();
+            loc.setname(get_value(vect[i]));
+            // int ff = vect[i].find("location");
+            // std::cout << vect[i] << "====>" << ff << std::endl;
+            // int i = i++;
+            while (i < vect.size())
+            {
+                if (vect[i].find("}") != -1)
+                {
+                    this->location.push_back(loc);
+                    loc.~LocaTion();
+                    break;
+                }
+                else
+                {
+                    if (vect[i].find("index") != -1)
+                    {
+                        if (get_key(vect[i]) == "index")
+                            loc.setindex(get_value(vect[i]));
+                    }
+                    if (vect[i].find("auto_index") != -1)
+                    {
+                        if (get_key(vect[i]) == "auto_index")
+                            loc.setauto_index(get_value(vect[i]));
+                    }
+                    if (vect[i].find("allow_methods") != -1)
+                    {
+                        if (get_key(vect[i]) == "allow_methods")
+                            loc.setallow_methods(get_value(vect[i]));
+                    }
+                    if (vect[i].find("return") != -1)
+                    {
+                        if (get_key(vect[i]) == "return")
+                            loc.set_return(get_value(vect[i]));
+                    }
+                    if (vect[i].find("fastcgi_pass") != -1)
+                    {
+                        if (get_key(vect[i]) == "fastcgi_pass")
+                            loc.setfascgi_pass(get_value(vect[i]));
+                    }
+                    if (vect[i].find("upload_methods") != -1)
+                    {
+                        if (get_key(vect[i]) == "upload_methods")
+                            loc.setupload_methods(get_value(vect[i]));
+                    }
+                    if (vect[i].find("upload_store") != -1)
+                    {
+                        if (get_key(vect[i]) == "upload_store")
+                            loc.setupload_store(get_value(vect[i]));
+                    }
+                    if (vect[i].find("name") != -1)
+                    {
+                        if (get_key(vect[i]) == "name")
+                            loc.setname(get_value(vect[i]));
+                    }
+                    if (vect[i].find("root") != -1)
+                    {
+                        if (get_key(vect[i]) == "root")
+                            loc.setroot(get_value(vect[i]));
+                    }
+                }
+                i++;
+            }
+        }
+        i++;
     }
-    this->count_location = count_location;
-    /* here is the vector of listen but not in ordre*/
-    // int l = 0;
-    // while (l < listen.size())
-    // {
-    //     std::cout << "port: " << listen[l].port << std::endl;
-    //     std::cout << "address ip: " << listen[l].adress_ip << std::endl;
-    //     l++;
-    // }
-    // /* here is the vector of listen but not in ordre*/
-    // l = 0;
-    // while (l < error_page.size())
-    // {
-    //     std::cout << error_page[l] << std::endl;
-    //     l++;
-    // }
 }
