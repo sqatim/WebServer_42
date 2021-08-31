@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 16:40:48 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:25:06 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ protected:
     std::vector<int> listen;
     std::vector<std::string> server_name;
     std::string root;
-    std::vector<std::string> error_page;
+    std::vector<t_ret> error_page;
     std::string client_max_body_size;
     std::string host;
     std::vector<LocaTion> location;
@@ -55,8 +55,8 @@ public:
     std::string gethost();
     void setclient_max_body_size(std::string val);
     std::string getclient_max_body_size();
-    void seterror_page(std::vector<std::string> val);
-    std::vector<std::string> geterror_page();
+    void seterror_page(std::vector<t_ret> val);
+    std::vector<t_ret> geterror_page();
     void setcount_error_page(int va);
     int getcount_error_page();
     void setcount_location(int va);

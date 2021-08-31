@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 16:49:17 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:42:48 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error
         if (is_printable(word) == 1)
             file_in_vector.push_back(word);
     }
-    int i = 0;
     get_attributs(file_in_vector);
 }
 
@@ -104,11 +103,12 @@ std::string Parse::getclient_max_body_size()
     return this->client_max_body_size;
 }
 
-void Parse::seterror_page(std::vector<std::string> val)
+void Parse::seterror_page(std::vector<t_ret> val)
 {
     this->error_page = val;
 }
-std::vector<std::string> Parse::geterror_page()
+
+std::vector<t_ret> Parse::geterror_page()
 {
     return this->error_page;
 }
@@ -166,7 +166,8 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
         int i = 0;
         while (i < in.geterror_page().size())
         {
-            out << "error_page " << i + 1 << " " << in.geterror_page()[i] << std::endl;
+            out << "error_page " << i + 1 << " redirect: " << in.geterror_page()[i].redirec << std::endl;
+            out << "path :" << in.geterror_page()[i].path << std::endl;
             i++;
         }
     }

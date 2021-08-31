@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 16:09:10 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:31:25 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 typedef struct s_ret
 {
-    int redirec;
-    char *path;
+    std::string redirec;
+    std::string path;
 } t_ret;
 
 class LocaTion
