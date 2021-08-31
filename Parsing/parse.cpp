@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 17:42:48 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:57:25 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
             out << "name in location number " << i + 1 << " is: {" << in.getlocation()[i].getname() << "}" << std::endl;
         if (in.getlocation()[i].getroot().size() > 0)
             out << "root in location number " << i + 1 << " is: {" << in.getlocation()[i].getroot() << "}" << std::endl;
-        // out << "amine 2" << std::endl;std::endl
         i++;
     }
     return out;

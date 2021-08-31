@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/31 17:42:30 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:54:49 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void Parse::get_attributs(std::vector<std::string> vect)
         {
             t_ret ret;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            // std::cout << vect_str.size() << std::endl;
             if (vect_str[0] == "error_page")
             {
                 j = 1;

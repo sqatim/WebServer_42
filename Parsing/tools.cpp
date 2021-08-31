@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/08/31 15:30:12 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:58:13 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ std::string get_value(std::string str)
 std::vector<std::string> splitstring(std::string str, std::string to_split_with)
 {
     std::vector<std::string> vect_str;
-    // to_split_with = " ";
     int start = 0;
     while (start < str.size())
     {
@@ -124,20 +123,3 @@ std::vector<std::string> splitstring(std::string str, std::string to_split_with)
     vect_str.push_back(_str.substr(start, end - start));
     return vect_str;
 }
-
-// std::vector<std::string> splitString(std::string str, std::string delimiter = " ")
-// {
-//     std::vector<std::string> vect_str;
-//     int start = 0;
-//     int end = str.find(delimiter);
-//     while (end != -1)
-//     {
-//         // std::cout << "{" << str.substr(start, end - start) << "}" << std::endl;
-//         if (str.substr(start, end - start).length() > 0)
-//             vect_str.push_back(str.substr(start, end - start));
-//         start = end + delimiter.size();
-//         end = str.find(delimiter, start);
-//     }
-//     vect_str.push_back(str.substr(start, end - start));
-//     return vect_str;
-// }
