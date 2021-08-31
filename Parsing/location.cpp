@@ -6,17 +6,15 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/08/30 14:53:30 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 16:38:59 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 #include "location.hpp"
 
-
 LocaTion::LocaTion(/* args */)
 {
-    this->index = "";
     this->auto_index = "";
     this->allow_methods = "";
     this->_return = "";
@@ -31,7 +29,7 @@ LocaTion::~LocaTion()
 {
 }
 
-LocaTion::LocaTion(const LocaTion & src)
+LocaTion::LocaTion(const LocaTion &src)
 {
     this->index = src.index;
     this->auto_index = src.auto_index;
@@ -58,11 +56,17 @@ LocaTion &LocaTion::operator=(const LocaTion &src)
     return *this;
 }
 
-void LocaTion::setindex(std::string val)
+void LocaTion::setindex(std::vector<std::string> val)
 {
-    this->index = val;
+    int i = 0;
+    index.clear();
+    while (i < val.size())
+    {
+        this->index.push_back(val[i]);
+        i++;
+    }    
 }
-std::string LocaTion::getindex()
+std::vector<std::string> LocaTion::getindex()
 {
     return this->index;
 }
@@ -104,7 +108,7 @@ void LocaTion::setupload_methods(std::string val)
 }
 std::string LocaTion::getupload_methods()
 {
-     return this->upload_methods;
+    return this->upload_methods;
 }
 void LocaTion::setupload_store(std::string val)
 {

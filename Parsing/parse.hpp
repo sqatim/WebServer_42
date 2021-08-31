@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/30 13:47:28 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 16:40:48 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ public:
     std::string file;
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
+    Parse(const Parse &src);
+    Parse &operator=(const Parse &src);
     void setlisten(std::vector<int> val);
     std::vector<int> getlisten() ;
     void setserver_name(std::vector<std::string> val);
@@ -74,4 +76,6 @@ int CountWords(std::string str);
 int check_accolades(FreqMap wf, std::string filename);
 void error(std::string str);
 int is_printable(std::string str);
+std::vector<std::string> splitstring(std::string str, std::string to_split_with);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/29 16:44:53 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 16:09:10 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,10 @@ typedef struct s_ret
     char *path;
 } t_ret;
 
-// typedef struct s_location
-// {
-// } t_location;
-
 class LocaTion
 {
 private:
-    std::string index;
+    std::vector<std::string> index;
     std::string auto_index;
     std::string allow_methods;
     std::string _return;
@@ -36,13 +32,14 @@ private:
     std::string upload_store;
     std::string name;
     std::string root;
+
     /* data */
 public:
     LocaTion(/* args */);
     LocaTion(const LocaTion & src);
     LocaTion &operator=(const LocaTion &f);
-    void setindex(std::string val);
-    std::string getindex();
+    void setindex(std::vector<std::string> val);
+    std::vector<std::string> getindex();
     void setauto_index(std::string val);
     std::string getauto_index();
     void setallow_methods(std::string val);

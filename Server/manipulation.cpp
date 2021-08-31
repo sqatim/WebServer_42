@@ -64,8 +64,8 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
                     if (word == parse.getlocation()[i].getname())
                     {
                         path += parse.getlocation()[i].getname();
-                        if (parse.getlocation()[i].getindex() != "")
-                            this->m_content.index = parse.getlocation()[i].getindex();
+                        // if (parse.getlocation()[i].getindex() != "")
+                        //     this->m_content.index = parse.getlocation()[i].getindex();
                     }
                     throw NotFound();
                 }
