@@ -9,15 +9,17 @@ std::string defaultBody(std::string &body)
     return ("304 Not Modified");
 }
 
-std::string Server::NotFound::notFoundBody(std::string &body) throw()
+std::string Server::NotFound::notFoundBody() throw()
 {
+    std::string body;
     body = "<center><h1>404 Not Found</h1></center>\n";
     body += "<hr><center>Barnatouti</center>\n";
     return ("404 Not Found");
 }
 
-std::string Server::Forbidden::forbiddenBody(std::string &body) throw()
+std::string Server::Forbidden::forbiddenBody() throw()
 {
+    std::string body;
     body = "<center><h1>403 Forbidden</h1></center>\n";
     body += "<hr><center>Barnatouti</center>\n";
     return ("403 Forbidden");

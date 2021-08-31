@@ -39,14 +39,14 @@ std::string readingTheFile(std::string filename)
 
 void Server::manageRequest(std::string word, Parse parse, int socket)
 {
-    std::string response;
+    m_response.initResponse("HTTP/1.1", "Content-Type: ", "Content-Length: ");
     try
     {
         std::string path;
         int len;
 
-        path = this->m_content.root;
-        this->m_content.index = "index.html";
+        path = this->m_parse.getroot();
+        this->m_parse.setIndex("index.html");
         if (path != "")
         {
             len = ft_strlen(path);
@@ -65,27 +65,31 @@ void Server::manageRequest(std::string word, Parse parse, int socket)
                     {
                         path += parse.getlocation()[i].getname();
                         if (parse.getlocation()[i].getindex() != "")
-                            this->m_content.index = parse.getlocation()[i].getindex();
+                            this->m_parse.setIndex(parse.getlocation()[i].getindex());
                     }
                     throw NotFound();
                 }
             }
         }
-        path += this->m_content.index;
+        path += this->m_parse.getIndex();
         std::cout << path << std::endl;
-        m_response.body = readingTheFile(path);
-        m_response.header = affectationHeader("200 OK", "text", "html", m_response.body.length());
+        m_response.contentHeader("200 OK", "text", "html", readingTheFile(path));
+        m_response.setHeader();
     }
     catch (Server::Forbidden &e)
     {
         std::cout << "salut mon camarade" << std::endl;
-        m_response.header = affectationHeader(e.forbiddenBody(m_response.body), "text", "html", m_response.body.length());
+        m_response.forbiddenBody();
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        m_response.setHeader();
     }
     catch (Server::NotFound &e)
     {
-        m_response.header = affectationHeader(e.notFoundBody(m_response.body), "text", "html", m_response.body.length());
+        m_response.notFoundBody();
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        m_response.setHeader();
     }
-    response = responseConcatenation(m_response.header, m_response.body);
-    // std::cout << "response ==> " << response << std::endl;
-    send(socket, response.c_str(), response.length(), 0);
+    m_response.setResponse();
+    // std::cout << "response ==> " << m_response.getResponse() << std::endl;
+    send(socket, m_response.getResponse().c_str(), m_response.getResponse().length(), 0);
 }

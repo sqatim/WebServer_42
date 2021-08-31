@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include "server.hpp"
 #include "Request.class.hpp"
+#include "Response.class.hpp"
 #include "../../Parsing/parse.hpp"
 
 // #define PORT 5000
@@ -20,15 +21,16 @@
 class Server
 {
 private:
-    t_content m_content;
+    // t_content m_content;
     int *m_socketFd;
     int m_maxFd;
     fd_set m_currentSocket;
     int m_newSocket;
     struct sockaddr_in m_address;
     int m_addrlen;
-    t_response m_response;
+    Parse m_parse;
     Request m_request;
+    Response m_response;
 
 public:
     // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
@@ -36,12 +38,12 @@ public:
     class NotFound
     {
     public:
-        std::string notFoundBody(std::string &body) throw();
+        std::string notFoundBody() throw();
     };
     class Forbidden
     {
     public:
-        std::string forbiddenBody(std::string &body) throw();
+        std::string forbiddenBody() throw();
     };
     Server(Parse parse);
     int getSocketFd();

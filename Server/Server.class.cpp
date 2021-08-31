@@ -1,10 +1,10 @@
 #include "Server.class.hpp"
 #define PORT 3000
 
-Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
+Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
 {
-    this->m_content.root = parse.getroot();
-    this->m_content.index = "default.html";
+    // this->m_content.root = parse.getroot();
+    // this->m_content.index = "default.html";
     int opt = 1;
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
@@ -151,7 +151,7 @@ void Server::manipulation(Parse parse)
                         std::cout << "method : " << this->m_request.getMethod() << std::endl;
                         std::cout << "path : " << this->m_request.getPath() << std::endl;
                         // word = getWord(buffer, 0, 1);
-                        // manageRequest(word, parse, i);
+                        manageRequest(word, parse, i);
                         // printf("%s\n", buffer);
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }

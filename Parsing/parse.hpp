@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/30 13:47:28 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:30:09 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef std::unordered_multimap<std::string, std::string> FreqMap;
 class Parse
 {
 protected:
+    std::string index;
     std::vector<int> listen;
     std::vector<std::string> server_name;
     std::string root;
@@ -44,7 +45,7 @@ public:
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
     void setlisten(std::vector<int> val);
-    std::vector<int> getlisten() ;
+    std::vector<int> getlisten();
     void setserver_name(std::vector<std::string> val);
     std::vector<std::string> getserver_name();
     void setroot(std::string val);
@@ -60,8 +61,12 @@ public:
     void setcount_location(int va);
     int getcount_location();
     void setlocation(std::vector<LocaTion> val);
-    std::vector<LocaTion>  getlocation();
+    std::vector<LocaTion> getlocation();
     ~Parse();
+    Parse &operator=(Parse const &src);
+    Parse(Parse const &src);
+    void setIndex(std::string index);
+    std::string getIndex();
 };
 
 std::ostream &operator<<(std::ostream &out, Parse &pars);
