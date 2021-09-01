@@ -51,7 +51,7 @@ public:
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);
     void manipulation(Parse parse);
-    void manageRequest(std::string word, Parse parse, int socket);
+    void manageRequest(Parse parse, int socket);
     ~Server();
 };
 

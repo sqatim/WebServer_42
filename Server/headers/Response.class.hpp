@@ -18,7 +18,7 @@ private:
 public:
     Response(/* args */);
 
-    void initResponse(std::string version, std::string contentType, std::string contentLength);
+    void initResponse();
     void contentHeader(std::string status, std::string type1, std::string type2, std::string body);
     void defaultBody();
     void notFoundBody();

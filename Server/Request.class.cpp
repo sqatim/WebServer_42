@@ -30,6 +30,14 @@ void Request::parsingRequest()
     std::string line;
     std::istringstream stringStream;
     char **array;
+    // if (this->m_request[0] != '\r')
+    // {
+    // std::cout << "============================" << std::endl;
+    // for (int i = 0; this->m_request.c_str()[i]; i++)
+    // {
+    //     std::cout << "i: " << i;
+    // }
+    // std::cout << "============================" << std::endl;
     stringStream.str(this->m_request);
     getline(stringStream, line);
     array = ft_split(line, ' ');
@@ -38,6 +46,7 @@ void Request::parsingRequest()
     for (int i = 0; array[i]; i++)
         delete array[i];
     delete[] array;
+    // }
 }
 
 std::string Request::getRequest(void) const

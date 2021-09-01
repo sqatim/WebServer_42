@@ -10,11 +10,9 @@ OBJ_PATH_SERVER= objectsServer
 
 SRC_NAME_SERVER= serverMain.cpp\
 				Server.class.cpp\
-				server.cpp\
 				getWord.cpp\
 				ft_split.cpp\
 				manipulation.cpp\
-				response.cpp\
 				Request.class.cpp\
 				Response.class.cpp\
 				methods.cpp\

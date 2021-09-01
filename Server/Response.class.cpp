@@ -4,11 +4,12 @@ Response::Response(/* args */)
 {
 }
 
-void Response::initResponse(std::string version, std::string contentType, std::string contentLength)
+void Response::initResponse()
 {
-    this->m_version = version;
-    this->m_contentType = contentType;
-    this->m_contentLength = contentLength;
+    this->m_version = "HTTP/1.1";
+    this->m_contentType = "Content-Type: ";
+    this->m_contentLength = "Content-Length: ";
+    this->m_connection = "Connection: close";
 }
 
 void Response::contentHeader(std::string status, std::string type1, std::string type2, std::string body)
@@ -16,6 +17,9 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
     this->m_status = status;
     this->setContentType(type1, type2);
     this->m_body = body;
+    // std::cout << "********************************" << std::endl;
+    // std::cout << this->m_body << std::endl;
+    // std::cout << "********************************" << std::endl;
     this->m_contentLength += std::to_string(body.length());
 }
 
@@ -85,6 +89,7 @@ void Response::setHeader()
     this->m_header += " " + this->m_status + "\n";
     this->m_header += this->m_contentType + "\n";
     this->m_header += this->m_contentLength + "\n";
+    this->m_header += this->m_connection;
     // std::cout << "=================================" << std::endl;
     // std::cout << "content lenght: " << this->m_contentLength << std::endl;
     // std::cout << "=================================" << std::endl;

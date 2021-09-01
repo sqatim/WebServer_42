@@ -97,6 +97,7 @@ void Server::manipulation(Parse parse)
     timeout.tv_usec = 0;
     int i = 0;
     int max_listen = 1;
+    // int fd = open("acces.log", O_RDWR);
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -127,7 +128,6 @@ void Server::manipulation(Parse parse)
             {
                 if (checkForFileDescriptor(i, parse.getlisten().size()))
                 {
-                    std::cout << "i ==> " << i << std::endl;
                     if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
                         throw std::string("Accept Failed");
                     std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
@@ -139,8 +139,8 @@ void Server::manipulation(Parse parse)
                 else
                 {
                     std::cout << "client_socket " << i << std::endl;
-                    char buffer[1024] = {0};
-                    if ((result = read(i, buffer, 1024)) == 0)
+                    char buffer[5000] = {0};
+                    if ((result = read(i, buffer, 5000)) == 0)
                         std::cout << "disconnected" << std::endl;
                     else
                     {
@@ -151,8 +151,10 @@ void Server::manipulation(Parse parse)
                         std::cout << "method : " << this->m_request.getMethod() << std::endl;
                         std::cout << "path : " << this->m_request.getPath() << std::endl;
                         // word = getWord(buffer, 0, 1);
-                        manageRequest(word, parse, i);
+                        manageRequest(parse, i);
+                        // std::cout << buffer << std::endl;
                         // printf("%s\n", buffer);
+                        // write(fd, buffer, strlen(buffer));
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
                     close(i);
