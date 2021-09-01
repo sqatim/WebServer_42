@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 17:57:25 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 14:35:58 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,8 +199,16 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
             out << "auto_index in location number " << i + 1 << " is: {" << in.getlocation()[i].getauto_index() << "}" << std::endl;
         if (in.getlocation()[i].getallow_methods().size() > 0)
             out << "allow_methods in location number " << i + 1 << " is: {" << in.getlocation()[i].getallow_methods() << "}" << std::endl;
-        if (in.getlocation()[i].get_return().length() != 0)
-            out << "_return in location number " << i + 1 << " is: {" << in.getlocation()[i].get_return() << "}" << std::endl;
+        if (in.getlocation()[i].get_return().size() != 0)
+        {
+            int k = 0;
+            while (k < in.getlocation()[i].get_return().size())
+            {
+                out << "_return in location number " << i + 1 << "int  is: {" << in.getlocation()[i].get_return()[k].redirec << "}" << std::endl;
+                out << "_return in location number " << i + 1 << "path  is: {" << in.getlocation()[i].get_return()[k].path << "}" << std::endl;
+                k++;
+            }
+        }
         if (in.getlocation()[i].getfascgi_pass().size() > 0)
             out << "fastcgi_pass in location number " << i + 1 << " is: {" << in.getlocation()[i].getfascgi_pass() << "}" << std::endl;
         if (in.getlocation()[i].getupload_methods().size() > 0)

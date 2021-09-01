@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/31 17:54:49 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 14:30:07 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,23 @@ void Parse::get_attributs(std::vector<std::string> vect)
                     }
                     if (vect[i].find("return") != -1)
                     {
+                        t_ret ret;
+                        std::vector<t_ret> tmp;
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
                         if (vect_str[0] == "return")
-                            loc.set_return(vect_str[1]);
+                        {
+                            j = 1;
+                            if (vect_str.size() < 4)
+                            {
+                                ret.path = "";
+                                ret.redirec = "";
+                                ret.redirec = vect_str[1];
+                                ret.path = vect_str[2];
+                                tmp.push_back(ret);
+                                // this->error_page.push_back(ret);
+                            }
+                        }
+                        loc.set_return(tmp);
                     }
                     if (vect[i].find("fastcgi_pass") != -1)
                     {

@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 17:31:25 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 14:22:34 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ private:
     std::vector<std::string> index;
     std::string auto_index;
     std::string allow_methods;
-    std::string _return;
+    std::vector<t_ret> _return;
     std::string fastcgi_pass;
     std::string upload_methods;
     std::string upload_store;
@@ -44,8 +44,8 @@ public:
     std::string getauto_index();
     void setallow_methods(std::string val);
     std::string getallow_methods();
-    void set_return(std::string val);
-    std::string get_return();
+    void set_return(std::vector<t_ret> val);
+    std::vector<t_ret> get_return();
     void setfascgi_pass(std::string val);
     std::string getfascgi_pass();
     void setupload_methods(std::string val);

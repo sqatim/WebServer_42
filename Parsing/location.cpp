@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/08/31 16:38:59 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 14:32:44 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ LocaTion::LocaTion(/* args */)
 {
     this->auto_index = "";
     this->allow_methods = "";
-    this->_return = "";
     this->fastcgi_pass = "";
     this->upload_methods = "";
     this->upload_store = "";
@@ -86,11 +85,18 @@ std::string LocaTion::getallow_methods()
 {
     return this->allow_methods;
 }
-void LocaTion::set_return(std::string val)
+void LocaTion::set_return(std::vector<t_ret> val)
 {
-    this->_return = val;
+    int i = 0;
+    _return.clear();
+    while (i < val.size())
+    {
+        this->_return.push_back(val[i]);
+        i++;
+    }
+    // this->_return = val;
 }
-std::string LocaTion::get_return()
+std::vector<t_ret> LocaTion::get_return()
 {
     return this->_return;
 }
