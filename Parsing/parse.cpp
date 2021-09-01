@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/01 14:35:58 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 15:32:38 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Parse::Parse(const Parse &src)
 {
     this->listen = src.listen;
     this->server_name = src.server_name;
+    this->index = src.index;
     this->root = src.root;
     this->host = src.host;
     this->error_page = src.error_page;
@@ -48,6 +49,7 @@ Parse &Parse::operator=(const Parse &src)
 {
     this->listen = src.listen;
     this->server_name = src.server_name;
+    this->index = src.index;
     this->root = src.root;
     this->host = src.host;
     this->error_page = src.error_page;
@@ -74,6 +76,14 @@ std::vector<std::string> Parse::getserver_name()
 {
     return this->server_name;
 }
+void Parse::set_Index(std::vector<std::string> val)
+{
+    this->index = val;
+}
+std::vector<std::string> Parse::get_Index()
+{
+    return this->index;
+}
 void Parse::setroot(std::string val)
 {
     this->root = val;
@@ -91,6 +101,15 @@ void Parse::sethost(std::string val)
 std::string Parse::gethost()
 {
     return this->host;
+}
+void Parse::setIndexToUse(std::string val)
+{
+    this->indexToUse = val;
+}
+
+std::string Parse::getIndexToUse()
+{
+    return this->indexToUse;
 }
 
 void Parse::setclient_max_body_size(std::string val)
@@ -158,6 +177,15 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
         while (i < in.getserver_name().size())
         {
             out << "server_name " << i + 1 << " " << in.getserver_name()[i] << std::endl;
+            i++;
+        }
+    }
+    if (in.get_Index().size() > 0)
+    {
+        int i = 0;
+        while (i < in.get_Index().size())
+        {
+            out << "index " << i + 1 << " {" << in.get_Index()[i] << "}" << std::endl;
             i++;
         }
     }

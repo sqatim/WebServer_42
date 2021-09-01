@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/01 14:30:07 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 15:16:39 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,19 @@ void Parse::get_attributs(std::vector<std::string> vect)
             if (vect_str[0] == "server_name")
                 this->server_name.push_back(vect_str[1]);
         }
+        if (vect[i].find("index") != -1)
+        {
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "index")
+            {
+                int k = 1;
+                while (k < vect_str.size())
+                {
+                    this->index.push_back(vect_str[k]);
+                    k++;
+                }
+            }
+        }
         if (vect[i].find("error_page") != -1)
         {
             t_ret ret;
@@ -92,8 +105,9 @@ void Parse::get_attributs(std::vector<std::string> vect)
         }
         if (vect[i].find("host") != -1)
         {
+            // std::cout << "sahbi samir sbe3";
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (vect_str[0] == "return")
+            if (vect_str[0] == "host")
                 this->host = vect_str[1];
         }
         std::string str = vect[i];

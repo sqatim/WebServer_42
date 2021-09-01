@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/08/31 17:25:06 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 15:07:44 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ class Parse
 protected:
     std::vector<int> listen;
     std::vector<std::string> server_name;
+    std::vector<std::string> index;
     std::string root;
+    std::string indexToUse;
     std::vector<t_ret> error_page;
     std::string client_max_body_size;
     std::string host;
@@ -46,11 +48,15 @@ public:
     Parse(const Parse &src);
     Parse &operator=(const Parse &src);
     void setlisten(std::vector<int> val);
-    std::vector<int> getlisten() ;
+    std::vector<int> getlisten();
     void setserver_name(std::vector<std::string> val);
     std::vector<std::string> getserver_name();
+    void set_Index(std::vector<std::string> val);
+    std::vector<std::string> get_Index();
     void setroot(std::string val);
     std::string getroot();
+    void setIndexToUse(std::string val);
+    std::string getIndexToUse();
     void sethost(std::string val);
     std::string gethost();
     void setclient_max_body_size(std::string val);
@@ -62,7 +68,7 @@ public:
     void setcount_location(int va);
     int getcount_location();
     void setlocation(std::vector<LocaTion> val);
-    std::vector<LocaTion>  getlocation();
+    std::vector<LocaTion> getlocation();
     ~Parse();
 };
 

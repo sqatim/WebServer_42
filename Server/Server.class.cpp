@@ -1,10 +1,10 @@
 #include "Server.class.hpp"
 #define PORT 3000
 
-Server::Server(Parse parse) : m_maxFd(10), m_addrlen(sizeof(m_address))
+Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
 {
-    this->m_content.root = parse.getroot();
-    this->m_content.index = "default.html";
+    // this->m_content.root = parse.getroot();
+    // this->m_content.index = "default.html";
     int opt = 1;
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
@@ -97,6 +97,7 @@ void Server::manipulation(Parse parse)
     timeout.tv_usec = 0;
     int i = 0;
     int max_listen = 1;
+    // int fd = open("acces.log", O_RDWR);
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -127,7 +128,6 @@ void Server::manipulation(Parse parse)
             {
                 if (checkForFileDescriptor(i, parse.getlisten().size()))
                 {
-                    std::cout << "i ==> " << i << std::endl;
                     if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
                         throw std::string("Accept Failed");
                     std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
@@ -139,15 +139,22 @@ void Server::manipulation(Parse parse)
                 else
                 {
                     std::cout << "client_socket " << i << std::endl;
-                    char buffer[1024] = {0};
-                    if ((result = read(i, buffer, 1024)) == 0)
+                    char buffer[5000] = {0};
+                    if ((result = read(i, buffer, 5000)) == 0)
                         std::cout << "disconnected" << std::endl;
                     else
                     {
                         buffer[result] = '\0';
-                        word = getWord(buffer, 0, 1);
-                        manageRequest(word, parse, i);
-                        printf("%s\n", buffer);
+                        this->m_request.setRequest(buffer);
+                        this->m_request.parsingRequest();
+                        // std::cout << "Request : " << this->m_request.getRequest() << std::endl;
+                        std::cout << "method : " << this->m_request.getMethod() << std::endl;
+                        std::cout << "path : " << this->m_request.getPath() << std::endl;
+                        // word = getWord(buffer, 0, 1);
+                        manageRequest(parse, i);
+                        // std::cout << buffer << std::endl;
+                        // printf("%s\n", buffer);
+                        // write(fd, buffer, strlen(buffer));
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
                     close(i);
@@ -166,4 +173,13 @@ int Server::getSocketFd()
 Server::~Server()
 {
     return;
+}
+
+//***********************************************************
+
+void Server::debug(std::string str)
+{
+    std::cout << "********************************" << std::endl;
+    std::cout << "##" << str << "##" << std::endl;
+    std::cout << "********************************" << std::endl;
 }
