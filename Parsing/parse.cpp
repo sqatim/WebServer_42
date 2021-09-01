@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/01 15:32:38 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/01 16:57:22 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ Parse::Parse(const Parse &src)
     this->error_page = src.error_page;
     this->client_max_body_size = src.client_max_body_size;
     this->location = src.location;
+    this->indexToUse = src.indexToUse;
 }
 Parse &Parse::operator=(const Parse &src)
 {
@@ -55,6 +56,7 @@ Parse &Parse::operator=(const Parse &src)
     this->error_page = src.error_page;
     this->client_max_body_size = src.client_max_body_size;
     this->location = src.location;
+    this->indexToUse = src.indexToUse;
     return *this;
 }
 
@@ -247,6 +249,8 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
             out << "name in location number " << i + 1 << " is: {" << in.getlocation()[i].getname() << "}" << std::endl;
         if (in.getlocation()[i].getroot().size() > 0)
             out << "root in location number " << i + 1 << " is: {" << in.getlocation()[i].getroot() << "}" << std::endl;
+        if (in.getlocation()[i].getoption().size() > 0)
+            out << "option in location number " << i + 1 << " is: {" << in.getlocation()[i].getoption() << "}" << std::endl;
         i++;
     }
     return out;

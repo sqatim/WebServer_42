@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/01 15:16:39 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/01 16:56:35 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,13 @@ void Parse::get_attributs(std::vector<std::string> vect)
         {
             LocaTion loc = LocaTion();
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            loc.setname(vect_str[1]);
+            if (vect_str.size() == 3)
+            {
+                loc.setoption(vect_str[1]);
+                loc.setname(vect_str[2]);
+            }
+            else
+                loc.setname(vect_str[1]);
             while (i < vect.size())
             {
                 if (vect[i].find("}") != -1)
