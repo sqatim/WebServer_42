@@ -16,12 +16,9 @@
 #include "Response.class.hpp"
 #include "../../Parsing/parse.hpp"
 
-// #define PORT 5000
-
 class Server
 {
 private:
-    // t_content m_content;
     int *m_socketFd;
     int m_maxFd;
     fd_set m_currentSocket;
@@ -33,8 +30,6 @@ private:
     Response m_response;
 
 public:
-    // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
-    // Server(int port);
     class NotFound
     {
     public:

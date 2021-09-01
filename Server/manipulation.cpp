@@ -52,8 +52,8 @@ void Server::manageRequest(Parse parse, int socket)
         path = this->m_parse.getroot();
         std::cout << "[" << this->m_parse.getroot() << "]" << std::endl;
 
-        this->debug(this->m_parse.get_Index()[0]);
-        this->m_parse.setIndexToUse(this->m_parse.get_Index()[0]);
+        // this->debug(this->m_parse.get_Index()[0]);
+        this->m_parse.setIndexToUse("form.html");
         if (path != "")
         {
             len = ft_strlen(path);

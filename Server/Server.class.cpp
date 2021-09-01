@@ -148,12 +148,12 @@ void Server::manipulation(Parse parse)
                         this->m_request.setRequest(buffer);
                         this->m_request.parsingRequest();
                         // std::cout << "Request : " << this->m_request.getRequest() << std::endl;
-                        std::cout << "method : " << this->m_request.getMethod() << std::endl;
-                        std::cout << "path : " << this->m_request.getPath() << std::endl;
+                        // std::cout << "method : " << this->m_request.getMethod() << std::endl;
+                        // std::cout << "path : " << this->m_request.getPath() << std::endl;
                         // word = getWord(buffer, 0, 1);
                         manageRequest(parse, i);
                         // std::cout << buffer << std::endl;
-                        // printf("%s\n", buffer);
+                        printf("%s\n", buffer);
                         // write(fd, buffer, strlen(buffer));
                         // std::cout << getWord(buffer, 0, 1) << std::endl;
                     }
