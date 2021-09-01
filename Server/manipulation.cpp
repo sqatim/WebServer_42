@@ -51,7 +51,9 @@ void Server::manageRequest(Parse parse, int socket)
 
         path = this->m_parse.getroot();
         std::cout << "[" << this->m_parse.getroot() << "]" << std::endl;
-        this->m_parse.setIndex("index.html");
+
+        this->debug(this->m_parse.get_Index()[0]);
+        this->m_parse.setIndexToUse(this->m_parse.get_Index()[0]);
         if (path != "")
         {
             len = ft_strlen(path);
@@ -69,14 +71,14 @@ void Server::manageRequest(Parse parse, int socket)
                     if (m_request.getPath() == parse.getlocation()[i].getname())
                     {
                         path += parse.getlocation()[i].getname();
-                        if (parse.getlocation()[i].getindex() != "")
-                            this->m_parse.setIndex(parse.getlocation()[i].getindex());
+                        if (parse.getlocation()[i].getindex()[0] != "")
+                            this->m_parse.setIndexToUse(parse.getlocation()[i].getindex()[0]);
                     }
                     throw NotFound();
                 }
             }
         }
-        path += this->m_parse.getIndex();
+        path += this->m_parse.getIndexToUse();
         m_response.contentHeader("200 OK", "text", "html", readingTheFile(path));
     }
     catch (Server::Forbidden &e)

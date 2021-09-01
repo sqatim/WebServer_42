@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/08/30 15:52:05 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/01 15:16:39 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,106 +46,155 @@ void add_locations()
 void Parse::get_attributs(std::vector<std::string> vect)
 {
     int i = 0;
-
+    int j;
     while (i < vect.size())
     {
-        if (vect[i].find("listen") > 0)
+        if (vect[i].find("listen") != -1)
         {
-            if (get_key(vect[i]) == "listen")
-                this->listen.push_back(std::stoi(get_value(vect[i])));
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "listen")
+                this->listen.push_back(std::stoi(vect_str[1]));
         }
-        if (vect[i].find("server_name") > 0)
+        if (vect[i].find("server_name") != -1)
         {
-            if (get_key(vect[i]) == "server_name")
-                this->server_name.push_back(get_value(vect[i]));
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "server_name")
+                this->server_name.push_back(vect_str[1]);
         }
-        if (vect[i].find("error_page") > 0)
+        if (vect[i].find("index") != -1)
         {
-            if (get_key(vect[i]) == "error_page")
-                this->error_page.push_back(get_value(vect[i]));
-        }
-        if (vect[i].find("root") > 0)
-        {
-            if (get_key(vect[i]) == "root")
-                this->root = get_value(vect[i]);
-        }
-        if (vect[i].find("client_max_body_size") > 0)
-        {
-            if (get_key(vect[i]) == "client_max_body_size")
-                this->client_max_body_size = get_value(vect[i]);
-        }
-        if (vect[i].find("host") > 0)
-        {
-            // space before ip
-            std::string str;
-            if (get_key(vect[i]) == "host")
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "index")
             {
-                str  =  get_value(vect[i]);
-                this->host = get_key(str);
+                int k = 1;
+                while (k < vect_str.size())
+                {
+                    this->index.push_back(vect_str[k]);
+                    k++;
+                }
             }
+        }
+        if (vect[i].find("error_page") != -1)
+        {
+            t_ret ret;
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "error_page")
+            {
+                j = 1;
+                if (vect_str.size() < 4)
+                {
+                    ret.path = "";
+                    ret.redirec = "";
+                    ret.redirec = vect_str[1];
+                    ret.path = vect_str[2];
+                    this->error_page.push_back(ret);
+                }
+            }
+        }
+        if (vect[i].find("root") != -1)
+        {
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "root")
+                this->root = vect_str[1];
+        }
+        if (vect[i].find("client_max_body_size") != -1)
+        {
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "client_max_body_size")
+                this->client_max_body_size = vect_str[1];
+        }
+        if (vect[i].find("host") != -1)
+        {
+            // std::cout << "sahbi samir sbe3";
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (vect_str[0] == "host")
+                this->host = vect_str[1];
         }
         std::string str = vect[i];
         if (vect[i].find("location") != -1)
         {
             LocaTion loc = LocaTion();
-            loc.setname(get_value(vect[i]));
-            // int ff = vect[i].find("location");
-            // std::cout << vect[i] << "====>" << ff << std::endl;
-            // int i = i++;
+            std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            loc.setname(vect_str[1]);
             while (i < vect.size())
             {
                 if (vect[i].find("}") != -1)
                 {
                     this->location.push_back(loc);
-                    loc.~LocaTion();
                     break;
                 }
                 else
                 {
                     if (vect[i].find("index") != -1)
                     {
-                        if (get_key(vect[i]) == "index")
-                            loc.setindex(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "index")
+                        {
+                            vect_str.erase(vect_str.begin());
+                            loc.setindex(vect_str);
+                        }
                     }
                     if (vect[i].find("auto_index") != -1)
                     {
-                        if (get_key(vect[i]) == "auto_index")
-                            loc.setauto_index(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "auto_index")
+                            loc.setauto_index(vect_str[1]);
                     }
                     if (vect[i].find("allow_methods") != -1)
                     {
-                        if (get_key(vect[i]) == "allow_methods")
-                            loc.setallow_methods(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "allow_methods")
+                            loc.setallow_methods(vect_str[1]);
                     }
                     if (vect[i].find("return") != -1)
                     {
-                        if (get_key(vect[i]) == "return")
-                            loc.set_return(get_value(vect[i]));
+                        t_ret ret;
+                        std::vector<t_ret> tmp;
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "return")
+                        {
+                            j = 1;
+                            if (vect_str.size() < 4)
+                            {
+                                ret.path = "";
+                                ret.redirec = "";
+                                ret.redirec = vect_str[1];
+                                ret.path = vect_str[2];
+                                tmp.push_back(ret);
+                                // this->error_page.push_back(ret);
+                            }
+                        }
+                        loc.set_return(tmp);
                     }
                     if (vect[i].find("fastcgi_pass") != -1)
                     {
-                        if (get_key(vect[i]) == "fastcgi_pass")
-                            loc.setfascgi_pass(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "fastcgi_pass")
+                            loc.setfascgi_pass(vect_str[1]);
                     }
                     if (vect[i].find("upload_methods") != -1)
                     {
-                        if (get_key(vect[i]) == "upload_methods")
-                            loc.setupload_methods(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "upload_methods")
+                            loc.setupload_methods(vect_str[1]);
                     }
                     if (vect[i].find("upload_store") != -1)
                     {
-                        if (get_key(vect[i]) == "upload_store")
-                            loc.setupload_store(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "upload_store")
+                            loc.setupload_store(vect_str[1]);
                     }
                     if (vect[i].find("name") != -1)
                     {
-                        if (get_key(vect[i]) == "name")
-                            loc.setname(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "name")
+                            loc.setname(vect_str[1]);
                     }
                     if (vect[i].find("root") != -1)
                     {
-                        if (get_key(vect[i]) == "root")
-                            loc.setroot(get_value(vect[i]));
+                        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (vect_str[0] == "root")
+                            loc.setroot(vect_str[1]);
                     }
                 }
                 i++;

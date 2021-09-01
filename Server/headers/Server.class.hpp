@@ -52,6 +52,7 @@ public:
     void initialiseStructure(int port, std::string ip);
     void manipulation(Parse parse);
     void manageRequest(Parse parse, int socket);
+    void debug(std::string str);
     ~Server();
 };
 

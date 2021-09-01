@@ -6,13 +6,13 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/08/30 12:11:01 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/08/31 17:58:13 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-void error(std:: string str)
+void error(std::string str)
 {
     std::cout << str << std::endl;
     exit(0);
@@ -30,18 +30,16 @@ int is_printable(std::string str)
     return 0;
 }
 
-
-
 int CountWords(std::string str)
 {
-   int i = 0;
+    int i = 0;
     int countword = -1;
     while (i < str.length())
     {
         if (str[i] == ' ')
             i++;
         else
-            break ;
+            break;
     }
     int end = str.length() - 1;
     while (end > 0)
@@ -54,15 +52,15 @@ int CountWords(std::string str)
     while (i < end)
     {
         if (i == 0 && str[i] == ' ')
-            i++ ;
+            i++;
         if (str[i] == ' ' && str[i + 1] != ' ')
             countword++;
-        i++; 
+        i++;
     }
-    return  countword;
+    return countword;
 }
 
-std::string     get_key(std::string str)
+std::string get_key(std::string str)
 {
     std::string ret;
     int i = 0;
@@ -73,7 +71,7 @@ std::string     get_key(std::string str)
         if (str[i] == ' ' || str[i] == '\t')
             i++;
         else
-            break ;
+            break;
     }
     j = 0;
     k = i;
@@ -85,12 +83,12 @@ std::string     get_key(std::string str)
             k++;
         }
         else
-            break ;
+            break;
     }
     ret = str.substr(i, j);
     return ret;
 }
-std::string     get_value(std::string str)
+std::string get_value(std::string str)
 {
     std::string ret;
     std::string key = get_key(str);
@@ -98,4 +96,30 @@ std::string     get_value(std::string str)
     found += key.length();
     ret = str.substr(found, str.length() - found);
     return ret;
+}
+
+std::vector<std::string> splitstring(std::string str, std::string to_split_with)
+{
+    std::vector<std::string> vect_str;
+    int start = 0;
+    while (start < str.size())
+    {
+        if (str[start] != '\t' && str[start] != ' ')
+            break;
+        start++;
+    }
+    std::string _str = str.substr(start, str.length());
+    // std::cout << _str << std::endl;
+    to_split_with = " ";
+    start = 0;
+    int end = _str.find(to_split_with);
+    while (end != -1)
+    {
+        if (_str.substr(start, end - start).length() > 0)
+            vect_str.push_back(_str.substr(start, end - start));
+        start = end + to_split_with.size();
+        end = _str.find(to_split_with, start);
+    }
+    vect_str.push_back(_str.substr(start, end - start));
+    return vect_str;
 }

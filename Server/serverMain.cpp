@@ -1,7 +1,6 @@
 #include <arpa/inet.h>
 #include "Server.class.hpp"
 
-
 int main()
 {
     try
@@ -10,7 +9,7 @@ int main()
         Server server(parse);
         server.manipulation(parse);
     }
-    catch(std::string error)
+    catch (std::string error)
     {
         std::cout << error << std::endl;
     }
