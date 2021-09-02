@@ -16,11 +16,14 @@ SRC_NAME_SERVER= serverMain.cpp\
 				Request.class.cpp\
 				Response.class.cpp\
 				methods.cpp\
+				get_next_line.cpp\
+				get_next_line_utils.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
 				server.hpp\
 				Request.class.hpp\
+				get_next_line.hpp\
 				# parse.hpp\
 
 OBJ_NAME_SERVER= $(SRC_NAME_SERVER:.cpp=.o)

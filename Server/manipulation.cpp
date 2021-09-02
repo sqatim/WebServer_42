@@ -12,7 +12,7 @@ int ft_strlen(std::string str)
 std::string readingTheFile(std::string filename)
 {
 
-    std::ifstream myReadFile("/Users/sqatim/Desktop/WebServer_42/form.html");
+    std::ifstream myReadFile(filename);
     // https://www.cplusplus.com/reference/ios/ios/exceptions/
     // Get/set exceptions mask
     // failbit	Logical error on i/o operation	fail == true
@@ -24,11 +24,8 @@ std::string readingTheFile(std::string filename)
     std::cout << "Reading the file " << filename << std::endl;
     std::cout << "==============================" << std::endl;
     // myReadFile.open(filename);
-    // if (!myReadFile)
-    // {
-    // std::cout << myReadFile << std::endl;
-    //     throw Server::Forbidden();
-    // }
+    if (!myReadFile)
+        throw Server::Forbidden();
     text = "\0";
     while (std::getline(myReadFile, line))
     {
@@ -50,10 +47,7 @@ void Server::manageRequest(Parse parse, int socket)
         int len;
 
         path = this->m_parse.getroot();
-        std::cout << "[" << this->m_parse.getroot() << "]" << std::endl;
-
-        // this->debug(this->m_parse.get_Index()[0]);
-        this->m_parse.setIndexToUse("form.html");
+        this->m_parse.setIndexToUse("index.html");
         if (path != "")
         {
             len = ft_strlen(path);
@@ -79,6 +73,7 @@ void Server::manageRequest(Parse parse, int socket)
             }
         }
         path += this->m_parse.getIndexToUse();
+        debug(path);
         m_response.contentHeader("200 OK", "text", "html", readingTheFile(path));
     }
     catch (Server::Forbidden &e)

@@ -9,6 +9,7 @@
 #include <cstring>
 #include <fstream>
 // 7ta nshuf blanhum man ba3d
+#include "get_next_line.hpp"
 #include <unistd.h>
 #include <fcntl.h>
 #include "server.hpp"
