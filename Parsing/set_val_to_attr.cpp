@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/01 16:56:35 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/02 17:30:15 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,40 +43,58 @@ void add_locations()
 {
 }
 
-void Parse::get_attributs(std::vector<std::string> vect)
+void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
 {
     int i = 0;
     int j;
-    while (i < vect.size())
+    std::vector <LocaTion> tmp;
+    std::vector<std::string> tmp1;
+    std::vector<t_ret> tmp2;
+    i = _begin;
+    while (i < vect.size() &&  i < server_len)
     {
         if (vect[i].find("listen") != -1)
         {
+            std::vector<int> tmp;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "listen")
-                this->listen.push_back(std::stoi(vect_str[1]));
+                tmp.push_back(std::stoi(vect_str[1]));
+            parse->setlisten(tmp);
         }
         if (vect[i].find("server_name") != -1)
         {
+            std::vector<std::string> tmp;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "server_name")
-                this->server_name.push_back(vect_str[1]);
+            {
+                int k = 1;
+                while (k < vect_str.size())
+                {
+                    tmp.push_back(vect_str[k]);
+                    k++;
+                }
+                parse->setserver_name(tmp);
+            }
         }
         if (vect[i].find("index") != -1)
         {
+            // std::vector<std::string> tmp;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "index")
             {
                 int k = 1;
                 while (k < vect_str.size())
                 {
-                    this->index.push_back(vect_str[k]);
+                    tmp1.push_back(vect_str[k]);
                     k++;
                 }
+                parse->set_Index(tmp1);
             }
         }
         if (vect[i].find("error_page") != -1)
         {
             t_ret ret;
+            // std::vector<t_ret> tmp2;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "error_page")
             {
@@ -87,30 +105,32 @@ void Parse::get_attributs(std::vector<std::string> vect)
                     ret.redirec = "";
                     ret.redirec = vect_str[1];
                     ret.path = vect_str[2];
-                    this->error_page.push_back(ret);
+                    tmp2.push_back(ret);
                 }
+                parse->seterror_page(tmp2);
             }
         }
         if (vect[i].find("root") != -1)
         {
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "root")
-                this->root = vect_str[1];
+                parse->setroot(vect_str[1]);
         }
         if (vect[i].find("client_max_body_size") != -1)
         {
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "client_max_body_size")
-                this->client_max_body_size = vect_str[1];
+                parse->setclient_max_body_size(vect_str[1]);
         }
         if (vect[i].find("host") != -1)
         {
             // std::cout << "sahbi samir sbe3";
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "host")
-                this->host = vect_str[1];
+                parse->sethost(vect_str[1]);
         }
         std::string str = vect[i];
+        
         if (vect[i].find("location") != -1)
         {
             LocaTion loc = LocaTion();
@@ -126,7 +146,7 @@ void Parse::get_attributs(std::vector<std::string> vect)
             {
                 if (vect[i].find("}") != -1)
                 {
-                    this->location.push_back(loc);
+                    tmp.push_back(loc);
                     break;
                 }
                 else
@@ -167,7 +187,6 @@ void Parse::get_attributs(std::vector<std::string> vect)
                                 ret.redirec = vect_str[1];
                                 ret.path = vect_str[2];
                                 tmp.push_back(ret);
-                                // this->error_page.push_back(ret);
                             }
                         }
                         loc.set_return(tmp);
@@ -205,6 +224,7 @@ void Parse::get_attributs(std::vector<std::string> vect)
                 }
                 i++;
             }
+            parse->setlocation(tmp);
         }
         i++;
     }

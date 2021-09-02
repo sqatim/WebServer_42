@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/01 16:57:22 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/02 16:44:04 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,22 @@
 
 Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("")
 {
-    std::string word;
-    std::fstream file;
-    std::string filename;
-    std::string name;
-    filename = _filename;
-    this->file = filename;
-    file.open(filename);
-    std::vector<std::string> file_in_vector;
-    while (getline(file, word))
-    {
-        if (is_printable(word) == 1)
-            file_in_vector.push_back(word);
-    }
-    get_attributs(file_in_vector);
+    index.clear();
+    error_page.clear();
+    // std::string word;
+    // std::fstream file;
+    // std::string filename;
+    // std::string name;
+    // filename = _filename;
+    // this->file = filename;
+    // file.open(filename);
+    // std::vector<std::string> file_in_vector;
+    // while (getline(file, word))
+    // {
+    //     if (is_printable(word) == 1)
+    //         file_in_vector.push_back(word);
+    // }
+    // get_attributs(file_in_vector);
 }
 
 Parse::~Parse()
@@ -62,6 +64,7 @@ Parse &Parse::operator=(const Parse &src)
 
 void Parse::setlisten(std::vector<int> val)
 {
+    listen.clear();
     this->listen = val;
 }
 
@@ -126,7 +129,13 @@ std::string Parse::getclient_max_body_size()
 
 void Parse::seterror_page(std::vector<t_ret> val)
 {
-    this->error_page = val;
+    int i = 0;
+    this->error_page.clear();
+    while (i < val.size())
+    {
+        this->error_page.push_back(val[i]);
+        i++;
+    }
 }
 
 std::vector<t_ret> Parse::geterror_page()
@@ -134,28 +143,15 @@ std::vector<t_ret> Parse::geterror_page()
     return this->error_page;
 }
 
-void Parse::setcount_error_page(int va)
-{
-    this->count_error_page = va;
-}
-
-int Parse::getcount_error_page()
-{
-    return this->count_error_page;
-}
-
-void Parse::setcount_location(int va)
-{
-    this->count_location = va;
-}
-int Parse::getcount_location()
-{
-    return this->count_location;
-}
-
 void Parse::setlocation(std::vector<LocaTion> val)
 {
-    this->location = val;
+    int i = 0;
+    this->location.clear();
+    while (i < val.size())
+    {
+        this->location.push_back(val[i]);
+        i++;
+    }
 }
 std::vector<LocaTion> Parse::getlocation()
 {
