@@ -83,21 +83,10 @@ int Server::checkForFileDescriptor(int current, int size)
     }
     return (0);
 }
-void Server::manipulation(Parse parse)
+void Server::manipulation()
 {
-    // to delete
-    std::string response;
-    std::string word;
-    int result;
-    std::string file;
-    std::string ss = "\0";
     fd_set readySockets;
-    struct timeval timeout;
-    timeout.tv_sec = 5;
-    timeout.tv_usec = 0;
-    int i = 0;
-    int max_listen = 1;
-    // int fd = open("acces.log", O_RDWR);
+    int fd = open("log.txt", O_RDWR);
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -114,7 +103,7 @@ void Server::manipulation(Parse parse)
     FD_ZERO(&this->m_currentSocket);
     std::cout << "Waiting for connections ..." << std::endl;
     std::cout << "=====================================" << std::endl;
-    for (int i = 0; i < parse.getlisten().size(); i++)
+    for (int i = 0; i < this->m_parse.getlisten().size(); i++)
         FD_SET(this->m_socketFd[i], &this->m_currentSocket);
     while (1)
     {
@@ -122,40 +111,35 @@ void Server::manipulation(Parse parse)
         std::string request;
         if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
             throw std::string("mushkil f select");
-        for (int i = 0; i <= this->m_maxFd; i++)
+        this->acceptNewConnection(&readySockets);
+    }
+}
+
+void Server::acceptNewConnection(fd_set *readySockets)
+{
+    for (int i = 0; i <= this->m_maxFd; i++)
+    {
+        if (FD_ISSET(i, &(*readySockets)))
         {
-            if (FD_ISSET(i, &readySockets))
+            if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
             {
-                if (checkForFileDescriptor(i, parse.getlisten().size()))
-                {
-                    if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
-                        throw std::string("Accept Failed");
-                    std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
-                    FD_SET(this->m_newSocket, &readySockets);
-                    std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
-                    if (this->m_newSocket > this->m_maxFd)
-                        this->m_maxFd = this->m_newSocket;
-                }
-                else
-                {
-                    std::cout << "client_socket " << i << std::endl;
-                    char buffer[5000] = {0};
-                    if ((result = read(i, buffer, 5000)) == 0)
-                        std::cout << "disconnected" << std::endl;
-                    else
-                    {
-                        buffer[result] = '\0';
-                        this->m_request.setRequest(buffer);
-                        this->m_request.parsingRequest();
-                        manageRequest(parse, i);
-                        std::cout << buffer << std::endl;
-                    }
-                    close(i);
-                    FD_CLR(i, &readySockets);
-                }
+                if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+                    throw std::string("Accept Failed");
+                std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
+                FD_SET(this->m_newSocket, &(*readySockets));
+                std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
+                if (this->m_newSocket > this->m_maxFd)
+                    this->m_maxFd = this->m_newSocket;
+            }
+            else
+            {
+                std::cout << "client_socket " << i << std::endl;
+                if (this->m_request.parsingRequest(i, &(*readySockets)))
+                    this->manageRequest(i);
             }
         }
     }
+    std::cout << "###############################" << std::endl;
 }
 
 int Server::getSocketFd()

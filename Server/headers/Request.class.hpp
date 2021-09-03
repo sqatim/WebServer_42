@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "server.hpp"
+#include <unistd.h>
 
 class Request
 {
@@ -23,10 +24,11 @@ private:
 
 public:
     Request();
-    void parsingRequest();
+    int parsingRequest(int socket, fd_set *readySockets);
     void getWords();
     void requestHeaders(int i, char *str);
     void concatenation();
+    void parsingRequestLine();
 
     //  Accessors
     std::string getRequest() const;

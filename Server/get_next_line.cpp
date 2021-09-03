@@ -6,12 +6,13 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:07:46 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/02 17:58:54 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/03 13:57:34 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.hpp"
 #include <iostream>
+
 int free_leak(char **ptr, int nb, int fd)
 {
 	if (fd >= 0 && fd < FD_SIZE)
@@ -43,16 +44,49 @@ int ft_remplissage(char **tmp, int fd, char **line)
 	delt = tmp[fd];
 	r = 0;
 	while (tmp[fd][r] != '\n' && tmp[fd][r])
+	{
 		r++;
+	}
 	if (tmp[fd][r] == '\0')
 	{
 		*line = ft_strdup(tmp[fd]);
 		return (free_leak(&tmp[fd], 0, fd));
 	}
-	*line = ft_substr(tmp[fd], 0, r);
+	if (tmp[fd][r - 1] == '\r')
+		*line = ft_substr(tmp[fd], 0, r - 1);
+	else
+		*line = ft_substr(tmp[fd], 0, r);
 	tmp[fd] = ft_check(tmp, r, fd);
 	free(delt);
+	// std::cout << "[" << tmp[fd][0] << "]" << std::endl;
 	return (1);
+}
+
+char *ft_strstr(char *str, char *to_find)
+{
+	int i;
+	int j;
+
+	j = 0;
+	if (!str)
+		return (NULL);
+	if (to_find[j] == '\0')
+		return (str);
+	i = 0;
+	while (str[i] != '\0')
+	{
+		j = 0;
+		if (str[i] == to_find[j])
+		{
+			j = 1;
+			while (to_find[j] != '\0' && str[i + j] == to_find[j])
+				j++;
+			if (to_find[j] == '\0')
+				return (&str[i]);
+		}
+		i++;
+	}
+	return (0);
 }
 
 int get_next_line(int fd, char **line)
@@ -61,8 +95,9 @@ int get_next_line(int fd, char **line)
 	static char *tmp[2];
 	int r;
 
+	char str[2] = {'\r', '\n'};
 	if ((fd < 0 || fd >= FD_SIZE) || !line || BUFFER_SIZE <= 0 ||
-		!(buf = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1)))
+		!(buf = new char[sizeof(char) * BUFFER_SIZE + 1]))
 		return (free_leak(&tmp[1], -1, 1));
 	while ((!(ft_strchr(tmp[1], '\n'))) &&
 		   ((r = read(fd, buf, BUFFER_SIZE)) > 0))
@@ -71,8 +106,6 @@ int get_next_line(int fd, char **line)
 		tmp[1] = ft_strjoin_free(tmp[1], buf);
 	}
 	free(buf);
-	// if (tmp[1] == NULL)
-	// std::cout << "wlh mablan" << std::endl;
 	if (r == -1 || (r == 0 && !ft_strlen(tmp[1])))
 	{
 		*line = ft_strdup("");

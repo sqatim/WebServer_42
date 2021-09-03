@@ -9,7 +9,6 @@
 #include <cstring>
 #include <fstream>
 // 7ta nshuf blanhum man ba3d
-#include "get_next_line.hpp"
 #include <unistd.h>
 #include <fcntl.h>
 #include "server.hpp"
@@ -43,11 +42,13 @@ public:
     };
     Server(Parse parse);
     int getSocketFd();
+    void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);
-    void manipulation(Parse parse);
-    void manageRequest(Parse parse, int socket);
+    void manipulation();
+    void checkForTheIndex(std::vector<std::string> index, std::string path);
+    void manageRequest(int socket);
     void debug(std::string str);
     ~Server();
 };

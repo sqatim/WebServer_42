@@ -17,16 +17,20 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
     this->m_status = status;
     this->setContentType(type1, type2);
     this->m_body = body;
-    // std::cout << "********************************" << std::endl;
-    // std::cout << this->m_body << std::endl;
-    // std::cout << "********************************" << std::endl;
     this->m_contentLength += std::to_string(body.length());
 }
 
 void Response::defaultBody()
 {
     this->m_status = "304 Not Modified";
-    this->m_body = "<h1>Welcome to Barnatouti!</h1>\n";
+    this->m_body = "<head>";
+    this->m_body += "<title>Welcome to Barnatouti!</title>";
+    this->m_body += "<style>";
+    this->m_body += "html { color-scheme: light dark; }";
+    this->m_body += "body { width: 35em; margin: 0 auto;";
+    this->m_body += "font-family: Tahoma, Verdana, Arial, sans-serif; }";
+    this->m_body += "</style>";
+    this->m_body += "<h1>Welcome to Barnatouti!</h1>\n";
     this->m_body += "<p>If you see this page, the Barnatouti web server is successfully \
         installed and working. Further configuration is required.</p>\n";
     this->m_body += "<p><em>Thank you for using Barnatouti.</em></p>\n";
@@ -35,15 +39,21 @@ void Response::defaultBody()
 void Response::notFoundBody()
 {
     this->m_status = "404 Not Found";
-    this->m_body = "<center><h1>404 Not Found</h1></center>\n";
+    this->m_body = "<html>";
+    this->m_body += "<head><title>404 Not Found</title></head>";
+    this->m_body += "<center><h1>404 Not Found</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
+    this->m_body += "<html>";
 }
 
 void Response::forbiddenBody()
 {
     this->m_status = "403 Forbidden";
+    this->m_body = "<html>";
+    this->m_body += "<head><title>403 Forbidden</title></head>";
     this->m_body = "<center><h1>403 Forbidden</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
+    this->m_body += "<html>";
 }
 
 // ======================================Setters======================================

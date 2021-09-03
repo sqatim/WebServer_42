@@ -6,15 +6,15 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:09:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/02 17:30:27 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/03 13:56:00 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.hpp"
-
-size_t	ft_strlen(const char *str)
+#include <iostream>
+size_t ft_strlen(const char *str)
 {
-	int		i;
+	int i;
 
 	i = 0;
 	if (!str)
@@ -24,12 +24,12 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strjoin_free(char *s1, char const *s2)
+char *ft_strjoin_free(char *s1, char const *s2)
 {
-	char	*p;
-	size_t	i;
-	size_t	j;
-	size_t	k;
+	char *p;
+	size_t i;
+	size_t j;
+	size_t k;
 
 	i = 0;
 	j = 0;
@@ -38,8 +38,7 @@ char	*ft_strjoin_free(char *s1, char const *s2)
 		return (ft_strdup(s2));
 	if (s1 && s2)
 	{
-		if (!(p = new char[sizeof(char) * (ft_strlen(s1)
-							+ ft_strlen(s2) + 1)]))
+		if (!(p = new char[sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1)]))
 			return (NULL);
 		while (s1[j])
 			p[i++] = s1[j++];
@@ -52,10 +51,10 @@ char	*ft_strjoin_free(char *s1, char const *s2)
 	return (NULL);
 }
 
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+char *ft_substr(const char *s, unsigned int start, size_t len)
 {
-	char	*p;
-	size_t	i;
+	char *p;
+	size_t i;
 
 	i = 0;
 	if ((!s) || (unsigned int)ft_strlen(s) < start)
@@ -73,10 +72,10 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	return (p);
 }
 
-char	*ft_strchr(const char *s, int c)
+char *ft_strchr(const char *s, int c)
 {
-	int		i;
-	char	*ptr;
+	int i;
+	char *ptr;
 
 	i = 0;
 	ptr = (char *)s;
@@ -93,10 +92,10 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-char	*ft_strdup(const char *s1)
+char *ft_strdup(const char *s1)
 {
-	int		i;
-	char	*ptr;
+	int i;
+	char *ptr;
 
 	i = 0;
 	while (s1[i])

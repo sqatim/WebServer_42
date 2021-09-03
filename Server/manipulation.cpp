@@ -12,18 +12,10 @@ int ft_strlen(std::string str)
 std::string readingTheFile(std::string filename)
 {
 
-    std::ifstream myReadFile(filename);
-    // https://www.cplusplus.com/reference/ios/ios/exceptions/
-    // Get/set exceptions mask
-    // failbit	Logical error on i/o operation	fail == true
-    // myReadFile.exceptions(std::ifstream::badbit);
-    /* code */
+    std::ifstream myReadFile;
     std::string text;
     std::string line;
-    std::cout << "==============================" << std::endl;
-    std::cout << "Reading the file " << filename << std::endl;
-    std::cout << "==============================" << std::endl;
-    // myReadFile.open(filename);
+    myReadFile.open(filename);
     if (!myReadFile)
         throw Server::Forbidden();
     text = "\0";
@@ -34,46 +26,108 @@ std::string readingTheFile(std::string filename)
             text += "\n";
     }
     myReadFile.close();
-    // std::cout << "text <<   " << text << std::endl;
     return (text);
 }
 
-void Server::manageRequest(Parse parse, int socket)
+void Server::checkForTheIndex(std::vector<std::string> index, std::string root)
 {
-    m_response.initResponse();
-    try
-    {
-        std::string path;
-        int len;
-
-        path = this->m_parse.getroot();
+    int len;
+    std::ifstream indexFile;
+    std::string path;
+    if (index.size() == 0)
         this->m_parse.setIndexToUse("index.html");
+    else
+    {
         if (path != "")
         {
             len = ft_strlen(path);
             if (path[len - 1] != '/')
                 path += "/";
         }
-        if (parse.getlocation().empty())
+        for (int i = 0; i < index.size(); i++)
+        {
+            path = root + index[i];
+            debug(path);
+            indexFile.open(path);
+            if (indexFile)
+            {
+                this->m_parse.setIndexToUse(index[i]);
+                indexFile.close();
+                return;
+            }
+            indexFile.close();
+        }
+    }
+}
+void Server::manageRequest(int socket)
+{
+    bool root = false;
+    bool check = false;
+    m_response.initResponse();
+    try
+    {
+        std::string path = "";
+        int len;
+
+        path = this->m_parse.getroot();
+        if (path == "")
+        {
+            path = "./Config";
+        }
+        if (path != "")
+        {
+            len = ft_strlen(path);
+            if (path[len - 1] != '/')
+                path += "/";
+        }
+        checkForTheIndex(this->m_parse.get_Index(), path);
+        // debug(this->m_parse.getIndexToUse());
+        if (this->m_parse.getlocation().empty())
             ;
         else
         {
-            if (m_request.getPath() != "/")
+            /**********************************************************************/
+            /* khasni n9ad had l3ayba man ba3d mali nrtaaah ***********************/
+            /**********************************************************************/
+            // if (m_request.getPath() != "/")
+            // {
+            for(int i = 0; i < this->m_parse.getlocation().size(); i++)
             {
-                for (int i = 0; i < parse.getlocation().size(); i++)
-                {
-                    if (m_request.getPath() == parse.getlocation()[i].getname())
-                    {
-                        path += parse.getlocation()[i].getname();
-                        if (parse.getlocation()[i].getindex()[0] != "")
-                            this->m_parse.setIndexToUse(parse.getlocation()[i].getindex()[0]);
-                    }
-                    throw NotFound();
-                }
+                if(this->m_parse.getlocation()[i].getname() == "/")
+                    root = true;
             }
+            for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+            {
+                if (m_request.getPath() == this->m_parse.getlocation()[i].getname())
+                {
+                    if (this->m_parse.getlocation()[i].getroot() != "")
+                    {
+                        path = this->m_parse.getlocation()[i].getroot();
+                        if (path != "")
+                        {
+                            len = ft_strlen(path);
+                            if (path[len - 1] != '/')
+                                path += "/";
+                        }
+                    }
+                    path += this->m_parse.getlocation()[i].getname();
+                    if (path != "")
+                    {
+                        len = ft_strlen(path);
+                        if (path[len - 1] != '/')
+                            path += "/";
+                    }
+                    if (this->m_parse.getlocation()[i].getindex().size() != 0)
+                        checkForTheIndex(this->m_parse.getlocation()[i].getindex(), path);
+                    else
+                        checkForTheIndex(this->m_parse.get_Index(), path);
+                }
+                // throw NotFound();
+            }
+            // }
         }
+        // debug(this->m_parse.getIndexToUse());
         path += this->m_parse.getIndexToUse();
-        debug(path);
         m_response.contentHeader("200 OK", "text", "html", readingTheFile(path));
     }
     catch (Server::Forbidden &e)
@@ -88,7 +142,5 @@ void Server::manageRequest(Parse parse, int socket)
     }
     m_response.setHeader();
     m_response.setResponse();
-    // std::cout << "response : " << m_response.getResponse() << std::endl;
-    // std::cout << "response ==> " << m_response.getResponse() << std::endl;
     send(socket, m_response.getResponse().c_str(), m_response.getResponse().length(), 0);
 }
