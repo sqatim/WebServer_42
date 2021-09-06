@@ -14,7 +14,9 @@
 #include "server.hpp"
 #include "Request.class.hpp"
 #include "Response.class.hpp"
-#include "../../Parsing/parse.hpp"
+// #include "../../Parsing/parse.hpp"
+
+class LocaTion;
 
 class Server
 {
@@ -42,12 +44,14 @@ public:
     };
     Server(Parse parse);
     int getSocketFd();
+    void location();
+    int locationContinued(int i);
     void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);
     void manipulation();
-    void checkForTheIndex(std::vector<std::string> index, std::string path);
+    int checkForTheIndex(std::vector<std::string> index, std::string path);
     void manageRequest(int socket);
     void debug(std::string str);
     ~Server();
