@@ -139,7 +139,6 @@ void Server::acceptNewConnection(fd_set *readySockets)
             }
         }
     }
-    std::cout << "###############################" << std::endl;
 }
 
 int Server::getSocketFd()

@@ -18,6 +18,7 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
     statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
+    std::cout << body << std::endl;
     this->m_contentLength += std::to_string(body.length());
 }
 
@@ -142,9 +143,6 @@ void Response::setHeader()
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";
-    // std::cout << "=================================" << std::endl;
-    // std::cout << "content lenght: " << this->m_contentLength << std::endl;
-    // std::cout << "=================================" << std::endl;
 }
 
 void Response::setResponse()

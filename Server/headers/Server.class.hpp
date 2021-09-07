@@ -44,16 +44,17 @@ public:
     };
     Server(Parse parse);
     int getSocketFd();
-    void location();
-    int locationContinued(int i);
+    void location(std::string &path);
+    int locationContinued(int i, std::string &path);
     void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);
     void manipulation();
-    int checkForTheIndex(std::vector<std::string> index, std::string path);
+    int checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path);
     void manageRequest(int socket);
     void debug(std::string str);
+    std::string readingTheFile(std::string filename);
     ~Server();
 };
 
