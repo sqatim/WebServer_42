@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/09/01 14:32:44 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 16:54:14 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ LocaTion::LocaTion(/* args */)
     this->upload_store = "";
     this->name = "";
     this->root = "";
+    this->option = "";
 }
 
 LocaTion::~LocaTion()
@@ -39,6 +40,7 @@ LocaTion::LocaTion(const LocaTion &src)
     this->upload_store = src.upload_store;
     this->name = src.name;
     this->root = src.root;
+    this->option = src.option;
 }
 
 LocaTion &LocaTion::operator=(const LocaTion &src)
@@ -52,6 +54,7 @@ LocaTion &LocaTion::operator=(const LocaTion &src)
     this->upload_store = src.upload_store;
     this->name = src.name;
     this->root = src.root;
+    this->option = src.option;
     return *this;
 }
 
@@ -63,7 +66,7 @@ void LocaTion::setindex(std::vector<std::string> val)
     {
         this->index.push_back(val[i]);
         i++;
-    }    
+    }
 }
 std::vector<std::string> LocaTion::getindex()
 {
@@ -139,4 +142,12 @@ void LocaTion::setroot(std::string val)
 std::string LocaTion::getroot()
 {
     return this->root;
+}
+void LocaTion::setoption(std::string val)
+{
+    this->option = val;
+}
+std::string LocaTion::getoption()
+{
+    return this->option;
 }

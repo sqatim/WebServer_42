@@ -5,9 +5,12 @@ int main()
 {
     try
     {
-        Parse parse("webserv.conf");
-        Server server(parse);
-        server.manipulation();
+        WebServ parse("webserv.conf");
+        for (int i = 0; i < parse.getwebserv().size(); i++)
+        {
+            Server server(parse.getwebserv()[i]);
+            server.manipulation();
+        }
     }
     catch (std::string error)
     {

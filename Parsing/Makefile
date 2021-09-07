@@ -7,6 +7,7 @@ SRC_NAME = parse.cpp\
 			tools.cpp\
 			check_error.cpp\
 			location.cpp\
+			webServ.cpp\
 
 
 

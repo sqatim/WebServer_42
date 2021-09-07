@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/01 14:22:34 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/01 16:53:14 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
-# define LOCATION_HPP
-# include "parse.hpp"
+#define LOCATION_HPP
+#include "parse.hpp"
 
 typedef struct s_ret
 {
@@ -32,11 +32,12 @@ private:
     std::string upload_store;
     std::string name;
     std::string root;
+    std::string option;
 
     /* data */
 public:
     LocaTion(/* args */);
-    LocaTion(const LocaTion & src);
+    LocaTion(const LocaTion &src);
     LocaTion &operator=(const LocaTion &f);
     void setindex(std::vector<std::string> val);
     std::vector<std::string> getindex();
@@ -56,6 +57,8 @@ public:
     std::string getname();
     void setroot(std::string val);
     std::string getroot();
+    void setoption(std::string val);
+    std::string getoption();
     ~LocaTion();
 };
 
