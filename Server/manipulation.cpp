@@ -12,23 +12,12 @@ int ft_strlen(std::string str)
 std::string readingTheFile(std::string filename)
 {
 
-    std::ifstream myReadFile("/Users/sqatim/Desktop/WebServer_42/form.html");
-    // https://www.cplusplus.com/reference/ios/ios/exceptions/
-    // Get/set exceptions mask
-    // failbit	Logical error on i/o operation	fail == true
-    // myReadFile.exceptions(std::ifstream::badbit);
-    /* code */
+    std::ifstream myReadFile;
     std::string text;
     std::string line;
-    std::cout << "==============================" << std::endl;
-    std::cout << "Reading the file " << filename << std::endl;
-    std::cout << "==============================" << std::endl;
-    // myReadFile.open(filename);
-    // if (!myReadFile)
-    // {
-    // std::cout << myReadFile << std::endl;
-    //     throw Server::Forbidden();
-    // }
+    myReadFile.open(filename);
+    if (!myReadFile)
+        throw Server::Forbidden();
     text = "\0";
     while (std::getline(myReadFile, line))
     {
@@ -37,49 +26,130 @@ std::string readingTheFile(std::string filename)
             text += "\n";
     }
     myReadFile.close();
-    // std::cout << "text <<   " << text << std::endl;
     return (text);
 }
 
-void Server::manageRequest(Parse parse, int socket)
+void slash(std::string *path)
+{
+    int len;
+    if (*path != "")
+    {
+        len = ft_strlen(*path);
+        if ((*path)[len - 1] != '/')
+            *path += "/";
+    }
+}
+
+int Server::checkForTheIndex(std::vector<std::string> index, std::string root)
+{
+    int len;
+    std::ifstream indexFile;
+    std::string path;
+    slash(&path);
+    if (index.size() == 0)
+    {
+        this->m_parse.setIndexToUse("index.html");
+        path = root + "index.html";
+        indexFile.open(path);
+        if (indexFile)
+        {
+            indexFile.close();
+            return 1;
+        }
+        indexFile.close();
+        return (0);
+    }
+    else
+    {
+        slash(&root);
+        for (int i = 0; i < index.size(); i++)
+        {
+            path = root + index[i];
+            indexFile.open(path);
+            debug(path);
+            if (indexFile)
+            {
+                this->m_parse.setIndexToUse(index[i]);
+                indexFile.close();
+                return 1;
+            }
+            indexFile.close();
+        }
+    }
+    return (0);
+}
+
+int Server::locationContinued(int i)
+{
+    std::string path;
+    int check;
+
+    this->m_response.setType(0);
+    if (this->m_parse.getlocation()[i].getroot() != "")
+    {
+        path = this->m_parse.getlocation()[i].getroot();
+        slash(&path);
+    }
+    // 3nadi mushkil hna dyal slash hta n9ado ghada
+    // ##/Users/sqatim/Desktop/testNginx//wordpress##
+    if (this->m_parse.getlocation()[i].getname() != "/")
+        path += this->m_parse.getlocation()[i].getname();
+    // debug(path);
+    slash(&path);
+    if (this->m_parse.getlocation()[i].getindex().size() != 0)
+        check = checkForTheIndex(this->m_parse.getlocation()[i].getindex(), path);
+    else
+        check = checkForTheIndex(this->m_parse.get_Index(), path);
+    return (check);
+}
+
+void Server::location()
+{
+    int check;
+
+    if (this->m_parse.getlocation().size() != 0)
+    {
+        for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+        {
+            if (m_request.getPath() == this->m_parse.getlocation()[i].getname())
+            {
+                if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
+                {
+                    this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
+                                                    this->m_parse.getlocation()[i].get_return()[0].path);
+                    check = 1;
+                }
+                else
+                {
+                    if ((check = locationContinued(i)) == 1)
+                        break;
+                }
+            }
+        }
+        if (check != 1)
+            throw NotFound();
+    }
+}
+void Server::manageRequest(int socket)
 {
     m_response.initResponse();
     try
     {
-        std::string path;
+        std::string path = "";
         int len;
 
         path = this->m_parse.getroot();
-        std::cout << "[" << this->m_parse.getroot() << "]" << std::endl;
-
-        this->debug(this->m_parse.get_Index()[0]);
-        this->m_parse.setIndexToUse(this->m_parse.get_Index()[0]);
-        if (path != "")
+        if (path == "")
+            path = "./Config";
+        slash(&path);
+        checkForTheIndex(this->m_parse.get_Index(), path);
+        location();
+        if (this->m_response.getType() == 0)
         {
-            len = ft_strlen(path);
-            if (path[len - 1] != '/')
-                path += "/";
+            path += this->m_parse.getIndexToUse();
+            m_response.contentHeader("200", "text", "html", readingTheFile(path));
+            debug(m_response.getHeader());
         }
-        if (parse.getlocation().empty())
-            ;
-        else
-        {
-            if (m_request.getPath() != "/")
-            {
-                for (int i = 0; i < parse.getlocation().size(); i++)
-                {
-                    if (m_request.getPath() == parse.getlocation()[i].getname())
-                    {
-                        path += parse.getlocation()[i].getname();
-                        if (parse.getlocation()[i].getindex()[0] != "")
-                            this->m_parse.setIndexToUse(parse.getlocation()[i].getindex()[0]);
-                    }
-                    throw NotFound();
-                }
-            }
-        }
-        path += this->m_parse.getIndexToUse();
-        m_response.contentHeader("200 OK", "text", "html", readingTheFile(path));
     }
     catch (Server::Forbidden &e)
     {
@@ -93,7 +163,6 @@ void Server::manageRequest(Parse parse, int socket)
     }
     m_response.setHeader();
     m_response.setResponse();
-    // std::cout << "response : " << m_response.getResponse() << std::endl;
-    // std::cout << "response ==> " << m_response.getResponse() << std::endl;
+    // debug(m_response.getResponse());
     send(socket, m_response.getResponse().c_str(), m_response.getResponse().length(), 0);
 }

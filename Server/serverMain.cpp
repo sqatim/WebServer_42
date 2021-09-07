@@ -1,17 +1,16 @@
 #include <arpa/inet.h>
 #include "Server.class.hpp"
-// #include ""
-#include "../Parsing/webserv.hpp"
 
 int main()
 {
     try
     {
-        WebServ *webserv = new WebServ("webserv.conf");
-        // Parse parse("webserv.conf");
-        // std::cout << parse ;
-        // Server server(parse);
-        // server.manipulation(parse);
+        WebServ parse("webserv.conf");
+        for (int i = 0; i < parse.getwebserv().size(); i++)
+        {
+            Server server(parse.getwebserv()[i]);
+            server.manipulation();
+        }
     }
     catch (std::string error)
     {

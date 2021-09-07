@@ -14,14 +14,13 @@
 #include "server.hpp"
 #include "Request.class.hpp"
 #include "Response.class.hpp"
-#include "../../Parsing/parse.hpp"
+#include "../../Parsing/webserv.hpp"
 
-// #define PORT 5000
+class LocaTion;
 
 class Server
 {
 private:
-    // t_content m_content;
     int *m_socketFd;
     int m_maxFd;
     fd_set m_currentSocket;
@@ -33,8 +32,6 @@ private:
     Response m_response;
 
 public:
-    // std::string responseConcatenation(std::string status, int length, std::string type[2], std::string body);
-    // Server(int port);
     class NotFound
     {
     public:
@@ -47,11 +44,15 @@ public:
     };
     Server(Parse parse);
     int getSocketFd();
+    void location();
+    int locationContinued(int i);
+    void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);
-    void manipulation(Parse parse);
-    void manageRequest(Parse parse, int socket);
+    void manipulation();
+    int checkForTheIndex(std::vector<std::string> index, std::string path);
+    void manageRequest(int socket);
     void debug(std::string str);
     ~Server();
 };
