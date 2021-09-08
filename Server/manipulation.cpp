@@ -1,5 +1,33 @@
 #include "Server.class.hpp"
 
+char *ft_strjoin(char const *s1, char const *s2)
+{
+    char *p;
+    size_t i;
+    size_t j;
+    size_t k;
+
+    i = 0;
+    j = 0;
+    k = 0;
+    if (s1 && s2)
+    {
+        p = new char[sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1)];
+        if (p == NULL)
+            return (NULL);
+        while (s1[j])
+        {
+            p[i++] = s1[j++];
+        }
+        while (s2[k])
+        {
+            p[i++] = s2[k++];
+        }
+        p[i] = '\0';
+        return (p);
+    }
+    return (NULL);
+}
 int ft_strlen(std::string str)
 {
     int i;
@@ -9,20 +37,17 @@ int ft_strlen(std::string str)
         i++;
     return (i);
 }
-std::string Server::readingTheFile(std::string filename)
+std::string Server::readingTheFile(char *filename)
 {
 
     std::ifstream myReadFile(filename);
     std::string text;
     std::string line;
-    debug(filename);
-    // std::cout << myReadFile.is_open() << std::endl;
-    // 3andi msushkulll hna fash kan9alab 3la file wash kayn ola la
-    if (!myReadFile.is_open())
-    {
-        debug("wa saaaaaamiir");
+
+    delete[] filename;
+    // debug(filename);
+    if (!myReadFile)
         throw Server::Forbidden();
-    }
     text = "\0";
     while (std::getline(myReadFile, line))
     {
@@ -39,9 +64,9 @@ void slash(std::string *path)
     int len;
     if (*path != "")
     {
-        len = ft_strlen(*path);
+        len = ft_strlen(path->c_str());
         if ((*path)[len - 1] != '/')
-            *path += "/";
+            path->insert(len, "/");
     }
 }
 
@@ -49,15 +74,18 @@ int Server::checkForTheIndex(std::vector<std::string> index, std::string root, s
 {
     int len;
     std::ifstream indexFile;
-    std::string pathForTest;
+    char *pathForTest;
     // slash(&pathForTest);
     if (index.size() == 0)
     {
         if (this->m_parse.getIndexToUse() == "")
             this->m_parse.setIndexToUse("index.html");
-        pathForTest = root + "index.html";
-        // debug(pathForTest);
+        slash(&root);
+        // std::cout << "trying: " << root.c_str() << std::endl;
+        pathForTest = ft_strjoin(root.c_str(), "index.html");
         indexFile.open(pathForTest);
+        // debug(pathForTest);
+        delete pathForTest;
         if (indexFile)
         {
             path = root;
@@ -72,9 +100,9 @@ int Server::checkForTheIndex(std::vector<std::string> index, std::string root, s
         slash(&root);
         for (int i = 0; i < index.size(); i++)
         {
-            pathForTest = root + index[i];
+            pathForTest = ft_strjoin(root.c_str(), index[i].c_str());
             indexFile.open(pathForTest);
-            // debug(pathForTest);
+            delete pathForTest;
             if (indexFile)
             {
                 this->m_parse.setIndexToUse(index[i]);
@@ -99,16 +127,14 @@ int Server::locationContinued(int i, std::string &path)
         root = this->m_parse.getlocation()[i].getroot();
         slash(&root);
     }
-    // 3nadi mushkil hna dyal slash hta n9ado ghada
-    // ##/Users/sqatim/Desktop/testNginx//wordpress##
     if (this->m_parse.getlocation()[i].getname() != "/")
     {
-
         if (root[root.length() - 1] == '/')
             root[root.length() - 1] = '\0';
-        root += this->m_parse.getlocation()[i].getname();
+        root.insert(root.length() - 1, this->m_parse.getlocation()[i].getname().c_str());
     }
     slash(&root);
+
     if (this->m_parse.getlocation()[i].getindex().size() != 0)
         check = checkForTheIndex(this->m_parse.getlocation()[i].getindex(), root, path);
     else
@@ -118,7 +144,7 @@ int Server::locationContinued(int i, std::string &path)
 
 void Server::location(std::string &path)
 {
-    int check;
+    int check = 0;
 
     if (this->m_parse.getlocation().size() != 0)
     {
@@ -126,6 +152,7 @@ void Server::location(std::string &path)
         {
             if (m_request.getPath() == this->m_parse.getlocation()[i].getname())
             {
+                // debug(this->m_parse.getlocation()[i].getname());
                 if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
                 {
                     this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
@@ -150,7 +177,7 @@ void Server::manageRequest(int socket)
     {
         std::string path = "";
         int len;
-
+        char *result;
         path = this->m_parse.getroot();
         if (path == "")
             path = "./Config";
@@ -159,16 +186,12 @@ void Server::manageRequest(int socket)
         location(path);
         if (this->m_response.getType() == 0)
         {
-            path += this->m_parse.getIndexToUse();
-            // debug(path);
-            m_response.contentHeader("200", "text", "html", readingTheFile(path));
-            // debug(this->m_response.getHeader());
-            // debug(m_response.getHeader());
+            result = ft_strjoin(path.c_str(), this->m_parse.getIndexToUse().c_str());
+            m_response.contentHeader("200", "text", "html", readingTheFile(result));
         }
     }
     catch (Server::Forbidden &e)
     {
-
         m_response.forbiddenBody();
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
     }
@@ -178,7 +201,8 @@ void Server::manageRequest(int socket)
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
     }
     m_response.setHeader();
+    // debug(this->m_response.getHeader());
+    // this->m_response.getStatus();
     m_response.setResponse();
-    // debug(m_response.getResponse());
     send(socket, m_response.getResponse().c_str(), m_response.getResponse().length(), 0);
 }

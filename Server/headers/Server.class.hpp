@@ -54,7 +54,7 @@ public:
     int checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path);
     void manageRequest(int socket);
     void debug(std::string str);
-    std::string readingTheFile(std::string filename);
+    std::string readingTheFile(char *filename);
     ~Server();
 };
 

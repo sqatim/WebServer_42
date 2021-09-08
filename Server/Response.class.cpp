@@ -18,7 +18,6 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
     statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
-    std::cout << body << std::endl;
     this->m_contentLength += std::to_string(body.length());
 }
 
@@ -26,6 +25,7 @@ void Response::defaultBody()
 {
     this->m_status = "304 Not Modified";
     this->m_body = "<head>";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">";
     this->m_body += "<title>Welcome to Barnatouti!</title>";
     this->m_body += "<style>";
     this->m_body += "html { color-scheme: light dark; }";
@@ -41,21 +41,26 @@ void Response::defaultBody()
 void Response::notFoundBody()
 {
     this->m_status = "404 Not Found";
-    this->m_body = "<html>";
-    this->m_body += "<head><title>404 Not Found</title></head>";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>404 Not Found</title>\n</head>";
     this->m_body += "<center><h1>404 Not Found</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "<html>";
+    this->m_body += "</html>";
 }
 
 void Response::forbiddenBody()
 {
     this->m_status = "403 Forbidden";
-    this->m_body = "<html>";
-    this->m_body += "<head><title>403 Forbidden</title></head>";
-    this->m_body = "<center><h1>403 Forbidden</h1></center>\n";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>403 Forbidden</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>403 Forbidden</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "<html>";
+    this->m_body += "</html>";
 }
 
 int Response::checkLocation(LocaTion location)
@@ -80,6 +85,8 @@ void Response::statusIndication(std::string status)
 {
     if (status == "200")
         this->m_status = "200 OK";
+    else if (status == "301")
+        this->m_status = "301 Moved Permanently";
     else if (status == "304")
         this->m_status = "304 Not Modified";
     else if (status == "403")

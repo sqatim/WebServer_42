@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/02 17:29:11 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/08 16:19:03 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ WebServ::WebServ(std::string _filename)
         i++;
     }
     i = 0;
-    while (i < this->_webserv.size())
-    {
-        std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
-        std::cout << this->_webserv[i] << std::endl;
-        i++;
-    }
+    // while (i < this->_webserv.size())
+    // {
+    //     std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
+    //     std::cout << this->_webserv[i] << std::endl;
+    //     i++;
+    // }
     // std::cout << parse;
     // std::cout  << "amine" << std::endl;
 }

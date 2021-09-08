@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:07:46 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/03 13:57:34 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/08 12:20:54 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int ft_remplissage(char **tmp, int fd, char **line)
 		*line = ft_substr(tmp[fd], 0, r);
 	tmp[fd] = ft_check(tmp, r, fd);
 	free(delt);
-	// std::cout << "[" << tmp[fd][0] << "]" << std::endl;
 	return (1);
 }
 
