@@ -116,23 +116,36 @@ int Server::checkForTheIndex(std::vector<std::string> index, std::string root, s
     return (0);
 }
 
-int Server::locationContinued(int i, std::string &path)
+// param location a zadto 3lama y9ad liya amine blan
+int Server::locationContinued(int i, std::string &path, std::string location)
 {
     std::string root;
     int check;
-
+    struct stat fileStat;
     this->m_response.setType(0);
     if (this->m_parse.getlocation()[i].getroot() != "")
     {
         root = this->m_parse.getlocation()[i].getroot();
         slash(&root);
     }
-    if (this->m_parse.getlocation()[i].getname() != "/")
+    if (location != "/")
     {
         if (root[root.length() - 1] == '/')
             root[root.length() - 1] = '\0';
-        root.insert(root.length() - 1, this->m_parse.getlocation()[i].getname().c_str());
+        root.insert(root.length() - 1, location.c_str());
     }
+    if (stat(root.c_str(), &fileStat) == 0)
+    {
+        if (fileStat.st_mode & S_IFDIR)
+        {
+            std::cout << "It's a directory" << std::endl;
+        }
+        else if (fileStat.st_mode & S_IFREG)
+        {
+            std::cout << "It's a file" << std::endl;
+        }
+    }
+    std::cout << root.c_str() << std::endl;
     slash(&root);
 
     if (this->m_parse.getlocation()[i].getindex().size() != 0)
@@ -145,14 +158,23 @@ int Server::locationContinued(int i, std::string &path)
 void Server::location(std::string &path)
 {
     int check = 0;
-
+    const char *str;
+    std::string location;
     if (this->m_parse.getlocation().size() != 0)
     {
         for (int i = 0; i < this->m_parse.getlocation().size(); i++)
         {
-            if (m_request.getPath() == this->m_parse.getlocation()[i].getname())
+            // hadi zadtha gha 3la 9bal slash lakhra dyal location
+            location = this->m_parse.getlocation()[i].getname();
+            str = this->m_parse.getlocation()[i].getname().c_str();
+            for (int j = location.length() - 1; (str[j] == '/' && j != 0); j--)
+                location[j] = '\0';
+            location = location.c_str();
+            // this->m_parse.getlocation()[i].setname(location.c_str());
+            // std::cout << "location name: " << this->m_parse.getlocation()[i].getname() << std::endl;
+            // *********************************
+            if (m_request.getPath() == location)
             {
-                // debug(this->m_parse.getlocation()[i].getname());
                 if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
                 {
                     this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
@@ -161,7 +183,7 @@ void Server::location(std::string &path)
                 }
                 else
                 {
-                    if ((check = locationContinued(i, path)) == 1)
+                    if ((check = locationContinued(i, path, location)) == 1)
                         break;
                 }
             }
@@ -187,6 +209,7 @@ void Server::manageRequest(int socket)
         if (this->m_response.getType() == 0)
         {
             result = ft_strjoin(path.c_str(), this->m_parse.getIndexToUse().c_str());
+            // debug(result);
             m_response.contentHeader("200", "text", "html", readingTheFile(result));
         }
     }

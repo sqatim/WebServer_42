@@ -53,13 +53,17 @@ void Request::getWords()
 void Request::parsingRequestLine()
 {
     std::string line;
+    std::string path;
     std::istringstream stringStream;
     char **array;
     stringStream.str(this->m_request);
     getline(stringStream, line);
     array = ft_split(line, ' ');
     this->m_method = toString(array[0]);
-    this->m_path = toString(array[1]);
+    path = toString(array[1]);
+    // for (int i = path.length() - 1; (path.c_str()[i] == '/' && i != 0); i--)
+    // path[i] = '\0';
+    this->m_path = path.c_str();
     for (int i = 0; array[i]; i++)
         delete array[i];
     delete[] array;

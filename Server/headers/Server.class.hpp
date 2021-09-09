@@ -45,7 +45,7 @@ public:
     Server(Parse parse);
     int getSocketFd();
     void location(std::string &path);
-    int locationContinued(int i, std::string &path);
+    int locationContinued(int i, std::string &path, std::string location);
     void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();

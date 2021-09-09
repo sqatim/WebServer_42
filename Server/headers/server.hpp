@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include "get_next_line.hpp"
+#include <sys/stat.h>
 
 char **ft_split(std::string s, char c);
 std::string getWord(char *str, int nLine, int nWord);
