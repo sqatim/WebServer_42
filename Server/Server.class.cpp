@@ -134,6 +134,7 @@ void Server::acceptNewConnection(fd_set *readySockets)
             else
             {
                 std::cout << "client_socket " << i << std::endl;
+                // std::cout << "amine " << i << std::endl;
                 if (this->m_request.parsingRequest(i, &(*readySockets)))
                     this->manageRequest(i);
             }

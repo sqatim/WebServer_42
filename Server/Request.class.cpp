@@ -70,6 +70,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     int counter;
 
     counter = 0;
+    // std::cout << "a,ione" << std::endl;
     if (get_next_line(socket, &buffer) == 0)
     {
         std::cout << "disconnected" << std::endl;
@@ -79,6 +80,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     }
     else
     {
+        std::cout << buffer << std::endl;
         this->requestHeaders(counter, buffer);
         delete[] buffer;
         counter++;
