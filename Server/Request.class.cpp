@@ -50,6 +50,17 @@ void Request::getWords()
 {
 }
 
+static void slash(std::string *path)
+{
+    int len;
+    if (*path != "")
+    {
+        len = ft_strlen(path->c_str());
+        if ((*path)[len - 1] != '/')
+            path->insert(len, "/");
+    }
+}
+
 void Request::parsingRequestLine()
 {
     std::string line;
@@ -61,8 +72,15 @@ void Request::parsingRequestLine()
     array = ft_split(line, ' ');
     this->m_method = toString(array[0]);
     path = toString(array[1]);
+    for (int j = path.length() - 1; (path[j] == '/' && j != 0); j--)
+    {
+        if (path[j - 1] != '/')
+            break;
+        path[j] = '\0';
+    }
     // for (int i = path.length() - 1; (path.c_str()[i] == '/' && i != 0); i--)
     // path[i] = '\0';
+    slash(&path);
     this->m_path = path.c_str();
     for (int i = 0; array[i]; i++)
         delete array[i];

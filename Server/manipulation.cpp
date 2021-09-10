@@ -45,10 +45,10 @@ std::string Server::readingTheFile(char *filename)
     std::string line;
 
     delete[] filename;
-    // debug(filename);
+    debug(filename);
     if (!myReadFile)
         throw Server::Forbidden();
-    text = "\0";
+    text = "";
     while (std::getline(myReadFile, line))
     {
         text += line;
@@ -81,10 +81,8 @@ int Server::checkForTheIndex(std::vector<std::string> index, std::string root, s
         if (this->m_parse.getIndexToUse() == "")
             this->m_parse.setIndexToUse("index.html");
         slash(&root);
-        // std::cout << "trying: " << root.c_str() << std::endl;
         pathForTest = ft_strjoin(root.c_str(), "index.html");
         indexFile.open(pathForTest);
-        // debug(pathForTest);
         delete pathForTest;
         if (indexFile)
         {
@@ -128,63 +126,142 @@ int Server::locationContinued(int i, std::string &path, std::string location)
         root = this->m_parse.getlocation()[i].getroot();
         slash(&root);
     }
+    // std::cout << "#################" << root << std::endl;
     if (location != "/")
     {
-        if (root[root.length() - 1] == '/')
-            root[root.length() - 1] = '\0';
-        root.insert(root.length() - 1, location.c_str());
+        root.insert(root.length(), location.c_str());
+        // std::cout << "jijijaja " << root << std::endl;
     }
+    if (root[ft_strlen(root.c_str()) - 1] == '/')
+        root.erase(root.length() - 1);
     if (stat(root.c_str(), &fileStat) == 0)
     {
-        if (fileStat.st_mode & S_IFDIR)
+        if (fileStat.st_mode & S_IFREG)
         {
-            std::cout << "It's a directory" << std::endl;
-        }
-        else if (fileStat.st_mode & S_IFREG)
-        {
+            path = root.c_str();
+            this->m_response.setType(2);
             std::cout << "It's a file" << std::endl;
+            return (1);
         }
     }
-    std::cout << root.c_str() << std::endl;
+    else
+        return (0);
     slash(&root);
-
     if (this->m_parse.getlocation()[i].getindex().size() != 0)
         check = checkForTheIndex(this->m_parse.getlocation()[i].getindex(), root, path);
     else
         check = checkForTheIndex(this->m_parse.get_Index(), root, path);
     return (check);
 }
+int ft_comparaison(std::string location, std::string uri)
+{
+    int i;
+
+    for (i = 0; location.c_str()[i]; i++)
+    {
+        if (i == 0 && (location.c_str()[0] == '/' && uri.c_str()[0] == '/'))
+            i++;
+        if (location.c_str()[i] == '/' && location.c_str()[i + 1] == '\0')
+            break;
+        if (location[i] != uri[i] || (location.c_str()[i] == '/' && location.c_str()[i + 1] == '/'))
+            return (0);
+    }
+    return (1);
+}
+int ft_cgi(std::string path)
+{
+    int len;
+
+    len = ft_strlen(path.c_str());
+    if (path[len - 1] == '/')
+        path[--len] = '\0';
+    // std::cout << "###########" << path << "############" << std::endl;
+    if (len >= 4 && path[len - 1] == 'p' && path[len - 2] == 'h' && path[len - 3] == 'p' && path[len - 4] == '.')
+    {
+        return (1);
+    }
+    if (len >= 3 && path[len - 1] == 'p' && path[len - 2] == 'y' && path[len - 3] == '.')
+        return (2);
+
+    return (0);
+}
+
+std::string ft_joinSlash(char **array)
+{
+    std::string str = "";
+    int len;
+    for (int i = 0; array[i]; i++)
+    {
+        len = ft_strlen(str.c_str());
+        str.insert(len, array[i]);
+        len = ft_strlen(str.c_str());
+        if (array[i + 1])
+            str.insert(len, "/");
+    }
+    return (str.c_str());
+}
 
 void Server::location(std::string &path)
 {
     int check = 0;
-    const char *str;
+    int cgi;
     std::string location;
+    char **array;
+    std::string root;
+    // khasni n9alab hta f location 3la php o py wash kaynin
     if (this->m_parse.getlocation().size() != 0)
     {
-        for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+        if ((cgi = ft_cgi(m_request.getPath().c_str()) == 1) || (cgi = ft_cgi(m_request.getPath().c_str()) == 2))
         {
-            // hadi zadtha gha 3la 9bal slash lakhra dyal location
-            location = this->m_parse.getlocation()[i].getname();
-            str = this->m_parse.getlocation()[i].getname().c_str();
-            for (int j = location.length() - 1; (str[j] == '/' && j != 0); j--)
-                location[j] = '\0';
-            location = location.c_str();
-            // this->m_parse.getlocation()[i].setname(location.c_str());
-            // std::cout << "location name: " << this->m_parse.getlocation()[i].getname() << std::endl;
-            // *********************************
-            if (m_request.getPath() == location)
+            root = m_request.getPath().c_str();
+            int k = 0;
+            std::cout << "-------------" << root << "-------------" << std::endl;
+            if (cgi == 1)
             {
-                if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
+                for (; this->m_parse.getlocation()[k].getname() != "*.php" && k < this->m_parse.getlocation().size(); k++)
+                    ;
+            }
+            else
+            {
+                for (; this->m_parse.getlocation()[k].getname() != "*.py"; k++)
+                    ;
+            }
+            if (this->m_parse.getlocation()[k].getname() == "*.php" || this->m_parse.getlocation()[k].getname() != "*.py")
+            {
+                location = root;
+                if (location[0] == '/')
+                    location.erase(0, 1);
+                check = locationContinued(k, path, location);
+            }
+            check = 0;
+        }
+        else
+        {
+            for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+            {
+                location = this->m_parse.getlocation()[i].getname();
+                slash(&location);
+                location = location.c_str();
+                std::cout << "************" << location << "************" << std::endl;
+                if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
                 {
-                    this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
-                                                    this->m_parse.getlocation()[i].get_return()[0].path);
-                    check = 1;
-                }
-                else
-                {
-                    if ((check = locationContinued(i, path, location)) == 1)
-                        break;
+                    array = ft_split(m_request.getPath().c_str(), '/');
+
+                    location = ft_joinSlash(array);
+                    for (int i = 0; array[i]; i++)
+                        delete array[i];
+                    delete[] array;
+                    if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
+                    {
+                        this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
+                                                        this->m_parse.getlocation()[i].get_return()[0].path);
+                        check = 1;
+                    }
+                    else
+                    {
+                        if ((check = locationContinued(i, path, location)) == 1)
+                            break;
+                    }
                 }
             }
         }
@@ -206,11 +283,18 @@ void Server::manageRequest(int socket)
         slash(&path);
         checkForTheIndex(this->m_parse.get_Index(), path, path);
         location(path);
-        if (this->m_response.getType() == 0)
+        if (this->m_response.getType() == 0 || this->m_response.getType() == 2)
         {
-            result = ft_strjoin(path.c_str(), this->m_parse.getIndexToUse().c_str());
-            // debug(result);
-            m_response.contentHeader("200", "text", "html", readingTheFile(result));
+            if (this->m_response.getType() == 0)
+            {
+                result = ft_strjoin(path.c_str(), this->m_parse.getIndexToUse().c_str());
+                m_response.contentHeader("200", "text", "html", readingTheFile(result));
+            }
+            else
+            {
+                result = strdup(path.c_str());
+                m_response.contentHeader("200", "text", "html", readingTheFile(result));
+            }
         }
     }
     catch (Server::Forbidden &e)

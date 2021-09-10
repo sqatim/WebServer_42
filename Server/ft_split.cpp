@@ -27,10 +27,10 @@ static char		*leak(char **spl, int j)
 	j = j - 1;
 	while (spl[j])
 	{
-		free(spl[j]);
+		delete (spl[j]);
 		j--;
 	}
-	free(spl);
+	delete (spl);
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/07 16:03:21 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/10 13:52:38 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,13 @@ Parse &Parse::operator=(const Parse &src)
 void Parse::setlisten(std::vector<int> val)
 {
     listen.clear();
-    this->listen = val;
+    int i = 0;
+    while (i < val.size())
+    {
+        listen.push_back(val[i]);
+        i++;
+    }
+    // this->listen = val;
 }
 
 std::vector<int> Parse::getlisten()

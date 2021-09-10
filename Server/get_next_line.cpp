@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:07:46 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/08 12:20:54 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/10 11:12:05 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int free_leak(char **ptr, int nb, int fd)
 	{
 		if (*ptr && ptr)
 		{
-			free(*ptr);
+			delete (*ptr);
 			*ptr = NULL;
 		}
 	}
@@ -57,7 +57,7 @@ int ft_remplissage(char **tmp, int fd, char **line)
 	else
 		*line = ft_substr(tmp[fd], 0, r);
 	tmp[fd] = ft_check(tmp, r, fd);
-	free(delt);
+	delete (delt);
 	return (1);
 }
 
@@ -104,7 +104,7 @@ int get_next_line(int fd, char **line)
 		buf[r] = '\0';
 		tmp[1] = ft_strjoin_free(tmp[1], buf);
 	}
-	free(buf);
+	delete (buf);
 	if (r == -1 || (r == 0 && !ft_strlen(tmp[1])))
 	{
 		*line = ft_strdup("");
