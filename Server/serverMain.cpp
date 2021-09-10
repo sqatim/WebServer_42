@@ -6,11 +6,11 @@ int main()
     try
     {
         WebServ parse("webserv.conf");
-        for (int i = 0; i < parse.getwebserv().size(); i++)
-        {
-            Server server(parse.getwebserv()[i]);
-            server.manipulation();
-        }
+        // for (int i = 0; i < parse.getwebserv().size(); i++)
+        // {
+        //     Server server(parse.getwebserv()[i]);
+        //     server.manipulation();
+        // }
     }
     catch (std::string error)
     {

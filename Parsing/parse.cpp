@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/02 16:44:04 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/10 13:48:59 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,12 @@ Parse &Parse::operator=(const Parse &src)
 void Parse::setlisten(std::vector<int> val)
 {
     listen.clear();
-    this->listen = val;
+    int i = 0;
+    while (i < val.size())
+    {
+        this->listen.push_back(val[i]);
+        i++;
+    }
 }
 
 std::vector<int> Parse::getlisten()

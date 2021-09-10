@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/02 17:30:15 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/10 13:49:47 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,17 @@ void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len
     std::vector <LocaTion> tmp;
     std::vector<std::string> tmp1;
     std::vector<t_ret> tmp2;
+    std::vector<int> tmp4;
     i = _begin;
     while (i < vect.size() &&  i < server_len)
     {
         if (vect[i].find("listen") != -1)
         {
-            std::vector<int> tmp;
+            std::cout << "amine" << std::endl;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "listen")
-                tmp.push_back(std::stoi(vect_str[1]));
-            parse->setlisten(tmp);
+                tmp4.push_back(std::stoi(vect_str[1]));
+            parse->setlisten(tmp4);
         }
         if (vect[i].find("server_name") != -1)
         {
