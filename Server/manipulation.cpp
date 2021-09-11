@@ -45,7 +45,6 @@ std::string Server::readingTheFile(char *filename)
     std::string line;
 
     delete[] filename;
-    debug(filename);
     if (!myReadFile)
         throw Server::Forbidden();
     text = "";
@@ -147,6 +146,7 @@ int Server::locationContinued(int i, std::string &path, std::string location)
     else
         return (0);
     slash(&root);
+    // debug(root);
     if (this->m_parse.getlocation()[i].getindex().size() != 0)
         check = checkForTheIndex(this->m_parse.getlocation()[i].getindex(), root, path);
     else
@@ -175,7 +175,6 @@ int ft_cgi(std::string path)
     len = ft_strlen(path.c_str());
     if (path[len - 1] == '/')
         path[--len] = '\0';
-    // std::cout << "###########" << path << "############" << std::endl;
     if (len >= 4 && path[len - 1] == 'p' && path[len - 2] == 'h' && path[len - 3] == 'p' && path[len - 4] == '.')
     {
         return (1);
@@ -208,45 +207,48 @@ void Server::location(std::string &path)
     std::string location;
     char **array;
     std::string root;
+    int cgiFound = 0;
     // khasni n9alab hta f location 3la php o py wash kaynin
     if (this->m_parse.getlocation().size() != 0)
     {
-        if ((cgi = ft_cgi(m_request.getPath().c_str()) == 1) || (cgi = ft_cgi(m_request.getPath().c_str()) == 2))
-        {
-            root = m_request.getPath().c_str();
-            int k = 0;
-            std::cout << "-------------" << root << "-------------" << std::endl;
-            if (cgi == 1)
-            {
-                for (; this->m_parse.getlocation()[k].getname() != "*.php" && k < this->m_parse.getlocation().size(); k++)
-                    ;
-            }
-            else
-            {
-                for (; this->m_parse.getlocation()[k].getname() != "*.py"; k++)
-                    ;
-            }
-            if (this->m_parse.getlocation()[k].getname() == "*.php" || this->m_parse.getlocation()[k].getname() != "*.py")
-            {
-                location = root;
-                if (location[0] == '/')
-                    location.erase(0, 1);
-                check = locationContinued(k, path, location);
-            }
-            check = 0;
-        }
-        else
+        // if ((cgi = ft_cgi(m_request.getPath().c_str()) == 1) || (cgi = ft_cgi(m_request.getPath().c_str()) == 2))
+        // {
+        //     root = m_request.getPath().c_str();
+        //     int k = 0;
+        //     std::cout << "-------------" << root << "-------------" << std::endl;
+        //     if (cgi == 1)
+        //     {
+        //         for (; this->m_parse.getlocation()[k].getname() != "*.php" && k < this->m_parse.getlocation().size(); k++)
+        //             ;
+        //     }
+        //     else
+        //     {
+        //         for (; this->m_parse.getlocation()[k].getname() != "*.py" && k < this->m_parse.getlocation().size(); k++)
+        //             ;
+        //     }
+        //     if (this->m_parse.getlocation()[k].getname() == "*.php" || this->m_parse.getlocation()[k].getname() == "*.py")
+        //     {
+        //         location = root;
+        //         if (location[0] == '/')
+        //             location.erase(0, 1);
+        //         check = locationContinued(k, path, location);
+        //         cgiFound = 1;
+        //     }
+        //     else
+        //         cgiFound = 0;
+        //     // check = 0;
+        // }
+        if (cgiFound == 0)
         {
             for (int i = 0; i < this->m_parse.getlocation().size(); i++)
             {
                 location = this->m_parse.getlocation()[i].getname();
-                slash(&location);
+                // slash(&location);
                 location = location.c_str();
-                std::cout << "************" << location << "************" << std::endl;
                 if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
                 {
+                    std::cout << "************" << location << "************" << std::endl;
                     array = ft_split(m_request.getPath().c_str(), '/');
-
                     location = ft_joinSlash(array);
                     for (int i = 0; array[i]; i++)
                         delete array[i];

@@ -80,7 +80,7 @@ void Request::parsingRequestLine()
     }
     // for (int i = path.length() - 1; (path.c_str()[i] == '/' && i != 0); i--)
     // path[i] = '\0';
-    slash(&path);
+    // slash(&path);
     this->m_path = path.c_str();
     for (int i = 0; array[i]; i++)
         delete array[i];
@@ -101,17 +101,21 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     }
     else
     {
+        // std::cout << "*****************************" << std::endl;
         this->requestHeaders(counter, buffer);
+        // std::cout << buffer << std::endl;
         delete[] buffer;
         counter++;
         while (get_next_line(socket, &buffer) > 0)
         {
+            // std::cout << buffer << std::endl;
             this->requestHeaders(counter, buffer);
             counter++;
             if (buffer[0] == '\0')
                 break;
             delete[] buffer;
         }
+        // std::cout << "*****************************" << std::endl;
         this->concatenation();
         this->parsingRequestLine();
         return (1);

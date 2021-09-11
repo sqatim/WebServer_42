@@ -17,7 +17,6 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
 {
     statusIndication(status);
     this->setContentType(type1, type2);
-    std::cout << body << std::endl;
     this->m_body = body;
     this->m_contentLength += std::to_string(body.length());
 }
