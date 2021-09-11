@@ -3,9 +3,9 @@
 
 #include <iostream>
 #include "../../Parsing/parse.hpp"
+#include <unistd.h>
 
 #define REDIRECT 1
-
 
 // class LocaTion;
 class Response
@@ -30,8 +30,9 @@ public:
     void notFoundBody();
     void forbiddenBody();
     int checkLocation(LocaTion location);
-    void redirectHeader(std::string status, std::string location);
+    void redirectHeader(int socket, std::string status, std::string location);
     void simpleLocation();
+    void sendRespone(int socket);
     // Setters
     void setVersion(std::string version);
     void setStatus(std::string status);

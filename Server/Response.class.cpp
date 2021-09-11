@@ -69,16 +69,24 @@ int Response::checkLocation(LocaTion location)
         return (1);
     return (0);
 }
-void Response::redirectHeader(std::string status, std::string location)
+void Response::redirectHeader(int socket, std::string status, std::string location)
 {
     m_type = REDIRECT;
     statusIndication(status);
     m_location += location;
     this->setContentType("text", "html");
+    setHeader();
+    setResponse();
+    sendRespone(socket);
 }
 
 void Response::simpleLocation()
 {
+}
+
+void Response::sendRespone(int socket)
+{
+    write(socket, m_response.c_str(), m_response.length());
 }
 
 void Response::statusIndication(std::string status)

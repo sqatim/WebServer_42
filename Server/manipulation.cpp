@@ -200,118 +200,79 @@ std::string ft_joinSlash(char **array)
     return (str.c_str());
 }
 
-void Server::location(std::string &path)
-{
-    int check = 0;
-    int cgi;
-    std::string location;
-    char **array;
-    std::string root;
-    int cgiFound = 0;
-    // khasni n9alab hta f location 3la php o py wash kaynin
-    if (this->m_parse.getlocation().size() != 0)
-    {
-        // if ((cgi = ft_cgi(m_request.getPath().c_str()) == 1) || (cgi = ft_cgi(m_request.getPath().c_str()) == 2))
-        // {
-        //     root = m_request.getPath().c_str();
-        //     int k = 0;
-        //     std::cout << "-------------" << root << "-------------" << std::endl;
-        //     if (cgi == 1)
-        //     {
-        //         for (; this->m_parse.getlocation()[k].getname() != "*.php" && k < this->m_parse.getlocation().size(); k++)
-        //             ;
-        //     }
-        //     else
-        //     {
-        //         for (; this->m_parse.getlocation()[k].getname() != "*.py" && k < this->m_parse.getlocation().size(); k++)
-        //             ;
-        //     }
-        //     if (this->m_parse.getlocation()[k].getname() == "*.php" || this->m_parse.getlocation()[k].getname() == "*.py")
-        //     {
-        //         location = root;
-        //         if (location[0] == '/')
-        //             location.erase(0, 1);
-        //         check = locationContinued(k, path, location);
-        //         cgiFound = 1;
-        //     }
-        //     else
-        //         cgiFound = 0;
-        //     // check = 0;
-        // }
-        if (cgiFound == 0)
-        {
-            for (int i = 0; i < this->m_parse.getlocation().size(); i++)
-            {
-                location = this->m_parse.getlocation()[i].getname();
-                // slash(&location);
-                location = location.c_str();
-                if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
-                {
-                    std::cout << "************" << location << "************" << std::endl;
-                    array = ft_split(m_request.getPath().c_str(), '/');
-                    location = ft_joinSlash(array);
-                    for (int i = 0; array[i]; i++)
-                        delete array[i];
-                    delete[] array;
-                    if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
-                    {
-                        this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
-                                                        this->m_parse.getlocation()[i].get_return()[0].path);
-                        check = 1;
-                    }
-                    else
-                    {
-                        if ((check = locationContinued(i, path, location)) == 1)
-                            break;
-                    }
-                }
-            }
-        }
-        if (check != 1)
-            throw NotFound();
-    }
-}
+// void Server::location(std::string &path)
+// {
+//     int check = 0;
+//     int cgi;
+//     std::string location;
+//     char **array;
+//     std::string root;
+//     int cgiFound = 0;
+//     // khasni n9alab hta f location 3la php o py wash kaynin
+//     if (this->m_parse.getlocation().size() != 0)
+//     {
+//         // if ((cgi = ft_cgi(m_request.getPath().c_str()) == 1) || (cgi = ft_cgi(m_request.getPath().c_str()) == 2))
+//         // {
+//         //     root = m_request.getPath().c_str();
+//         //     int k = 0;
+//         //     std::cout << "-------------" << root << "-------------" << std::endl;
+//         //     if (cgi == 1)
+//         //     {
+//         //         for (; this->m_parse.getlocation()[k].getname() != "*.php" && k < this->m_parse.getlocation().size(); k++)
+//         //             ;
+//         //     }
+//         //     else
+//         //     {
+//         //         for (; this->m_parse.getlocation()[k].getname() != "*.py" && k < this->m_parse.getlocation().size(); k++)
+//         //             ;
+//         //     }
+//         //     if (this->m_parse.getlocation()[k].getname() == "*.php" || this->m_parse.getlocation()[k].getname() == "*.py")
+//         //     {
+//         //         location = root;
+//         //         if (location[0] == '/')
+//         //             location.erase(0, 1);
+//         //         check = locationContinued(k, path, location);
+//         //         cgiFound = 1;
+//         //     }
+//         //     else
+//         //         cgiFound = 0;
+//         //     // check = 0;
+//         // }
+//         if (cgiFound == 0)
+//         {
+//             for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+//             {
+//                 location = this->m_parse.getlocation()[i].getname();
+//                 // slash(&location);
+//                 location = location.c_str();
+//                 if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
+//                 {
+//                     std::cout << "************" << location << "************" << std::endl;
+//                     array = ft_split(m_request.getPath().c_str(), '/');
+//                     location = ft_joinSlash(array);
+//                     for (int i = 0; array[i]; i++)
+//                         delete array[i];
+//                     delete[] array;
+//                     if (this->m_response.checkLocation(this->m_parse.getlocation()[i]) == 1)
+//                     {
+//                         this->m_response.redirectHeader(this->m_parse.getlocation()[i].get_return()[0].redirec,
+//                                                         this->m_parse.getlocation()[i].get_return()[0].path);
+//                         check = 1;
+//                     }
+//                     else
+//                     {
+//                         if ((check = locationContinued(i, path, location)) == 1)
+//                             break;
+//                     }
+//                 }
+//             }
+//         }
+//         if (check != 1)
+//             throw NotFound();
+//     }
+// }
 void Server::manageRequest(int socket)
 {
-    m_response.initResponse();
-    try
-    {
-        std::string path = "";
-        int len;
-        char *result;
-        path = this->m_parse.getroot();
-        if (path == "")
-            path = "./Config";
-        slash(&path);
-        checkForTheIndex(this->m_parse.get_Index(), path, path);
-        location(path);
-        if (this->m_response.getType() == 0 || this->m_response.getType() == 2)
-        {
-            if (this->m_response.getType() == 0)
-            {
-                result = ft_strjoin(path.c_str(), this->m_parse.getIndexToUse().c_str());
-                m_response.contentHeader("200", "text", "html", readingTheFile(result));
-            }
-            else
-            {
-                result = strdup(path.c_str());
-                m_response.contentHeader("200", "text", "html", readingTheFile(result));
-            }
-        }
-    }
-    catch (Server::Forbidden &e)
-    {
-        m_response.forbiddenBody();
-        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-    }
-    catch (Server::NotFound &e)
-    {
-        m_response.notFoundBody();
-        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-    }
-    m_response.setHeader();
-    // debug(this->m_response.getHeader());
-    // this->m_response.getStatus();
-    m_response.setResponse();
-    send(socket, m_response.getResponse().c_str(), m_response.getResponse().length(), 0);
+    if (this->m_request.getMethod() == "GET")
+        getMethod(socket);
 }

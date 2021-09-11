@@ -44,7 +44,8 @@ public:
     };
     Server(Parse parse);
     int getSocketFd();
-    void location(std::string &path);
+    void getMethod(int socket);
+    void location(int socket, std::string &path);
     int locationContinued(int i, std::string &path, std::string location);
     // int locationContinuedtest(int i, std::string &path, std::string location);
     void acceptNewConnection(fd_set *readySocke);
