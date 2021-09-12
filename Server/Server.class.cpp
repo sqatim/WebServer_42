@@ -135,7 +135,10 @@ void Server::acceptNewConnection(fd_set *readySockets)
             {
                 std::cout << "client_socket " << i << std::endl;
                 if (this->m_request.parsingRequest(i, &(*readySockets)))
+                {
+                    // exit(0);
                     this->manageRequest(i);
+                }
             }
         }
     }

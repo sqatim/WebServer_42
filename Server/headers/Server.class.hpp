@@ -16,7 +16,11 @@
 #include "Response.class.hpp"
 #include "../../Parsing/webserv.hpp"
 
+#define ROOT 1
+#define REDIRECTION 2
+
 class LocaTion;
+// class Parse;
 
 class Server
 {
@@ -43,10 +47,11 @@ public:
         std::string forbiddenBody() throw();
     };
     Server(Parse parse);
+    int whichLocation(Parse& parse, LocaTion location ,std::string locationName, int socket);
     int getSocketFd();
     void getMethod(int socket);
-    void location(int socket, std::string &path);
-    int locationContinued(int i, std::string &path, std::string location);
+    int location(int socket);
+    int appendLocation(LocaTion location, int socket);
     // int locationContinuedtest(int i, std::string &path, std::string location);
     void acceptNewConnection(fd_set *readySocke);
     int checkForFileDescriptor(int current, int size);

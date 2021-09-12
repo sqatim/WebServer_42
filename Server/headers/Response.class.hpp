@@ -2,8 +2,10 @@
 #define RESPONSE_CLASS_HPP
 
 #include <iostream>
+#include <sstream>
 #include "../../Parsing/parse.hpp"
 #include <unistd.h>
+#include <dirent.h>
 
 #define REDIRECT 1
 
@@ -31,7 +33,9 @@ public:
     void forbiddenBody();
     int checkLocation(LocaTion location);
     void redirectHeader(int socket, std::string status, std::string location);
+    void redirectHeaderToPath(int socket, std::string status, std::string host,std::string url);
     void simpleLocation();
+    std::string autoIndexBody(const char* fileName, const char *url);
     void sendRespone(int socket);
     // Setters
     void setVersion(std::string version);

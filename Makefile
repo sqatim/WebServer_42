@@ -16,6 +16,9 @@ SRC_NAME_SERVER= serverMain.cpp\
 				Request.class.cpp\
 				Response.class.cpp\
 				methods.cpp\
+				location.cpp\
+				location2.cpp\
+				tools.cpp\
 				get_next_line.cpp\
 				get_next_line_utils.cpp\
 

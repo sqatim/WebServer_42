@@ -35,6 +35,7 @@ public:
     std::string getBody() const;
     std::string getMethod() const;
     std::string getPath() const;
+    std::string getHost() const;
     void setRequest(std::string request);
     void setBody(std::string body);
 

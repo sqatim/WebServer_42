@@ -46,21 +46,6 @@ std::string toString(char *string)
     return (word);
 }
 
-void Request::getWords()
-{
-}
-
-static void slash(std::string *path)
-{
-    int len;
-    if (*path != "")
-    {
-        len = ft_strlen(path->c_str());
-        if ((*path)[len - 1] != '/')
-            path->insert(len, "/");
-    }
-}
-
 void Request::parsingRequestLine()
 {
     std::string line;
@@ -140,6 +125,11 @@ std::string Request::getMethod(void) const
 std::string Request::getPath(void) const
 {
     return this->m_path;
+}
+
+std::string Request::getHost(void) const
+{
+    return this->m_host;
 }
 
 void Request::setRequest(std::string request)

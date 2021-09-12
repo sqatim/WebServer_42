@@ -63,21 +63,86 @@ void Response::forbiddenBody()
     this->m_body += "</html>";
 }
 
-int Response::checkLocation(LocaTion location)
-{
-    if (location.get_return().size() != 0)
-        return (1);
-    return (0);
-}
 void Response::redirectHeader(int socket, std::string status, std::string location)
 {
     m_type = REDIRECT;
     statusIndication(status);
     m_location += location;
     this->setContentType("text", "html");
+    // sendRespone(socket);
+}
+
+std::string justHost(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::string result;
+    std::getline(stringStream, result, ' ');
+    std::getline(stringStream, result, ' ');
+    std::cout << result << std::endl;
+    return (result);
+}
+
+void Response::redirectHeaderToPath(int socket, std::string status, std::string host, std::string url)
+{
+    std::string path;
+
+    path = "http://";
+    path += justHost(host);
+    path.insert(path.length(), "/");
+    path.insert(path.length(), url);
+    path.insert(path.length(), "/");
+    m_type = REDIRECT;
+    statusIndication(status);
+    m_location += path;
+    std::cout << m_location << std::endl;
+    this->setContentType("text", "html");
     setHeader();
     setResponse();
-    sendRespone(socket);
+    // sendRespone(socket);
+}
+
+std::vector<std::string> listing(const char *fileName)
+{
+    std::vector<std::string> list;
+    struct dirent *ptr;
+    DIR *dr;
+    dr = opendir(fileName);
+    if (dr != NULL)
+    {
+        for (ptr = readdir(dr); ptr != NULL; ptr = readdir(dr))
+        {
+            if (ptr->d_name[0] != '.' && ptr->d_name[1] != '\0')
+                list.push_back(ptr->d_name);
+        }
+        closedir(dr);
+    }
+    else
+        std::cout << "\nError Occurred!" << std::endl;
+    return (list);
+}
+
+std::string Response::autoIndexBody(const char *fileName, const char *url)
+{
+    std::vector<std::string> list;
+    std::string body;
+    list = listing(fileName);
+    body = "<html>\n";
+    body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    body += "<head><title>Index of ";
+    body += url;
+    body += "</title></head>\n<body>\n";
+    body += "<h1>Index of ";
+    body += url;
+    body += "</h1>\n";
+    body += "<hr><pre>\n";
+    for (int i = 0; i < list.size(); i++)
+    {
+        body += "<a href=\"" + list[i] + "\">";
+        body += list[i];
+        body += "</a>\n";
+    }
+    body += "</pre><hr></body>\n</html>";
+    return (body);
 }
 
 void Response::simpleLocation()
@@ -86,6 +151,8 @@ void Response::simpleLocation()
 
 void Response::sendRespone(int socket)
 {
+    setHeader();
+    setResponse();
     write(socket, m_response.c_str(), m_response.length());
 }
 
