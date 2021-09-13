@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/01 16:53:14 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/13 17:47:31 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ private:
     std::string name;
     std::string root;
     std::string option;
-
+    int get;
+    int post;
+    int delet;
     /* data */
 public:
     LocaTion(/* args */);
@@ -59,6 +61,12 @@ public:
     std::string getroot();
     void setoption(std::string val);
     std::string getoption();
+    void set_GET(int val);
+    int get_GET();
+    void set_POST(int val);
+    int get_POST();
+    void set_DELET(int val);
+    int get_DELET();
     ~LocaTion();
 };
 

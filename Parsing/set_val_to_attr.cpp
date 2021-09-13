@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/10 13:49:47 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/13 17:42:44 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len
     {
         if (vect[i].find("listen") != -1)
         {
-            std::cout << "amine" << std::endl;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "listen")
                 tmp4.push_back(std::stoi(vect_str[1]));
@@ -171,7 +170,19 @@ void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
                         if (vect_str[0] == "allow_methods")
-                            loc.setallow_methods(vect_str[1]);
+                        {
+                            // if (vect_str[1].find("GET") != -1)
+                            // {
+                            //     // std::cout << true << std::endl;
+                            //     loc.set_GET(1);
+                            // }
+                            // if (vect_str[1].find("POST") != -1)
+                            //     loc.set_POST(1);
+                            // if (vect_str[1].find("DELET") != -1)
+                            //     loc.set_DELET(1);
+                        }
+                        loc.setallow_methods(vect_str[1]);
+                        // std::cout << vect_str[1] << "}" << std::endl;
                     }
                     if (vect[i].find("return") != -1)
                     {

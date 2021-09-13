@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/10 13:48:59 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/13 17:42:15 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,6 +240,13 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
                 k++;
             }
         }
+        // // out << "wa ha k a" << std::endl;
+        // if (in.getlocation()[i].get_GET() == 1)
+        //     out << "GET methode is true in locatio number " << i << std::endl;
+        // if (in.getlocation()[i].get_POST() == 1)
+        //     out << "POST methode is truein locatio number " << i << std::endl;
+        // if (in.getlocation()[i].get_DELET() == 1)
+        //     out << "DELET methode is truein locatio number " << i << std::endl;    
         if (in.getlocation()[i].getfascgi_pass().size() > 0)
             out << "fastcgi_pass in location number " << i + 1 << " is: {" << in.getlocation()[i].getfascgi_pass() << "}" << std::endl;
         if (in.getlocation()[i].getupload_methods().size() > 0)
