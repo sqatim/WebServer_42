@@ -16,6 +16,7 @@ void Server::getMethod(int socket)
             slash(&root);
             if (getIndex(empty, m_parse, 0, root) == 1)
             {
+                // std::cout << "root: " << root << std::endl;
                 path = strdup(root.c_str());
                 m_response.contentHeader("200", "text", "html", readingTheFile(path));
                 this->m_response.sendResponse(socket);

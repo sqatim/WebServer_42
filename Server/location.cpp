@@ -52,9 +52,13 @@ int Server::appendLocation(LocaTion location, int socket)
     slash(&root);
     if ((check = getIndex(location, m_parse, 1, root)) == 0)
     {
+
         if (location.getauto_index() == "on" && fileOrDir(root.c_str()) == 2)
         {
+            // std::cout << "****************** samir ******************\n"
+            //           << root << " [" << check << "]" << std::endl;
             body = this->m_response.autoIndexBody(root.c_str(), url.c_str());
+            // std::cout << body << std::endl;
             m_response.contentHeader("200", "text", "html", body);
             return (1);
         }
@@ -77,16 +81,20 @@ int Server::whichLocation(Parse &parse, LocaTion location, std::string locationN
     }
     else if ((appendLocation(location, socket)) != 0)
         return (1);
+    // else
+    // return (-1);
     return (0);
 }
 
 int Server::location(int socket)
 {
     int check;
+    int check1;
     std::string location;
     std::string root;
 
     check = -1;
+    check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root)) == 1)
     {
         std::cout << "fast cgi" << std::endl;
@@ -104,6 +112,7 @@ int Server::location(int socket)
             {
                 if ((check = whichLocation(m_parse, m_parse.getlocation()[i], location, socket)) == 1)
                 {
+                    check1 = 1;
                     this->m_response.sendResponse(socket);
                     return 1;
                 }
@@ -112,5 +121,5 @@ int Server::location(int socket)
     }
     if (check == 0)
         throw NotFound();
-    return (check);
+    return (check1);
 }

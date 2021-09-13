@@ -1,5 +1,7 @@
 #include "Server.class.hpp"
 #define PORT 3000
+// #undef __FD_SETSIZE
+// #define __FD_SETSIZE 11264
 
 Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
 {
@@ -110,14 +112,18 @@ void Server::manipulation()
         readySockets = this->m_currentSocket;
         std::string request;
         if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
+        {
+            // perror("select:");
             throw std::string("mushkil f select");
+        }
         this->acceptNewConnection(&readySockets);
     }
 }
 
 void Server::acceptNewConnection(fd_set *readySockets)
 {
-    for (int i = 0; i <= this->m_maxFd; i++)
+    int i;
+    for (i = 0; i <= this->m_maxFd; i++)
     {
         if (FD_ISSET(i, &(*readySockets)))
         {
@@ -133,15 +139,19 @@ void Server::acceptNewConnection(fd_set *readySockets)
             }
             else
             {
+
                 std::cout << "client_socket " << i << std::endl;
                 if (this->m_request.parsingRequest(i, &(*readySockets)))
                 {
-                    // exit(0);
                     this->manageRequest(i);
                 }
+                debug(std::to_string(i));
+                fcntl(i, F_SETFL, O_NONBLOCK);
+                // close(i);
             }
         }
     }
+    // if(i == 1024)
 }
 
 int Server::getSocketFd()

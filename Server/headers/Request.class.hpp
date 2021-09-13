@@ -31,15 +31,25 @@ public:
     void parsingRequestLine();
 
     //  Accessors
-    std::string getRequest() const;
-    std::string getBody() const;
     std::string getMethod() const;
     std::string getPath() const;
+    std::string getVersion() const;
+    std::string getFirstRequestHeader() const;
     std::string getHost() const;
+    std::string getUserAgent() const;
+    std::string getAccept() const;
+    std::string getAcceptEncoding() const;
+    std::string getAcceptLanguage() const;
+    std::string getConnection() const;
+    std::string getBody() const;
+    std::string getRequest() const;
     void setRequest(std::string request);
     void setBody(std::string body);
 
     ~Request();
 };
+
+std::ostream &operator<<(std::ostream &out, Request &src);
+
 
 #endif
