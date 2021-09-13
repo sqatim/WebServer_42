@@ -149,7 +149,7 @@ void Response::simpleLocation()
 {
 }
 
-void Response::sendRespone(int socket)
+void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();

@@ -8,6 +8,8 @@
 #include "../../Parsing/parse.hpp"
 #include "Request.class.hpp"
 
+class Request;
+
 char **ft_split(std::string s, char c);
 std::string getWord(char *str, int nLine, int nWord);
 std::string defaultBody(std::string &body);

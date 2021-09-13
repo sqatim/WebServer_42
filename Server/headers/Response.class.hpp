@@ -36,7 +36,7 @@ public:
     void redirectHeaderToPath(int socket, std::string status, std::string host,std::string url);
     void simpleLocation();
     std::string autoIndexBody(const char* fileName, const char *url);
-    void sendRespone(int socket);
+    void sendResponse(int socket);
     // Setters
     void setVersion(std::string version);
     void setStatus(std::string status);

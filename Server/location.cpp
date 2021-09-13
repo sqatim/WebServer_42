@@ -24,7 +24,6 @@ int fastCgi(Request &request, Parse &parse, std::string &root)
     return (check);
 }
 
-
 int Server::appendLocation(LocaTion location, int socket)
 {
     std::string root;
@@ -42,7 +41,7 @@ int Server::appendLocation(LocaTion location, int socket)
     {
         path = strdup(root.c_str());
         m_response.contentHeader("200", "text", "html", readingTheFile(path));
-        std::cout << "It's a file" << std::endl;
+        // std::cout << "It's a file" << std::endl;
         return (1);
     }
     if (root[root.length() - 1] != '/' && check == 2)
@@ -95,20 +94,20 @@ int Server::location(int socket)
     }
     if (check == -1 || check == 2)
     {
+
         for (int i = 0; i < this->m_parse.getlocation().size(); i++)
         {
             location = this->m_parse.getlocation()[i].getname();
             location = location.c_str();
+            // std::cout << "normalement" << std::endl;
             if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
             {
                 if ((check = whichLocation(m_parse, m_parse.getlocation()[i], location, socket)) == 1)
                 {
-                    this->m_response.sendRespone(socket);
+                    this->m_response.sendResponse(socket);
                     return 1;
                 }
             }
-            else 
-                return (-1);
         }
     }
     if (check == 0)

@@ -23,12 +23,12 @@ int fileOrDir(const char *path)
     {
         if (fileStat.st_mode & S_IFDIR)
         {
-            std::cout << "it's a directory" << std::endl;
+            // std::cout << "it's a directory" << std::endl;
             return (2);
         }
         else if (fileStat.st_mode & S_IFREG)
         {
-            std::cout << "It's a file" << std::endl;
+            // std::cout << "It's a file" << std::endl;
             return (1);
         }
         else
@@ -69,9 +69,10 @@ std::string getRoot(LocaTion &location, Parse &parse, int which)
 
 int getIndex(LocaTion &location, Parse &parse, int which, std::string &root)
 {
-    std::vector<std::string> index = {"index.html"};
+    std::vector<std::string> index;
     std::string path;
 
+    index.push_back("index.html");
     if (which == 0)
     {
         if (parse.get_Index().size() != 0)

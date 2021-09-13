@@ -2,17 +2,19 @@
 
 // la contunie du location 1 et des fonction utiles
 
-int ft_comparaison(std::string location, std::string uri)
+int ft_comparaison(std::string location, std::string url)
 {
     int i;
 
+    // std::cout << "location: " << location.c_str() << std::endl;
+    // std::cout << "url: " << url.c_str() << std::endl;
     for (i = 0; location.c_str()[i]; i++)
     {
-        if (i == 0 && (location.c_str()[0] == '/' && uri.c_str()[0] == '/'))
+        if (i == 0 && (location.c_str()[0] == '/' && url.c_str()[0] == '/'))
             i++;
         if (location.c_str()[i] == '/' && location.c_str()[i + 1] == '\0')
             break;
-        if (location[i] != uri[i] || (location.c_str()[i] == '/' && location.c_str()[i + 1] == '/'))
+        if (location[i] != url[i] || (location.c_str()[i] == '/' && location.c_str()[i + 1] == '/'))
             return (0);
     }
     return (1);

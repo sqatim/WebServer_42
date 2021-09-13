@@ -18,7 +18,7 @@ void Server::getMethod(int socket)
             {
                 path = strdup(root.c_str());
                 m_response.contentHeader("200", "text", "html", readingTheFile(path));
-                this->m_response.sendRespone(socket);
+                this->m_response.sendResponse(socket);
             }
             else
                 throw NotFound();
@@ -28,12 +28,12 @@ void Server::getMethod(int socket)
     {
         m_response.forbiddenBody();
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-        this->m_response.sendRespone(socket);
+        this->m_response.sendResponse(socket);
     }
     catch (Server::NotFound &e)
     {
         m_response.notFoundBody();
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-        this->m_response.sendRespone(socket);
+        this->m_response.sendResponse(socket);
     }
 }

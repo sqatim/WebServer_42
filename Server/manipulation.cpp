@@ -102,38 +102,6 @@ int Server::checkForTheIndex(std::vector<std::string> index, std::string root, s
     return (0);
 }
 
-int ft_comparaison(std::string location, std::string uri)
-{
-    int i;
-
-    for (i = 0; location.c_str()[i]; i++)
-    {
-        if (i == 0 && (location.c_str()[0] == '/' && uri.c_str()[0] == '/'))
-            i++;
-        if (location.c_str()[i] == '/' && location.c_str()[i + 1] == '\0')
-            break;
-        if (location[i] != uri[i] || (location.c_str()[i] == '/' && location.c_str()[i + 1] == '/'))
-            return (0);
-    }
-    return (1);
-}
-int ft_cgi(std::string path)
-{
-    int len;
-
-    len = ft_strlen(path.c_str());
-    if (path[len - 1] == '/')
-        path[--len] = '\0';
-    if (len >= 4 && path[len - 1] == 'p' && path[len - 2] == 'h' && path[len - 3] == 'p' && path[len - 4] == '.')
-    {
-        return (1);
-    }
-    if (len >= 3 && path[len - 1] == 'p' && path[len - 2] == 'y' && path[len - 3] == '.')
-        return (2);
-
-    return (0);
-}
-
 std::string ft_joinSlash(char **array)
 {
     std::string str = "";
@@ -150,7 +118,15 @@ std::string ft_joinSlash(char **array)
 }
 void Server::manageRequest(int socket)
 {
+    char *str;
     // std::cout << this->m_request.getMethod() << std::endl;
     if (this->m_request.getMethod() == "GET")
         getMethod(socket);
+    else if (this->m_request.getMethod() == "POST")
+    {
+        str = strdup("/Users/sqatim/Desktop/WebServer_42/index.html");
+        m_response.contentHeader("200", "text", "html", readingTheFile(str));
+        m_response.sendResponse(socket);
+        std::cout << "POST" << std::endl;
+    }
 }

@@ -74,9 +74,11 @@ void Request::parsingRequestLine()
 int Request::parsingRequest(int socket, fd_set *readySockets)
 {
     char *buffer;
+    // char buffer[3000] = {0};
     int counter;
 
     counter = 0;
+    // if (read(socket, buffer, 3000) == 0)
     if (get_next_line(socket, &buffer) == 0)
     {
         std::cout << "disconnected" << std::endl;
@@ -86,21 +88,21 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     }
     else
     {
-        // std::cout << "*****************************" << std::endl;
+        std::cout << "*****************************" << std::endl;
         this->requestHeaders(counter, buffer);
-        // std::cout << buffer << std::endl;
+        std::cout << buffer << std::endl;
         delete[] buffer;
         counter++;
         while (get_next_line(socket, &buffer) > 0)
         {
-            // std::cout << buffer << std::endl;
+            std::cout << buffer << std::endl;
             this->requestHeaders(counter, buffer);
             counter++;
             if (buffer[0] == '\0')
                 break;
             delete[] buffer;
         }
-        // std::cout << "*****************************" << std::endl;
+        std::cout << "*****************************" << std::endl;
         this->concatenation();
         this->parsingRequestLine();
         return (1);
