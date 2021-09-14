@@ -9,7 +9,8 @@ SRC_SERVER_PATH= Server
 HDR_SERVER_PATH= Server/headers
 OBJ_PATH_SERVER= objectsServer
 
-SRC_NAME_SERVER= serverMain.cpp\
+SRC_NAME_SERVER= main.cpp\
+				WebServer.class.cpp\
 				Server.class.cpp\
 				ft_split.cpp\
 				manipulation.cpp\
@@ -24,6 +25,7 @@ SRC_NAME_SERVER= serverMain.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
+				WebServer.class.hpp\
 				server.hpp\
 				Request.class.hpp\
 				get_next_line.hpp\

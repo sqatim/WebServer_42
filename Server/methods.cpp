@@ -1,6 +1,6 @@
-#include "Server.class.hpp"
+#include "WebServer.class.hpp"
 
-void Server::getMethod(int socket)
+void WebServer::getMethod(int socket)
 {
     m_response.initResponse();
     try
@@ -25,13 +25,13 @@ void Server::getMethod(int socket)
                 throw NotFound();
         }
     }
-    catch (Server::Forbidden &e)
+    catch (WebServer::Forbidden &e)
     {
         m_response.forbiddenBody();
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
         this->m_response.sendResponse(socket);
     }
-    catch (Server::NotFound &e)
+    catch (WebServer::NotFound &e)
     {
         m_response.notFoundBody();
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());

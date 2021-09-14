@@ -1,4 +1,4 @@
-#include "Server.class.hpp"
+#include "WebServer.class.hpp"
 
 char *ft_strjoin(char const *s1, char const *s2)
 {
@@ -37,7 +37,7 @@ int ft_strlen(std::string str)
         i++;
     return (i);
 }
-std::string Server::readingTheFile(char *filename)
+std::string WebServer::readingTheFile(char *filename)
 {
 
     std::ifstream myReadFile(filename);
@@ -46,7 +46,7 @@ std::string Server::readingTheFile(char *filename)
 
     delete[] filename;
     if (!myReadFile)
-        throw Server::Forbidden();
+        throw WebServer::Forbidden();
     text = "";
     while (std::getline(myReadFile, line))
     {
@@ -58,49 +58,49 @@ std::string Server::readingTheFile(char *filename)
     return (text);
 }
 
-int Server::checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path)
-{
-    int len;
-    std::ifstream indexFile;
-    char *pathForTest;
-    // slash(&pathForTest);
-    if (index.size() == 0)
-    {
-        if (this->m_parse.getIndexToUse() == "")
-            this->m_parse.setIndexToUse("index.html");
-        slash(&root);
-        pathForTest = ft_strjoin(root.c_str(), "index.html");
-        indexFile.open(pathForTest);
-        delete pathForTest;
-        if (indexFile)
-        {
-            path = root;
-            indexFile.close();
-            return 1;
-        }
-        indexFile.close();
-        return (0);
-    }
-    else
-    {
-        slash(&root);
-        for (int i = 0; i < index.size(); i++)
-        {
-            pathForTest = ft_strjoin(root.c_str(), index[i].c_str());
-            indexFile.open(pathForTest);
-            delete pathForTest;
-            if (indexFile)
-            {
-                this->m_parse.setIndexToUse(index[i]);
-                path = root;
-                indexFile.close();
-                return 1;
-            }
-            indexFile.close();
-        }
-    }
-    return (0);
-}
+// int WebServer::checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path)
+// {
+//     int len;
+//     std::ifstream indexFile;
+//     char *pathForTest;
+//     // slash(&pathForTest);
+//     if (index.size() == 0)
+//     {
+//         if (this->m_parse.getIndexToUse() == "")
+//             this->m_parse.setIndexToUse("index.html");
+//         slash(&root);
+//         pathForTest = ft_strjoin(root.c_str(), "index.html");
+//         indexFile.open(pathForTest);
+//         delete pathForTest;
+//         if (indexFile)
+//         {
+//             path = root;
+//             indexFile.close();
+//             return 1;
+//         }
+//         indexFile.close();
+//         return (0);
+//     }
+//     else
+//     {
+//         slash(&root);
+//         for (int i = 0; i < index.size(); i++)
+//         {
+//             pathForTest = ft_strjoin(root.c_str(), index[i].c_str());
+//             indexFile.open(pathForTest);
+//             delete pathForTest;
+//             if (indexFile)
+//             {
+//                 this->m_parse.setIndexToUse(index[i]);
+//                 path = root;
+//                 indexFile.close();
+//                 return 1;
+//             }
+//             indexFile.close();
+//         }
+//     }
+//     return (0);
+// }
 
 std::string ft_joinSlash(char **array)
 {
@@ -116,7 +116,7 @@ std::string ft_joinSlash(char **array)
     }
     return (str.c_str());
 }
-void Server::manageRequest(int socket)
+void WebServer::manageRequest(int socket)
 {
     char *str;
     // std::cout << this->m_request.getMethod() << std::endl;

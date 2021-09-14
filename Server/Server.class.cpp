@@ -3,10 +3,8 @@
 // #undef __FD_SETSIZE
 // #define __FD_SETSIZE 11264
 
-Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
+Server::Server(Parse parse, int &maxSocket, std::vector<int> &servers, struct sockaddr_in &address) : m_addrlen(sizeof(m_address))
 {
-    // this->m_content.root = parse.getroot();
-    // this->m_content.index = "default.html";
     int opt = 1;
     /**************************************************************************/
     /* int socket(int domain, int type, int protocol);                        */
@@ -22,33 +20,34 @@ Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
     /*     - IPROTO_UDP : UCP                                                 */
     /**************************************************************************/
     int i;
-    this->m_socketFd = new int[parse.getlisten().size()];
+
     for (i = 0; i < parse.getlisten().size(); i++)
     {
-        if ((this->m_socketFd[i] = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+        if ((m_socketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
             throw std::string("Socket Failed To Create");
-        if (setsockopt(this->m_socketFd[i], SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
+        if (setsockopt(m_socketFd, SOL_SOCKET, SO_REUSEADDR, (char *)&opt,
                        sizeof(opt)) < 0)
         {
             throw std::string("SetSockopt Failed");
         }
-        initialiseStructure(parse.getlisten()[i], parse.gethost());
+        initialiseStructure(parse.getlisten()[i], parse.gethost(), address);
         /**************************************************************************/
         /* int bind(int sockfd, const struct sockaddr *addr), socklen_t addrlen); */
         /*                                                                        */
         /*   # after Creation of the socket, bind function binds the socket to    */
         /* the adress and port number specified in addr (costum data structure)   */
         /**************************************************************************/
-        if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
+        if ((bind(m_socketFd, (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
             throw std::string("Bind Failed");
         std::cout << "Listener on " << parse.gethost() << ":" << parse.getlisten()[i] << std::endl;
-        if ((listen(this->m_socketFd[i], 10)) < 0)
+        if ((listen(m_socketFd, 10)) < 0)
             throw std::string("Listen Failed");
+        servers.push_back(m_socketFd);
     }
-    // this->m_maxFd = this->m_socketFd[i - 1];
+    maxSocket += i - 1;
 }
 
-void Server::initialiseStructure(int port, std::string ip)
+void Server::initialiseStructure(int port, std::string ip, struct sockaddr_in &address)
 {
     /**************************************************************************/
     /* struct SOCKADDR_IN{short sin_family; u_short sin_port;\                */
@@ -73,115 +72,117 @@ void Server::initialiseStructure(int port, std::string ip)
     this->m_address.sin_family = AF_INET;
     this->m_address.sin_port = htons(port);
     this->m_address.sin_addr.s_addr = inet_addr(ip.c_str());
+    address = this->m_address;
     return;
 }
 
-int Server::checkForFileDescriptor(int current, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        if (current == this->m_socketFd[i])
-            return (1);
-    }
-    return (0);
-}
-void Server::manipulation()
-{
-    fd_set readySockets;
+// int Server::checkForFileDescriptor(int current, int size)
+// {
+//     for (int i = 0; i < size; i++)
+//     {
+//         if (current == this->m_socketFd)
+//             return (1);
+//     }
+//     return (0);
+// }
 
-    /**************************************************************************/
-    /* int listen(int sockfd, int backlog)                                    */
-    /*                                                                        */
-    /* # it puts the server socket in a passive mode, where it waits for      */
-    /*  the client to approach the server to make a connection.               */
-    /*                                                                        */
-    /*   the backlog, defines the maximum lenght to which the queue of        */
-    /*  pending connections for sockfd may grow.                              */
-    /*                                                                        */
-    /*    if a connection request arrives when the queue is full/             */
-    /*  the client may receive an error with an indication of ECONNREFUSED.   */
-    /**************************************************************************/
-    std::cout << "Waiting for connections ..." << std::endl;
-    std::cout << "=====================================" << std::endl;
-    int sd;
-    // for (int i = 0; i < this->m_parse.getlisten().size(); i++)
-    while (1)
-    {
-        FD_ZERO(&this->m_currentSocket);
-        FD_SET(this->m_socketFd[0], &this->m_currentSocket);
-        this->m_maxFd = this->m_socketFd[0];
-        // readySockets = this->m_currentSocket;
-        for (int i = 0; i < m_clientSocket.size(); i++)
-        {
-            // std::cout << "maxFd: " << m_maxClient << std::endl;
-            sd = m_clientSocket[i];
-            if (sd > 0)
-                FD_SET(sd, &m_currentSocket);
-            if (sd > m_maxFd)
-                m_maxFd = sd;
-        }
-        if (select(this->m_maxFd + 1, &m_currentSocket, NULL, NULL, NULL) < 0)
-        {
-            perror("select:");
-            // throw std::string("mushkil f select");
-        }
-        this->acceptNewConnection();
-    }
-}
+// void Server::manipulation()
+// {
+//     fd_set readySockets;
 
-void Server::acceptNewConnection()
-{
-    int i;
-    // for (i = 0; i <= this->m_maxFd; i++)
-    // {
-    int sd;
-    if (FD_ISSET(m_socketFd[0], &m_currentSocket))
-    {
-        // if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
-        // {
-        if ((m_newSocket = accept(m_socketFd[0], (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
-            throw std::string("Accept Failed");
-        std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
-        m_clientSocket.push_back(this->m_newSocket);
-        FD_SET(this->m_newSocket, &m_currentSocket);
-        std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
-        if (this->m_newSocket > this->m_maxFd)
-            this->m_maxFd = this->m_newSocket;
-    }
-    for (int i = 0; i < m_clientSocket.size(); i++)
-    {
-        sd = m_clientSocket[i];
-        if (FD_ISSET(sd, &m_currentSocket))
-        {
-            std::cout << "said ==> " << sd << std::endl;
-            if (this->m_request.parsingRequest(sd, &m_currentSocket, m_clientSocket, i))
-            {
-                this->manageRequest(sd);
-            }
-            fcntl(sd, F_SETFL, O_NONBLOCK);
-        }
-    }
-    // else
-    // {
+//     /**************************************************************************/
+//     /* int listen(int sockfd, int backlog)                                    */
+//     /*                                                                        */
+//     /* # it puts the server socket in a passive mode, where it waits for      */
+//     /*  the client to approach the server to make a connection.               */
+//     /*                                                                        */
+//     /*   the backlog, defines the maximum lenght to which the queue of        */
+//     /*  pending connections for sockfd may grow.                              */
+//     /*                                                                        */
+//     /*    if a connection request arrives when the queue is full/             */
+//     /*  the client may receive an error with an indication of ECONNREFUSED.   */
+//     /**************************************************************************/
+//     std::cout << "Waiting for connections ..." << std::endl;
+//     std::cout << "=====================================" << std::endl;
+//     int sd;
+//     // for (int i = 0; i < this->m_parse.getlisten().size(); i++)
+//     while (1)
+//     {
+//         FD_ZERO(&this->m_currentSocket);
+//         FD_SET(this->m_socketFd, &this->m_currentSocket);
+//         this->m_maxFd = this->m_socketFd;
+//         // readySockets = this->m_currentSocket;
+//         for (int i = 0; i < m_clientSocket.size(); i++)
+//         {
+//             // std::cout << "maxFd: " << m_maxClient << std::endl;
+//             sd = m_clientSocket[i];
+//             if (sd > 0)
+//                 FD_SET(sd, &m_currentSocket);
+//             if (sd > m_maxFd)
+//                 m_maxFd = sd;
+//         }
+//         if (select(this->m_maxFd + 1, &m_currentSocket, NULL, NULL, NULL) < 0)
+//         {
+//             perror("select:");
+//             // throw std::string("mushkil f select");
+//         }
+//         this->acceptNewConnection();
+//     }
+// }
 
-    //     std::cout << "client_socket " << i << std::endl;
-    //     if (this->m_request.parsingRequest(i, &(*readySockets)))
-    //     {
-    //         this->manageRequest(i);
-    //     }
-    //     debug(std::to_string(i));
-    //     fcntl(i, F_SETFL, O_NONBLOCK);
-    //     // close(i);
-    // }
-    // }
-    // }
-    // if(i == 1024)
-}
+// void Server::acceptNewConnection()
+// {
+//     int i;
+//     // for (i = 0; i <= this->m_maxFd; i++)
+//     // {
+//     int sd;
+//     if (FD_ISSET(m_socketFd, &m_currentSocket))
+//     {
+//         // if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
+//         // {
+//         if ((m_newSocket = accept(m_socketFd, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+//             throw std::string("Accept Failed");
+//         std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
+//         m_clientSocket.push_back(this->m_newSocket);
+//         FD_SET(this->m_newSocket, &m_currentSocket);
+//         std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
+//         if (this->m_newSocket > this->m_maxFd)
+//             this->m_maxFd = this->m_newSocket;
+//     }
+//     for (int i = 0; i < m_clientSocket.size(); i++)
+//     {
+//         sd = m_clientSocket[i];
+//         if (FD_ISSET(sd, &m_currentSocket))
+//         {
+//             std::cout << "said ==> " << sd << std::endl;
+//             if (this->m_request.parsingRequest(sd, &m_currentSocket, m_clientSocket, i))
+//             {
+//                 this->manageRequest(sd);
+//             }
+//             fcntl(sd, F_SETFL, O_NONBLOCK);
+//         }
+//     }
+//     // else
+//     // {
 
-int Server::getSocketFd()
-{
-    return (this->m_socketFd[0]);
-}
+//     //     std::cout << "client_socket " << i << std::endl;
+//     //     if (this->m_request.parsingRequest(i, &(*readySockets)))
+//     //     {
+//     //         this->manageRequest(i);
+//     //     }
+//     //     debug(std::to_string(i));
+//     //     fcntl(i, F_SETFL, O_NONBLOCK);
+//     //     // close(i);
+//     // }
+//     // }
+//     // }
+//     // if(i == 1024)
+// }
+
+// int Server::getSocketFd()
+// {
+//     return (this->m_socketFd);
+// }
 
 Server::~Server()
 {
@@ -190,12 +191,6 @@ Server::~Server()
 
 //***********************************************************
 
-void Server::debug(std::string str)
-{
-    std::cout << "********************************" << std::endl;
-    std::cout << "##" << str << "##" << std::endl;
-    std::cout << "********************************" << std::endl;
-}
 
 // void Server::manipulation()
 // {

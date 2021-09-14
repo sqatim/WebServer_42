@@ -1,4 +1,4 @@
-#include "Server.class.hpp"
+#include "WebServer.class.hpp"
 
 int fastCgi(Request &request, Parse &parse, std::string &root)
 {
@@ -24,7 +24,7 @@ int fastCgi(Request &request, Parse &parse, std::string &root)
     return (check);
 }
 
-int Server::appendLocation(LocaTion location, int socket)
+int WebServer::appendLocation(LocaTion location, int socket)
 {
     std::string root;
     int check = 0;
@@ -71,7 +71,7 @@ int Server::appendLocation(LocaTion location, int socket)
     return (check);
 }
 
-int Server::whichLocation(Parse &parse, LocaTion location, std::string locationName, int socket)
+int WebServer::whichLocation(Parse &parse, LocaTion location, std::string locationName, int socket)
 {
     if (checkLocation(location) == 2)
     {
@@ -86,7 +86,7 @@ int Server::whichLocation(Parse &parse, LocaTion location, std::string locationN
     return (0);
 }
 
-int Server::location(int socket)
+int WebServer::location(int socket)
 {
     int check;
     int check1;
