@@ -42,10 +42,10 @@ Server::Server(Parse parse) : m_addrlen(sizeof(m_address)), m_parse(parse)
         if ((bind(this->m_socketFd[i], (struct sockaddr *)&this->m_address, sizeof(this->m_address))) < 0)
             throw std::string("Bind Failed");
         std::cout << "Listener on " << parse.gethost() << ":" << parse.getlisten()[i] << std::endl;
-        if ((listen(this->m_socketFd[i], 3)) < 0)
+        if ((listen(this->m_socketFd[i], 10)) < 0)
             throw std::string("Listen Failed");
     }
-    this->m_maxFd = this->m_socketFd[i - 1];
+    // this->m_maxFd = this->m_socketFd[i - 1];
 }
 
 void Server::initialiseStructure(int port, std::string ip)
@@ -88,7 +88,6 @@ int Server::checkForFileDescriptor(int current, int size)
 void Server::manipulation()
 {
     fd_set readySockets;
-    int fd = open("log.txt", O_RDWR);
 
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -102,55 +101,80 @@ void Server::manipulation()
     /*    if a connection request arrives when the queue is full/             */
     /*  the client may receive an error with an indication of ECONNREFUSED.   */
     /**************************************************************************/
-    FD_ZERO(&this->m_currentSocket);
     std::cout << "Waiting for connections ..." << std::endl;
     std::cout << "=====================================" << std::endl;
-    for (int i = 0; i < this->m_parse.getlisten().size(); i++)
-        FD_SET(this->m_socketFd[i], &this->m_currentSocket);
+    int sd;
+    // for (int i = 0; i < this->m_parse.getlisten().size(); i++)
     while (1)
     {
-        readySockets = this->m_currentSocket;
-        std::string request;
-        if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
+        FD_ZERO(&this->m_currentSocket);
+        FD_SET(this->m_socketFd[0], &this->m_currentSocket);
+        this->m_maxFd = this->m_socketFd[0];
+        // readySockets = this->m_currentSocket;
+        for (int i = 0; i < m_clientSocket.size(); i++)
         {
-            // perror("select:");
-            throw std::string("mushkil f select");
+            // std::cout << "maxFd: " << m_maxClient << std::endl;
+            sd = m_clientSocket[i];
+            if (sd > 0)
+                FD_SET(sd, &m_currentSocket);
+            if (sd > m_maxFd)
+                m_maxFd = sd;
         }
-        this->acceptNewConnection(&readySockets);
+        if (select(this->m_maxFd + 1, &m_currentSocket, NULL, NULL, NULL) < 0)
+        {
+            perror("select:");
+            // throw std::string("mushkil f select");
+        }
+        this->acceptNewConnection();
     }
 }
 
-void Server::acceptNewConnection(fd_set *readySockets)
+void Server::acceptNewConnection()
 {
     int i;
-    for (i = 0; i <= this->m_maxFd; i++)
+    // for (i = 0; i <= this->m_maxFd; i++)
+    // {
+    int sd;
+    if (FD_ISSET(m_socketFd[0], &m_currentSocket))
     {
-        if (FD_ISSET(i, &(*readySockets)))
+        // if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
+        // {
+        if ((m_newSocket = accept(m_socketFd[0], (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+            throw std::string("Accept Failed");
+        std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
+        m_clientSocket.push_back(this->m_newSocket);
+        FD_SET(this->m_newSocket, &m_currentSocket);
+        std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
+        if (this->m_newSocket > this->m_maxFd)
+            this->m_maxFd = this->m_newSocket;
+    }
+    for (int i = 0; i < m_clientSocket.size(); i++)
+    {
+        sd = m_clientSocket[i];
+        if (FD_ISSET(sd, &m_currentSocket))
         {
-            if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
+            std::cout << "said ==> " << sd << std::endl;
+            if (this->m_request.parsingRequest(sd, &m_currentSocket, m_clientSocket, i))
             {
-                if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
-                    throw std::string("Accept Failed");
-                std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
-                FD_SET(this->m_newSocket, &(*readySockets));
-                std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
-                if (this->m_newSocket > this->m_maxFd)
-                    this->m_maxFd = this->m_newSocket;
+                this->manageRequest(sd);
             }
-            else
-            {
-
-                std::cout << "client_socket " << i << std::endl;
-                if (this->m_request.parsingRequest(i, &(*readySockets)))
-                {
-                    this->manageRequest(i);
-                }
-                debug(std::to_string(i));
-                fcntl(i, F_SETFL, O_NONBLOCK);
-                // close(i);
-            }
+            fcntl(sd, F_SETFL, O_NONBLOCK);
         }
     }
+    // else
+    // {
+
+    //     std::cout << "client_socket " << i << std::endl;
+    //     if (this->m_request.parsingRequest(i, &(*readySockets)))
+    //     {
+    //         this->manageRequest(i);
+    //     }
+    //     debug(std::to_string(i));
+    //     fcntl(i, F_SETFL, O_NONBLOCK);
+    //     // close(i);
+    // }
+    // }
+    // }
     // if(i == 1024)
 }
 
@@ -172,3 +196,72 @@ void Server::debug(std::string str)
     std::cout << "##" << str << "##" << std::endl;
     std::cout << "********************************" << std::endl;
 }
+
+// void Server::manipulation()
+// {
+//     fd_set readySockets;
+//     int fd = open("log.txt", O_RDWR);
+
+//     /**************************************************************************/
+//     /* int listen(int sockfd, int backlog)                                    */
+//     /*                                                                        */
+//     /* # it puts the server socket in a passive mode, where it waits for      */
+//     /*  the client to approach the server to make a connection.               */
+//     /*                                                                        */
+//     /*   the backlog, defines the maximum lenght to which the queue of        */
+//     /*  pending connections for sockfd may grow.                              */
+//     /*                                                                        */
+//     /*    if a connection request arrives when the queue is full/             */
+//     /*  the client may receive an error with an indication of ECONNREFUSED.   */
+//     /**************************************************************************/
+//     FD_ZERO(&this->m_currentSocket);
+//     std::cout << "Waiting for connections ..." << std::endl;
+//     std::cout << "=====================================" << std::endl;
+//     for (int i = 0; i < this->m_parse.getlisten().size(); i++)
+//         FD_SET(this->m_socketFd[i], &this->m_currentSocket);
+//     while (1)
+//     {
+//         readySockets = this->m_currentSocket;
+//         std::string request;
+//         if (select(this->m_maxFd + 1, &readySockets, NULL, NULL, NULL) < 0)
+//         {
+//             // perror("select:");
+//             throw std::string("mushkil f select");
+//         }
+//         this->acceptNewConnection(&readySockets);
+//     }
+// }
+
+// void Server::acceptNewConnection(fd_set *readySockets)
+// {
+//     int i;
+//     for (i = 0; i <= this->m_maxFd; i++)
+//     {
+//         if (FD_ISSET(i, &(*readySockets)))
+//         {
+//             if (checkForFileDescriptor(i, this->m_parse.getlisten().size()))
+//             {
+//                 if ((m_newSocket = accept(i, (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
+//                     throw std::string("Accept Failed");
+//                 std::cout << "New connection, socket fd is : " << this->m_newSocket << std::endl;
+//                 FD_SET(this->m_newSocket, &(*readySockets));
+//                 std::cout << "Adding to list of sockets as " << this->m_newSocket << std::endl;
+//                 if (this->m_newSocket > this->m_maxFd)
+//                     this->m_maxFd = this->m_newSocket;
+//             }
+//             else
+//             {
+
+//                 std::cout << "client_socket " << i << std::endl;
+//                 if (this->m_request.parsingRequest(i, &(*readySockets)))
+//                 {
+//                     this->manageRequest(i);
+//                 }
+//                 debug(std::to_string(i));
+//                 fcntl(i, F_SETFL, O_NONBLOCK);
+//                 // close(i);
+//             }
+//         }
+//     }
+//     // if(i == 1024)
+// }

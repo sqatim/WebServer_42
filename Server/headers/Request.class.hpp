@@ -24,7 +24,7 @@ private:
 
 public:
     Request();
-    int parsingRequest(int socket, fd_set *readySockets);
+    int parsingRequest(int socket, fd_set *readySockets, std::vector<int>& clientSocket ,int i);
     void getWords();
     void requestHeaders(int i, char *str);
     void concatenation();
@@ -50,6 +50,5 @@ public:
 };
 
 std::ostream &operator<<(std::ostream &out, Request &src);
-
 
 #endif

@@ -34,6 +34,7 @@ private:
     Parse m_parse;
     Request m_request;
     Response m_response;
+    std::vector<int> m_clientSocket;
 
 public:
     class NotFound
@@ -53,7 +54,7 @@ public:
     int location(int socket);
     int appendLocation(LocaTion location, int socket);
     // int locationContinuedtest(int i, std::string &path, std::string location);
-    void acceptNewConnection(fd_set *readySocke);
+    void acceptNewConnection();
     int checkForFileDescriptor(int current, int size);
     struct sockaddr_in getAddress();
     void initialiseStructure(int port, std::string ip);

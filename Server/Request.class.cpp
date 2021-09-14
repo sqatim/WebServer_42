@@ -71,7 +71,7 @@ void Request::parsingRequestLine()
         delete array[i];
     delete[] array;
 }
-int Request::parsingRequest(int socket, fd_set *readySockets)
+int Request::parsingRequest(int socket, fd_set *readySockets, std::vector<int> &clientSocket, int i)
 {
     // char *buffer;
     char buffer[3000] = {0};
@@ -84,6 +84,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     {
         std::cout << "disconnected 0" << std::endl;
         close(socket);
+        clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
         return (0);
     }
@@ -97,9 +98,10 @@ int Request::parsingRequest(int socket, fd_set *readySockets)
     }
     else
     {
+        // std::cout << "oussama " << std::endl;
         buffer[result] = '\0';
         std::cout << "*****************************" << std::endl;
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         this->requestHeaders(counter, buffer);
         // delete[] buffer;
         // counter++;
