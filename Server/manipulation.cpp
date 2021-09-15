@@ -121,12 +121,14 @@ void WebServer::manageRequest(int socket)
     char *str;
     // std::cout << this->m_request.getMethod() << std::endl;
     if (this->m_request.getMethod() == "GET")
+    {
         getMethod(socket);
+    }
     else if (this->m_request.getMethod() == "POST")
     {
         str = strdup("/Users/sqatim/Desktop/WebServer_42/index.html");
         m_response.contentHeader("200", "text", "html", readingTheFile(str));
         m_response.sendResponse(socket);
-        std::cout << "POST" << std::endl;
+        // std::cout << "POST" << std::endl;
     }
 }

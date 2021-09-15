@@ -15,7 +15,8 @@ void Response::initResponse()
 
 void Response::contentHeader(std::string status, std::string type1, std::string type2, std::string body)
 {
-    statusIndication(status);
+    m_type = ROOT;
+        statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
     this->m_contentLength += std::to_string(body.length());
@@ -78,7 +79,7 @@ std::string justHost(std::string host)
     std::string result;
     std::getline(stringStream, result, ' ');
     std::getline(stringStream, result, ' ');
-    std::cout << result << std::endl;
+    // std::cout << result << std::endl;
     return (result);
 }
 
@@ -94,7 +95,7 @@ void Response::redirectHeaderToPath(int socket, std::string status, std::string 
     m_type = REDIRECT;
     statusIndication(status);
     m_location += path;
-    std::cout << m_location << std::endl;
+    std::cout << "m_location _" << m_location << std::endl;
     this->setContentType("text", "html");
     setHeader();
     setResponse();

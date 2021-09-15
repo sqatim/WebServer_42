@@ -36,12 +36,11 @@ int WebServer::appendLocation(LocaTion location, int socket)
     root = getRoot(location, this->m_parse, 1);
     slash(&root);
     root.insert(root.length(), url.c_str());
-    std::cout << root << std::endl;
+    // std::cout << root.c_str() << std::endl;
     if ((check = fileOrDir(root.c_str())) == 1)
     {
         path = strdup(root.c_str());
         m_response.contentHeader("200", "text", "html", readingTheFile(path));
-        // std::cout << "It's a file" << std::endl;
         return (1);
     }
     if (root[root.length() - 1] != '/' && check == 2)
@@ -66,6 +65,7 @@ int WebServer::appendLocation(LocaTion location, int socket)
     else
     {
         path = strdup(root.c_str());
+        std::cout << "i am here" << std::endl;
         m_response.contentHeader("200", "text", "html", readingTheFile(path));
     }
     return (check);
@@ -75,6 +75,7 @@ int WebServer::whichLocation(Parse &parse, LocaTion location, std::string locati
 {
     if (checkLocation(location) == 2)
     {
+        std::cout << "sasa yasoso" << std::endl;
         this->m_response.redirectHeader(socket, location.get_return()[0].redirec,
                                         location.get_return()[0].path);
         return (1);
@@ -86,6 +87,15 @@ int WebServer::whichLocation(Parse &parse, LocaTion location, std::string locati
     return (0);
 }
 
+int checkForSlashLocation(std::vector<LocaTion> &location)
+{
+    for (int i = 0; i < location.size(); i++)
+    {
+        if (location[i].getname() == "/")
+            return (1);
+    }
+    return (0);
+}
 int WebServer::location(int socket)
 {
     int check;
@@ -110,6 +120,7 @@ int WebServer::location(int socket)
             // std::cout << "normalement" << std::endl;
             if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
             {
+                // std::cout << "sha3iid" << std::endl;
                 if ((check = whichLocation(m_parse, m_parse.getlocation()[i], location, socket)) == 1)
                 {
                     check1 = 1;
@@ -118,6 +129,8 @@ int WebServer::location(int socket)
                 }
             }
         }
+        if (m_request.getPath() != "/" && this->m_parse.getlocation().size() != 0)
+            check = 0;
     }
     if (check == 0)
         throw NotFound();
