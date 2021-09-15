@@ -24,7 +24,7 @@ private:
 
 public:
     Request();
-    int parsingRequest(int socket, fd_set *readySockets, std::vector<int>& clientSocket ,int i);
+    int parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
     void getWords();
     void requestHeaders(int i, char *str);
     void concatenation();

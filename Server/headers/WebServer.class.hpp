@@ -13,6 +13,7 @@ private:
     std::vector<int> m_server;
     // int m_maxSocketPerServer;
     int m_maxSocket;
+    fd_set m_writeSocket;
     fd_set m_currentSocket;
     int m_maxFd;
     std::vector<int> m_clientSocket;
@@ -34,7 +35,7 @@ public:
     public:
         std::string forbiddenBody() throw();
     };
-    WebServer(WebServ& webServ);
+    WebServer(WebServ &webServ);
     Server setServer(Parse &parse);
     void run();
     void acceptNewConnection();

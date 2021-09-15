@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/09 17:14:15 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/15 18:45:15 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ protected:
     int count_error_page;
 
 public:
+    Parse();
     std::string file;
     std::map<std::string, std::string> my_map;
     Parse(std::string _filename);
@@ -73,7 +74,7 @@ public:
     std::string getIndex();
 };
 
-void get_attributs(std::vector<std::string> vect, Parse * parse, int server_len , int _begin);
+void get_attributs(std::vector<std::string> vect, Parse *parse, int server_len, int _begin);
 std::ostream &operator<<(std::ostream &out, Parse &pars);
 
 void add_locations();

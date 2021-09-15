@@ -56,7 +56,6 @@ void Request::parsingRequestLine()
     getline(stringStream, line, ' ');
     // array = ft_split(line, ' ');
     this->m_method = line;
-    std::cout << "methood: " << this->m_method << std::endl;
     getline(stringStream, line, ' ');
     // std::cout << "lbab ahlh bab" << std::endl;
     path = line;
@@ -66,7 +65,6 @@ void Request::parsingRequestLine()
             break;
         path[j] = '\0';
     }
-    std::cout << "path: " << path << std::endl;
     // for (int i = path.length() - 1; (path.c_str()[i] == '/' && i != 0); i--)
     // path[i] = '\0';
     // slash(&path);
@@ -75,7 +73,7 @@ void Request::parsingRequestLine()
     //     delete array[i];
     // delete[] array;
 }
-int Request::parsingRequest(int socket, fd_set *readySockets, std::vector<int> &clientSocket, int i)
+int Request::parsingRequest(int socket, fd_set *readySockets,fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     char *buffer;
     // char buffer[3000] = {0};
@@ -90,16 +88,17 @@ int Request::parsingRequest(int socket, fd_set *readySockets, std::vector<int> &
         close(socket);
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
+        FD_CLR(socket, &(*writeSockets));
         return (0);
     }
-    // else if (result == -1)
-    // {
-    //     std::cout << "disconnected -1" << std::endl;
-    //     close(socket);
-    //     FD_CLR(socket, &(*readySockets));
-    //     // exit(0);
-    //     return (0);
-    // }
+    else if (result == -1)
+    {
+        //     std::cout << "disconnected -1" << std::endl;
+        //     close(socket);
+        //     FD_CLR(socket, &(*readySockets));
+        //     // exit(0);
+        return (0);
+    }
     else
     {
         // std::cout << "oussama " << std::endl;

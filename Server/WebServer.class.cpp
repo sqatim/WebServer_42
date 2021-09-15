@@ -14,6 +14,7 @@ Server WebServer::setServer(Parse &parse)
 void WebServer::run()
 {
     int i;
+    // struct timeval _tv = {1, 0};
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
     /*                                                                        */
@@ -33,26 +34,31 @@ void WebServer::run()
     while (1)
     {
         FD_ZERO(&this->m_currentSocket);
+        FD_ZERO(&this->m_writeSocket);
         for (i = 0; i < this->m_server.size(); i++)
         {
             FD_SET(this->m_server[i], &this->m_currentSocket);
             this->m_maxFd = this->m_server[i];
         }
+        // memcpy(&m_writeSocket, &m_currentSocket, sizeof(m_currentSocket));
+
         // readySockets = this->m_currentSocket;
         // std::cout << "dsadsa" << std::endl;
         for (int i = 0; i < m_clientSocket.size(); i++)
         {
-            std::cout << "said: " << std::endl;
             sd = m_clientSocket[i];
             if (sd > 0)
+            {
                 FD_SET(sd, &m_currentSocket);
+                FD_SET(sd, &m_writeSocket);
+            }
             if (sd > m_maxFd)
                 m_maxFd = sd;
         }
-        if (select(this->m_maxFd + 1, &m_currentSocket, NULL, NULL, NULL) < 0)
+        if (select(this->m_maxFd + 1, &m_currentSocket, &m_writeSocket, NULL, NULL) < 0)
         {
             perror("select:");
-            // throw std::string("mushkil f select");
+            throw std::string("mushkil f select");
         }
         this->acceptNewConnection();
     }
@@ -76,23 +82,27 @@ void WebServer::acceptNewConnection()
         int sd;
         // std::cout << "maxfd ==> " << m_server[1] << std::endl;
         if (i < m_server.size())
+        {
             if (FD_ISSET(this->m_server[i], &m_currentSocket))
             {
                 if ((newSocket = accept(m_server[i], (struct sockaddr *)&this->m_address, (socklen_t *)&this->m_addrlen)) < 0)
                     throw std::string("Accept Failed");
+                fcntl(newSocket, F_SETFL, O_NONBLOCK);
                 std::cout << "New connection, socket fd is : " << newSocket << std::endl;
                 m_clientSocket.push_back(newSocket);
                 FD_SET(newSocket, &m_currentSocket);
+                FD_SET(newSocket, &m_writeSocket);
                 std::cout << "Adding to list of sockets as " << newSocket << std::endl;
                 if (newSocket > this->m_maxFd)
                     this->m_maxFd = newSocket;
             }
+        }
         for (int i = 0; i < m_clientSocket.size(); i++)
         {
             sd = m_clientSocket[i];
             if (FD_ISSET(sd, &m_currentSocket))
             {
-                if (this->m_request.parsingRequest(sd, &m_currentSocket, m_clientSocket, i))
+                if (this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i))
                 {
 
                     // std::cout << this->m_request.getHost() << std::endl;
@@ -105,24 +115,33 @@ void WebServer::acceptNewConnection()
                             host = parse.gethost();
                             host += ":";
                             host += std::to_string(parse.getlisten()[j]);
-                            std::cout << "listen ===> " << parse.getlisten()[j] << std::endl;
-                            std::cout << "===> " << host << std::endl;
                             if (host == this->m_request.getHost())
                             {
                                 std::cout << "salam sahbi" << std::endl;
                                 m_parse = parse;
+                                // if (FD_ISSET(sd, &m_writeSocket))
                                 break;
                             }
                         }
                     }
-                    // response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 6\n\n samir";
-                    // write(sd, response.c_str(), response.length());
+                    if (FD_ISSET(sd, &m_writeSocket))
+                        // {
+                        // std::cout << "salam sahbi" << std::endl;
+                        this->manageRequest(sd);
+                    // close(sd);
+                    // }
                     // this->me
-
-                    this->manageRequest(sd);
+                    // if (FD_ISSET(sd, &m_writeSocket))
+                    // {
+                    // response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 5\n\n samir";
+                    // write(sd, response.c_str(), response.length());
+                    // FD_CLR(sd, &m_writeSocket);
+                    // }
                 }
-                fcntl(sd, F_SETFL, O_NONBLOCK);
             }
+            // {
+            //     std::cout << "salam sahbi samir" << std::endl;
+            // }
         }
     }
 }
