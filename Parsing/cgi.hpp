@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:01:44 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/13 16:32:34 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/14 14:54:27 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,12 @@
 #include <map>
 #include "../Server/headers/Request.class.hpp"
 
-typedef	std::map<std::string, std::string>	mymap;
-class cgi
+typedef	std::map<std::string, std::string>	MyMap;
+class CGI
 {
 private:
+    MyMap           map;
+    std::string     executable;
     int				_stdin;
 	int				_stdout;
     std::string		_binary;
@@ -26,9 +28,10 @@ private:
 	std::string		_input;
 
 public:
-    cgi(/* args */);
-    void		 execute(std::string target);
-    ~cgi();
+    CGI(/* args */);
+    void execute(std::string target);
+    void set_value_to_maymap();
+    ~CGI();
 };
 
 

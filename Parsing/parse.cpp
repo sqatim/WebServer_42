@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/13 22:19:12 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/14 11:32:34 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,6 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
                 k++;
             }
         }
-        // // out << "wa ha k a" << std::endl;
         if (in.getlocation()[i].get_GET() == 1)
             out << "GET methode is true in locatio number " << i << std::endl;
         if (in.getlocation()[i].get_POST() == 1)
