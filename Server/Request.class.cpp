@@ -1,7 +1,26 @@
 #include "Request.class.hpp"
 #include <sstream>
 
-Request::Request() : m_request(""), m_body("")
+void Request::init()
+{
+    m_boundary = "11111111";
+    m_fileName = "";
+    m_betweenBoundary = "";
+    m_method = "";
+    m_path = "";
+    m_version = "";
+    m_firstRequestheader = "";
+    m_host = "";
+    m_userAgent = "";
+    m_accept = "";
+    m_acceptEncoding = "";
+    m_acceptLanguage = "";
+    m_connection = "";
+    m_body = "";
+    m_request = "";
+}
+
+Request::Request() : m_request(""), m_body(""), m_fileName(""), m_boundary("111111")
 {
     m_tab[0] = &m_firstRequestheader;
     m_tab[1] = &m_host;
@@ -52,12 +71,11 @@ void Request::parsingRequestLine()
     std::string path;
     std::istringstream stringStream;
     char **array;
-    stringStream.str(this->m_request);
+    stringStream.str(this->m_firstRequestheader);
     getline(stringStream, line, ' ');
     // array = ft_split(line, ' ');
     this->m_method = line;
     getline(stringStream, line, ' ');
-    // std::cout << "lbab ahlh bab" << std::endl;
     path = line;
     for (int j = path.length() - 1; (path[j] == '/' && j != 0); j--)
     {
@@ -65,15 +83,116 @@ void Request::parsingRequestLine()
             break;
         path[j] = '\0';
     }
-    // for (int i = path.length() - 1; (path.c_str()[i] == '/' && i != 0); i--)
-    // path[i] = '\0';
-    // slash(&path);
     this->m_path = path.c_str();
-    // for (int i = 0; array[i]; i++)
-    //     delete array[i];
-    // delete[] array;
 }
-int Request::parsingRequest(int socket, fd_set *readySockets,fd_set *writeSockets, std::vector<int> &clientSocket, int i)
+
+std::string justBoundary(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::string result;
+    std::getline(stringStream, result, '=');
+    std::getline(stringStream, result, '=');
+    // std::cout << result << std::endl;
+    return (result);
+}
+
+void Request::uploadInFile()
+{
+    std::string path = "/Users/sqatim/Desktop/testNginx/" + m_fileName;
+    std::cout << path.c_str() << std::endl;
+    std::ofstream myWriteFile(path);
+    myWriteFile << m_body;
+    myWriteFile.close();
+}
+
+void Request::parsingBetweenBoundary()
+{
+    std::stringstream stringStream(m_betweenBoundary);
+    std::string line;
+    size_t filename;
+    // std::cout << m_betweenBoundary << std::endl;
+    while (std::getline(stringStream, line, '\n'))
+    {
+        if (m_fileName == "" && (filename = line.find("filename")) != std::string::npos)
+        {
+            while (line[filename] != '\"')
+                filename++;
+            filename++;
+            for (; line[filename] != '\"' && line[filename + 1]; filename++)
+            {
+                m_fileName += line[filename];
+            }
+            m_fileName += '\0';
+            std::getline(stringStream, line, '\n');
+            std::getline(stringStream, line, '\n');
+            std::getline(stringStream, line, '\n');
+            while (line.find(m_boundary) == std::string::npos)
+            {
+                m_body += line;
+                std::getline(stringStream, line, '\n');
+                if (line.find(m_boundary) == std::string::npos)
+                    m_body += '\n';
+            }
+            uploadInFile();
+            // std::cout << m_body << std::endl;
+        }
+    }
+}
+
+void Request::parsingRequestPost(int socket, char **buffer, int counter)
+{
+    std::string line;
+    std::string boundry;
+    int check = 0;
+    size_t i;
+
+    while (get_next_line(socket, &(*buffer)) > 0)
+    {
+        std::cout << *buffer << std::endl;
+        line = *buffer;
+        if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
+        {
+            boundry = &line[i];
+            m_boundary = justBoundary(boundry);
+            check++;
+        }
+        else if (check == 2 || line.find(m_boundary) != std::string::npos)
+        {
+            if (check == 2 && line.find(m_boundary) != std::string::npos)
+            {
+                m_betweenBoundary += line;
+                check = 3;
+                break;
+            }
+            m_betweenBoundary += line + '\n';
+            check = 2;
+        }
+        this->requestHeaders(counter, *buffer);
+        counter++;
+        delete[](*buffer);
+    }
+    parsingBetweenBoundary();
+    this->concatenation();
+}
+
+void Request::parsingRequestGet(int socket, char **buffer, int counter)
+{
+    while (get_next_line(socket, &(*buffer)) > 0)
+    {
+        std::cout << *buffer << std::endl;
+        this->requestHeaders(counter, *buffer);
+        counter++;
+        // if ((*buffer)[0] == '\0')
+        // {
+        //     if (m_method == "GET")
+        //         break;
+        // }
+        delete[](*buffer);
+    }
+    this->concatenation();
+    // std::cout << this->m_request << std::endl;
+}
+int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     char *buffer;
     // char buffer[3000] = {0};
@@ -82,7 +201,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets,fd_set *writeSocket
 
     counter = 0;
     // if ((result = read(socket, buffer, 3000)) == 0)
-    if (get_next_line(socket, &buffer) == 0)
+    if ((result = get_next_line(socket, &buffer)) == 0)
     {
         std::cout << "disconnected 0" << std::endl;
         close(socket);
@@ -92,37 +211,22 @@ int Request::parsingRequest(int socket, fd_set *readySockets,fd_set *writeSocket
         return (0);
     }
     else if (result == -1)
-    {
-        //     std::cout << "disconnected -1" << std::endl;
-        //     close(socket);
-        //     FD_CLR(socket, &(*readySockets));
-        //     // exit(0);
         return (0);
-    }
     else
     {
-        // std::cout << "oussama " << std::endl;
         // buffer[result] = '\0';
         // std::cout << "*****************************" << std::endl;
-        // std::cout << buffer << std::endl;
+        std::cout << buffer << std::endl;
         this->requestHeaders(counter, buffer);
+        this->parsingRequestLine();
         delete[] buffer;
         counter++;
-        while (get_next_line(socket, &buffer) > 0)
-        {
-            // std::cout << "shalam shamir" << std::endl;
-            // std::cout << buffer << std::endl;
-            this->requestHeaders(counter, buffer);
-            counter++;
-            if (buffer[0] == '\0')
-                break;
-            delete[] buffer;
-        }
+        if (m_method == "GET")
+            parsingRequestGet(socket, &buffer, counter);
+        else if (m_method == "POST")
+            parsingRequestPost(socket, &buffer, counter);
         // std::cout << "*****************************" << std::endl;
-        this->concatenation();
-        this->parsingRequestLine();
-        // std::cout << this->m_request;
-        // FD_CLR(socket, &(*readySockets));
+        // this->concatenation();
         return (1);
     }
 }
@@ -180,6 +284,21 @@ std::string Request::getPath(void) const
 std::string Request::getHost(void) const
 {
     return this->m_host;
+}
+
+std::string Request::getBoundary() const
+{
+    return (this->m_boundary);
+}
+
+std::string Request::getFileName() const
+{
+    return (this->m_fileName);
+}
+
+std::string Request::getBetweenBoundary() const
+{
+    return (this->m_betweenBoundary);
 }
 
 void Request::setRequest(std::string request)

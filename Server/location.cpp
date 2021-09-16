@@ -112,15 +112,13 @@ int WebServer::location(int socket)
     }
     if (check == -1 || check == 2)
     {
-
+        std::cout << "location: " << this->m_parse.getlocation().size() << std::endl;
         for (int i = 0; i < this->m_parse.getlocation().size(); i++)
         {
             location = this->m_parse.getlocation()[i].getname();
             location = location.c_str();
-            // std::cout << "normalement" << std::endl;
             if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
             {
-                // std::cout << "sha3iid" << std::endl;
                 if ((check = whichLocation(m_parse, m_parse.getlocation()[i], location, socket)) == 1)
                 {
                     check1 = 1;

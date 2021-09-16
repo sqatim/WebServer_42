@@ -30,7 +30,6 @@ void WebServer::run()
     std::cout << "Waiting for connections ..." << std::endl;
     std::cout << "=====================================" << std::endl;
     int sd;
-    // for (int i = 0; i < this->m_parse.getlisten().size(); i++)
     while (1)
     {
         FD_ZERO(&this->m_currentSocket);
@@ -40,10 +39,6 @@ void WebServer::run()
             FD_SET(this->m_server[i], &this->m_currentSocket);
             this->m_maxFd = this->m_server[i];
         }
-        // memcpy(&m_writeSocket, &m_currentSocket, sizeof(m_currentSocket));
-
-        // readySockets = this->m_currentSocket;
-        // std::cout << "dsadsa" << std::endl;
         for (int i = 0; i < m_clientSocket.size(); i++)
         {
             sd = m_clientSocket[i];
@@ -69,18 +64,13 @@ void WebServer::acceptNewConnection()
     int i;
     int newSocket;
     Parse parse;
+    std::string requestHost;
     std::string host;
     std::string response;
     std::string m_body = "samir";
-    // for (int l = 0; l < m_server.size(); l++)
-    // {
-    //     std::cout << "segfault: " << m_server[l] << std::endl;
-    // }
-    // std::cout << "maxFd: " << this->m_maxFd << std::endl;
     for (i = 0; i <= this->m_maxFd; i++)
     {
         int sd;
-        // std::cout << "maxfd ==> " << m_server[1] << std::endl;
         if (i < m_server.size())
         {
             if (FD_ISSET(this->m_server[i], &m_currentSocket))
@@ -105,7 +95,6 @@ void WebServer::acceptNewConnection()
                 if (this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i))
                 {
 
-                    // std::cout << this->m_request.getHost() << std::endl;
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {
                         // std::cout << this->m_webServ.getwebserv().size() << std::endl;
@@ -115,28 +104,28 @@ void WebServer::acceptNewConnection()
                             host = parse.gethost();
                             host += ":";
                             host += std::to_string(parse.getlisten()[j]);
-                            if (host == this->m_request.getHost())
+                            requestHost = justHost(this->m_request.getHost());
+                            if (host == requestHost)
                             {
-                                std::cout << "salam sahbi" << std::endl;
                                 m_parse = parse;
-                                // if (FD_ISSET(sd, &m_writeSocket))
                                 break;
                             }
                         }
                     }
                     if (FD_ISSET(sd, &m_writeSocket))
-                        // {
-                        // std::cout << "salam sahbi" << std::endl;
-                        this->manageRequest(sd);
-                    // close(sd);
-                    // }
-                    // this->me
-                    // if (FD_ISSET(sd, &m_writeSocket))
-                    // {
-                    // response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 5\n\n samir";
-                    // write(sd, response.c_str(), response.length());
-                    // FD_CLR(sd, &m_writeSocket);
-                    // }
+                    {
+                        if (m_request.getMethod() == "GET")
+                        {
+                            this->manageRequest(sd);
+                            this->m_request.init();
+                        }
+                        else if (m_request.getMethod() == "POST")
+                        {
+                            response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 6\n\n samir";
+                            write(sd, response.c_str(), response.length());
+                            this->m_request.init();
+                        }
+                    }
                 }
             }
             // {

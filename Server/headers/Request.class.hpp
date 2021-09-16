@@ -9,6 +9,9 @@ class Request
 {
 private:
     std::string *m_tab[7];
+    std::string m_boundary;
+    std::string m_fileName;
+    std::string m_betweenBoundary;
     std::string m_method;
     std::string m_path;
     std::string m_version;
@@ -29,6 +32,11 @@ public:
     void requestHeaders(int i, char *str);
     void concatenation();
     void parsingRequestLine();
+    void parsingRequestGet(int socket, char **buffer, int counter);
+    void parsingRequestPost(int socket, char **buffer, int counter);
+    void parsingBetweenBoundary();
+    void uploadInFile();
+    void init();
 
     //  Accessors
     std::string getMethod() const;
@@ -43,6 +51,9 @@ public:
     std::string getConnection() const;
     std::string getBody() const;
     std::string getRequest() const;
+    std::string getBoundary() const;
+    std::string getFileName() const;
+    std::string getBetweenBoundary() const;
     void setRequest(std::string request);
     void setBody(std::string body);
 

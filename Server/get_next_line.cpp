@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:07:46 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/10 11:12:05 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/16 10:16:29 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,24 +91,24 @@ char *ft_strstr(char *str, char *to_find)
 int get_next_line(int fd, char **line)
 {
 	char *buf;
-	static char *tmp[2];
+	static char *tmp[FD_SIZE];
 	int r;
 
 	char str[2] = {'\r', '\n'};
 	if ((fd < 0 || fd >= FD_SIZE) || !line || BUFFER_SIZE <= 0 ||
 		!(buf = new char[sizeof(char) * BUFFER_SIZE + 1]))
-		return (free_leak(&tmp[1], -1, 1));
-	while ((!(ft_strchr(tmp[1], '\n'))) &&
+		return (free_leak(&tmp[fd], -1, fd));
+	while ((!(ft_strchr(tmp[fd], '\n'))) &&
 		   ((r = read(fd, buf, BUFFER_SIZE)) > 0))
 	{
 		buf[r] = '\0';
-		tmp[1] = ft_strjoin_free(tmp[1], buf);
+		tmp[fd] = ft_strjoin_free(tmp[fd], buf);
 	}
 	delete (buf);
-	if (r == -1 || (r == 0 && !ft_strlen(tmp[1])))
+	if (r == -1 || (r == 0 && !ft_strlen(tmp[fd])))
 	{
 		*line = ft_strdup("");
-		return (free_leak(&tmp[1], r, 1));
+		return (free_leak(&tmp[fd], r, fd));
 	}
-	return (ft_remplissage(tmp, 1, line));
+	return (ft_remplissage(tmp, fd, line));
 }
