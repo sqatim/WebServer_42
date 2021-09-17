@@ -13,10 +13,28 @@ void Response::initResponse()
     this->m_connection = "Connection: close";
 }
 
+static std::string readingTheFile(const char *filename)
+{
+
+    std::ifstream myReadFile(filename);
+    std::string text;
+    std::string line;
+
+    text = "";
+    while (std::getline(myReadFile, line))
+    {
+        text += line;
+        if (!myReadFile.eof())
+            text += "\n";
+    }
+    myReadFile.close();
+    return (text);
+}
+
 void Response::contentHeader(std::string status, std::string type1, std::string type2, std::string body)
 {
     m_type = ROOT;
-        statusIndication(status);
+    statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
     this->m_contentLength += std::to_string(body.length());
@@ -39,21 +57,56 @@ void Response::defaultBody()
     this->m_body += "<p><em>Thank you for using Barnatouti.</em></p>\n";
 }
 
-void Response::notFoundBody()
+void Response::notFoundBody(Parse parse, std::string root)
 {
     this->m_status = "404 Not Found";
-    this->m_body = "<html>\n";
-    this->m_body += "<head>\n";
-    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
-    this->m_body += "<title>404 Not Found</title>\n</head>";
-    this->m_body += "<center><h1>404 Not Found</h1></center>\n";
-    this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "</html>";
+    std::string path;
+    int check = 0;
+    for (int i = 0; i < parse.geterror_page().size(); i++)
+    {
+        if (parse.geterror_page()[i].redirec == "404")
+        {
+            path = root;
+            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            if (fileOrDir(path.c_str()) == 1)
+            {
+                std::cout << "shalam camarade" << std::endl;
+                this->m_body = readingTheFile(path.c_str());
+                check = 1;
+            }
+        }
+    }
+    if (check == 0)
+    {
+        this->m_body = "<html>\n";
+        this->m_body += "<head>\n";
+        this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+        this->m_body += "<title>404 Not Found</title>\n</head>";
+        this->m_body += "<center><h1>404 Not Found</h1></center>\n";
+        this->m_body += "<hr><center>Barnatouti</center>\n";
+        this->m_body += "</html>";
+    }
 }
 
-void Response::forbiddenBody()
+void Response::forbiddenBody(Parse parse, std::string root)
 {
     this->m_status = "403 Forbidden";
+    std::string path;
+    int check = 0;
+    for (int i = 0; i < parse.geterror_page().size(); i++)
+    {
+        if (parse.geterror_page()[i].redirec == "404")
+        {
+            path = root;
+            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            if (fileOrDir(path.c_str()) == 1)
+            {
+                std::cout << "shalam camarade" << std::endl;
+                this->m_body = readingTheFile(path.c_str());
+                check = 1;
+            }
+        }
+    }
     this->m_body = "<html>\n";
     this->m_body += "<head>\n";
     this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
@@ -61,6 +114,30 @@ void Response::forbiddenBody()
     this->m_body += "</head>\n";
     this->m_body += "<center><h1>403 Forbidden</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
+    this->m_body += "</html>";
+}
+
+void Response::fileDeleted()
+{
+    this->m_status = "200 OK";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>Deleted</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>File Deleted</h1></center>\n";
+    this->m_body += "</html>";
+}
+
+void Response::fileUploaded()
+{
+    this->m_status = "200 OK";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>Uploaded</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>File Uploaded</h1></center>\n";
     this->m_body += "</html>";
 }
 

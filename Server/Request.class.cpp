@@ -13,29 +13,29 @@ void Request::init()
     m_host = "";
     m_userAgent = "";
     m_accept = "";
-    m_acceptEncoding = "";
-    m_acceptLanguage = "";
-    m_connection = "";
     m_body = "";
     m_request = "";
 }
 
-Request::Request() : m_request(""), m_body(""), m_fileName(""), m_boundary("111111")
+Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
+                     m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
+                     m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest("")
 {
-    m_tab[0] = &m_firstRequestheader;
-    m_tab[1] = &m_host;
-    m_tab[2] = &m_userAgent;
-    m_tab[3] = &m_accept;
-    m_tab[4] = &m_acceptEncoding;
-    m_tab[5] = &m_acceptLanguage;
-    m_tab[6] = &m_connection;
 }
 
-void Request::requestHeaders(int i, char *str)
+void Request::requestHeaders()
 {
-    if (i < 7)
+    std::istringstream stringStream(m_mainRequest);
+    std::string line;
+
+    while (std::getline(stringStream, line, '\n'))
     {
-        *m_tab[i] = str;
+        if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
+            m_host = line;
+        else if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
+            m_userAgent = line;
+        else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
+            m_accept = line;
     }
 }
 
@@ -45,9 +45,6 @@ void Request::concatenation()
     m_request += m_host + "\r\n";
     m_request += m_userAgent + "\r\n";
     m_request += m_accept + "\r\n";
-    m_request += m_acceptEncoding + "\r\n";
-    m_request += m_acceptLanguage + "\r\n";
-    m_request += m_connection + "\r\n";
 }
 int ft_strlen(char **str)
 {
@@ -65,18 +62,17 @@ std::string toString(char *string)
     return (word);
 }
 
-void Request::parsingRequestLine()
+void Request::parsingRequestLine(std::string buffer)
 {
-    std::string line;
+    std::string word;
     std::string path;
     std::istringstream stringStream;
-    char **array;
+    this->m_firstRequestheader = buffer;
     stringStream.str(this->m_firstRequestheader);
-    getline(stringStream, line, ' ');
-    // array = ft_split(line, ' ');
-    this->m_method = line;
-    getline(stringStream, line, ' ');
-    path = line;
+    getline(stringStream, word, ' ');
+    this->m_method = word;
+    getline(stringStream, word, ' ');
+    path = word;
     for (int j = path.length() - 1; (path[j] == '/' && j != 0); j--)
     {
         if (path[j - 1] != '/')
@@ -92,15 +88,14 @@ std::string justBoundary(std::string host)
     std::string result;
     std::getline(stringStream, result, '=');
     std::getline(stringStream, result, '=');
-    // std::cout << result << std::endl;
     return (result);
 }
 
-void Request::uploadInFile()
+void Request::uploadInFile(const char *path)
 {
-    std::string path = "/Users/sqatim/Desktop/testNginx/" + m_fileName;
-    std::cout << path.c_str() << std::endl;
-    std::ofstream myWriteFile(path);
+    std::string file = path;
+    file.insert(file.length(), m_fileName);
+    std::ofstream myWriteFile(file);
     myWriteFile << m_body;
     myWriteFile.close();
 }
@@ -133,7 +128,7 @@ void Request::parsingBetweenBoundary()
                 if (line.find(m_boundary) == std::string::npos)
                     m_body += '\n';
             }
-            uploadInFile();
+            // uploadInFile();
             // std::cout << m_body << std::endl;
         }
     }
@@ -148,8 +143,9 @@ void Request::parsingRequestPost(int socket, char **buffer, int counter)
 
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
         line = *buffer;
+        this->m_mainRequest += *buffer;
+        this->m_mainRequest += "\n";
         if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
         {
             boundry = &line[i];
@@ -167,10 +163,10 @@ void Request::parsingRequestPost(int socket, char **buffer, int counter)
             m_betweenBoundary += line + '\n';
             check = 2;
         }
-        this->requestHeaders(counter, *buffer);
         counter++;
         delete[](*buffer);
     }
+    this->requestHeaders();
     parsingBetweenBoundary();
     this->concatenation();
 }
@@ -179,18 +175,14 @@ void Request::parsingRequestGet(int socket, char **buffer, int counter)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
-        this->requestHeaders(counter, *buffer);
+        this->m_mainRequest += *buffer;
+        this->m_mainRequest += "\n";
         counter++;
-        // if ((*buffer)[0] == '\0')
-        // {
-        //     if (m_method == "GET")
-        //         break;
-        // }
         delete[](*buffer);
     }
+    this->requestHeaders();
     this->concatenation();
-    // std::cout << this->m_request << std::endl;
+    std::cout << m_request << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -214,19 +206,18 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        // buffer[result] = '\0';
-        // std::cout << "*****************************" << std::endl;
-        std::cout << buffer << std::endl;
-        this->requestHeaders(counter, buffer);
-        this->parsingRequestLine();
+        // std::cout << buffer << std::endl;
+        this->m_mainRequest += buffer;
+        this->m_mainRequest += "\n";
+        if (m_firstRequestheader == "")
+            this->parsingRequestLine(buffer);
         delete[] buffer;
         counter++;
-        if (m_method == "GET")
+        if (m_method != "POST")
             parsingRequestGet(socket, &buffer, counter);
         else if (m_method == "POST")
             parsingRequestPost(socket, &buffer, counter);
-        // std::cout << "*****************************" << std::endl;
-        // this->concatenation();
+        // std::cout << m_request << std::endl;
         return (1);
     }
 }
@@ -247,18 +238,6 @@ std::string Request::getUserAgent() const
 std::string Request::getAccept() const
 {
     return (this->m_accept);
-}
-std::string Request::getAcceptEncoding() const
-{
-    return (this->m_acceptEncoding);
-}
-std::string Request::getAcceptLanguage() const
-{
-    return (this->m_acceptLanguage);
-}
-std::string Request::getConnection() const
-{
-    return (this->m_connection);
 }
 
 std::string Request::getRequest(void) const

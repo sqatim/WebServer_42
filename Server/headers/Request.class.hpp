@@ -8,7 +8,6 @@
 class Request
 {
 private:
-    std::string *m_tab[7];
     std::string m_boundary;
     std::string m_fileName;
     std::string m_betweenBoundary;
@@ -19,23 +18,21 @@ private:
     std::string m_host;
     std::string m_userAgent;
     std::string m_accept;
-    std::string m_acceptEncoding;
-    std::string m_acceptLanguage;
-    std::string m_connection;
     std::string m_body;
     std::string m_request;
+    std::string m_mainRequest;
 
 public:
     Request();
     int parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
     void getWords();
-    void requestHeaders(int i, char *str);
+    void requestHeaders();
     void concatenation();
-    void parsingRequestLine();
+    void parsingRequestLine(std::string line);
     void parsingRequestGet(int socket, char **buffer, int counter);
     void parsingRequestPost(int socket, char **buffer, int counter);
     void parsingBetweenBoundary();
-    void uploadInFile();
+    void uploadInFile(const char *path);
     void init();
 
     //  Accessors

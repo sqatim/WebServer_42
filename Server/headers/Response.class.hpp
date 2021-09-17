@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include "../../Parsing/parse.hpp"
+#include "server.hpp"
 #include <unistd.h>
 #include <dirent.h>
 
@@ -30,8 +31,10 @@ public:
     void initResponse();
     void contentHeader(std::string status, std::string type1, std::string type2, std::string body);
     void defaultBody();
-    void notFoundBody();
-    void forbiddenBody();
+    void notFoundBody(Parse parse, std::string root);
+    void forbiddenBody(Parse parse, std::string root);
+    void fileDeleted();
+    void fileUploaded();
     int checkLocation(LocaTion location);
     void redirectHeader(int socket, std::string status, std::string location);
     void redirectHeaderToPath(int socket, std::string status, std::string host, std::string url);

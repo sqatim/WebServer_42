@@ -28,7 +28,7 @@ int fileOrDir(const char *path)
         }
         else if (fileStat.st_mode & S_IFREG)
         {
-            // std::cout << "It's a file" << std::endl;
+            std::cout << "It's a file" << std::endl;
             return (1);
         }
         else

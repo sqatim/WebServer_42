@@ -27,12 +27,29 @@ private:
 public:
     class NotFound
     {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
     public:
+        NotFound(){};
+        NotFound(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
         std::string notFoundBody() throw();
+        // std::string notFoundBody() throw();
     };
     class Forbidden
     {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
     public:
+        Forbidden(){};
+        Forbidden(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
         std::string forbiddenBody() throw();
     };
     WebServer(WebServ &webServ);
@@ -43,6 +60,8 @@ public:
     int checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path);
     std::string readingTheFile(char *filename);
     void getMethod(int socket);
+    void postMethod(int socket);
+    void deleteMethod(int socket);
     int location(int socket);
     int whichLocation(Parse &parse, LocaTion location, std::string locationName, int socket);
     int appendLocation(LocaTion location, int socket);

@@ -110,6 +110,7 @@ int WebServer::location(int socket)
         std::cout << "fast cgi" << std::endl;
         exit(0);
     }
+
     if (check == -1 || check == 2)
     {
         std::cout << "location: " << this->m_parse.getlocation().size() << std::endl;

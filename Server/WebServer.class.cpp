@@ -114,17 +114,17 @@ void WebServer::acceptNewConnection()
                     }
                     if (FD_ISSET(sd, &m_writeSocket))
                     {
-                        if (m_request.getMethod() == "GET")
-                        {
-                            this->manageRequest(sd);
-                            this->m_request.init();
-                        }
-                        else if (m_request.getMethod() == "POST")
-                        {
-                            response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 6\n\n samir";
-                            write(sd, response.c_str(), response.length());
-                            this->m_request.init();
-                        }
+                        // if (m_request.getMethod() == "GET")
+                        // {
+                        this->manageRequest(sd);
+                        this->m_request.init();
+                        // }
+                        // else if (m_request.getMethod() == "POST")
+                        // {
+                        // response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 6\n\n samir";
+                        // write(sd, response.c_str(), response.length());
+                        // this->m_request.init();
+                        // }
                     }
                 }
             }
