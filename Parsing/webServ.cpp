@@ -6,12 +6,12 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/13 17:10:03 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/17 21:38:28 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserv.hpp"
-
+#include "cgi.hpp"
 
 WebServ::WebServ(std::string _filename)
 {
@@ -41,13 +41,17 @@ WebServ::WebServ(std::string _filename)
         
         i++;
     }
-    i = 0;
-    while (i < this->_webserv.size())
-    {
-        std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
-        std::cout << this->_webserv[i] << std::endl;
-        i++;
-    }
+    /* ha CGI asahbi */
+    CGI cg;
+    cg.execute("/home/amine/Desktop/WebServer_42/Parsing/index.php");
+    std::cout << cg.get_outpout() << std::endl;
+    // i = 0;
+    // while (i < this->_webserv.size())
+    // {
+    //     std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
+    //     std::cout << this->_webserv[i] << std::endl;
+    //     i++;
+    // }
     // std::cout << parse;
     // std::cout  << "amine" << std::endl;
 }

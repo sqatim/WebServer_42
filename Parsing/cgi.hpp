@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:01:44 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/14 14:54:27 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/17 21:36:38 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ private:
 
 public:
     CGI(/* args */);
+    char		 **Maptomatrice(MyMap param);
     void execute(std::string target);
     void set_value_to_maymap();
+    std::string get_outpout();
     ~CGI();
 };
 
