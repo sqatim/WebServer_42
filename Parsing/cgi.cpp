@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/17 21:52:13 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/18 12:26:51 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ void		 CGI::execute(std::string target)
     pid_t					pid;
 	int						_fd[2];
 	char					tmp[65536];
-	int						ret(1);
+	int						ret = 1;
 
-    _binary = "/usr/bin/php-cgi";
+    _binary = "/Users/ahaddad/goinfre/.brew/bin/php-cgi";
 	_fd[0] = dup(STDIN_FILENO);
 	_fd[1] = dup(STDOUT_FILENO);
 	FILE	*input_tmpfile = tmpfile();
@@ -42,7 +42,7 @@ void		 CGI::execute(std::string target)
     pid = fork();
 	if (pid == -1)
 	{
-		std::cout << "Fork failed for CGI : PID = -1" << std::endl;
+		std::cout << "error in fork" << std::endl;
 		return ;
 	}
     else if (pid == 0)
@@ -56,7 +56,7 @@ void		 CGI::execute(std::string target)
 		strcpy(tab[1], target.c_str());
 		tab[2] = NULL;
 		if (execve(_binary.c_str(), tab, this->Maptomatrice(map)) == -1)
-			std::cout << "command not found << std::endl " << std::endl;
+			std::cout << "command not found" << std::endl;
     }
     else
 	{
@@ -96,16 +96,16 @@ char		 **CGI::Maptomatrice(MyMap map)
 
 void CGI::set_value_to_maymap()
 {
-    // map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
-    // map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
-    // map["HTTP_CACHE_CONTROL"] = "max-age=0";
-    // map["HTTP_CONNECTION"] = "keep-alive";
-    // map["HTTP_SEC_FETCH_DEST"] = "document";
-    // map["HTTP_SEC_FETCH_MODE"] = "navigate";
-    // map["HTTP_SEC_FETCH_SITE"] = "same-origin";
-    // map["HTTP_SEC_FETCH_USER"] = "?1";
-    // map["HTTP_IF_MODIFIED_SINCE"] = "Tue, 14  Sep 2021 11:47:07 GMT";
-    // map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
+    map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
+    map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
+    map["HTTP_CACHE_CONTROL"] = "max-age=0";
+    map["HTTP_CONNECTION"] = "keep-alive";
+    map["HTTP_SEC_FETCH_DEST"] = "document";
+    map["HTTP_SEC_FETCH_MODE"] = "navigate";
+    map["HTTP_SEC_FETCH_SITE"] = "same-origin";
+    map["HTTP_SEC_FETCH_USER"] = "?1";
+    map["HTTP_IF_MODIFIED_SINCE"] = "Tue, 14  Sep 2021 11:47:07 GMT";
+    map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
     map["HTTP_USER_AGENT"] = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0";
     map["AUTH_TYPE"] = "";
     map["CONTENT_LENGTH"] = "0";
