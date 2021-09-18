@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/18 12:26:51 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/18 14:54:29 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ CGI::~CGI()
 
 void		 CGI::execute(std::string target)
 {
-    // target = "../index.php";
     pid_t					pid;
 	int						_fd[2];
 	char					tmp[65536];
