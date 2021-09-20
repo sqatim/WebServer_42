@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/15 18:45:09 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/20 11:26:16 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.hpp"
 
-Parse::Parse(void)
+Parse::Parse()
 {
-
+    
 }
 
 Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("")
@@ -73,10 +73,9 @@ void Parse::setlisten(std::vector<int> val)
     int i = 0;
     while (i < val.size())
     {
-        listen.push_back(val[i]);
+        this->listen.push_back(val[i]);
         i++;
     }
-    // this->listen = val;
 }
 
 std::vector<int> Parse::getlisten()
@@ -246,6 +245,12 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
                 k++;
             }
         }
+        if (in.getlocation()[i].get_GET() == 1)
+            out << "GET methode is true in locatio number " << i << std::endl;
+        if (in.getlocation()[i].get_POST() == 1)
+            out << "POST methode is truein locatio number " << i << std::endl;
+        if (in.getlocation()[i].get_DELET() == 1)
+            out << "DELET methode is truein locatio number " << i << std::endl;    
         if (in.getlocation()[i].getfascgi_pass().size() > 0)
             out << "fastcgi_pass in location number " << i + 1 << " is: {" << in.getlocation()[i].getfascgi_pass() << "}" << std::endl;
         if (in.getlocation()[i].getupload_methods().size() > 0)

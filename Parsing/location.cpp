@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/09/10 11:44:52 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/13 17:47:27 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ LocaTion::LocaTion(/* args */)
     this->name = "";
     this->root = "";
     this->option = "";
+    this->get = 1;
+    this->post = 0;
+    this->delet = 0;
 }
 
 LocaTion::~LocaTion()
@@ -41,6 +44,9 @@ LocaTion::LocaTion(const LocaTion &src)
     this->name = src.name;
     this->root = src.root;
     this->option = src.option;
+    this->get = src.get;
+    this->post = src.post;
+    this->delet = src.delet;
 }
 
 LocaTion &LocaTion::operator=(const LocaTion &src)
@@ -55,6 +61,9 @@ LocaTion &LocaTion::operator=(const LocaTion &src)
     this->name = src.name;
     this->root = src.root;
     this->option = src.option;
+    this->get = src.get;
+    this->post = src.post;
+    this->delet = src.delet;
     return *this;
 }
 
@@ -150,4 +159,29 @@ void LocaTion::setoption(std::string val)
 std::string LocaTion::getoption()
 {
     return this->option;
+}
+
+void LocaTion::set_GET(int val)
+{
+    get = val;
+}
+int LocaTion::get_GET()
+{
+    return get;
+}
+void LocaTion::set_POST(int val)
+{
+    post = val;
+}
+int LocaTion::get_POST()
+{
+    return post;
+}
+void LocaTion::set_DELET(int val)
+{
+    delet = val;
+}
+int LocaTion::get_DELET()
+{
+    return delet;
 }

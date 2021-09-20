@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/08 16:19:03 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/20 11:38:19 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "webserv.hpp"
-
+#include "cgi.hpp"
 
 WebServ::WebServ(std::string _filename)
 {
@@ -41,7 +41,11 @@ WebServ::WebServ(std::string _filename)
         
         i++;
     }
-    i = 0;
+    /* ha CGI asahbi */
+    CGI cg;
+    cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
+    std::cout << cg.get_outpout();
+    // i = 0;
     // while (i < this->_webserv.size())
     // {
     //     std::cout << "=========================== server number " << i+1 << "========" <<std::endl;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/15 18:45:15 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/20 11:26:25 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ protected:
     int count_error_page;
 
 public:
-    Parse();
     std::string file;
     std::map<std::string, std::string> my_map;
+    Parse();
     Parse(std::string _filename);
     Parse(const Parse &src);
     Parse &operator=(const Parse &src);
@@ -70,8 +70,6 @@ public:
     void setlocation(std::vector<LocaTion> val);
     std::vector<LocaTion> getlocation();
     ~Parse();
-    void setIndex(std::string index);
-    std::string getIndex();
 };
 
 void get_attributs(std::vector<std::string> vect, Parse *parse, int server_len, int _begin);

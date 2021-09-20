@@ -107,7 +107,8 @@ int WebServer::location(int socket)
     check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root)) == 1)
     {
-        std::cout << "fast cgi" << std::endl;
+        
+        // std::cout << "fast cgi" << std::endl;
         exit(0);
     }
 
