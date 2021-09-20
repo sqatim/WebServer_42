@@ -2,10 +2,14 @@
 #define RESPONSE_CLASS_HPP
 
 #include <iostream>
+#include <sstream>
 #include "../../Parsing/parse.hpp"
+#include "server.hpp"
+#include <unistd.h>
+#include <dirent.h>
 
-#define REDIRECT 1
-
+#define ROOT 1
+#define REDIRECT 2
 
 // class LocaTion;
 class Response
@@ -27,11 +31,16 @@ public:
     void initResponse();
     void contentHeader(std::string status, std::string type1, std::string type2, std::string body);
     void defaultBody();
-    void notFoundBody();
-    void forbiddenBody();
+    void notFoundBody(Parse parse, std::string root);
+    void forbiddenBody(Parse parse, std::string root);
+    void fileDeleted();
+    void fileUploaded();
     int checkLocation(LocaTion location);
-    void redirectHeader(std::string status, std::string location);
+    void redirectHeader(int socket, std::string status, std::string location);
+    void redirectHeaderToPath(int socket, std::string status, std::string host, std::string url);
     void simpleLocation();
+    std::string autoIndexBody(const char *fileName, const char *url);
+    void sendResponse(int socket);
     // Setters
     void setVersion(std::string version);
     void setStatus(std::string status);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/18 11:20:36 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/20 13:16:49 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ WebServ::WebServ(std::string _filename)
     }
     /* ha CGI asahbi */
     CGI cg;
-    cg.execute("/Users/ahaddad/Desktop/WebServer_42/Parsing/index.php");
+    cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
     std::cout << cg.get_outpout();
     // i = 0;
     // while (i < this->_webserv.size())

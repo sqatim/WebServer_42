@@ -13,8 +13,27 @@ void Response::initResponse()
     this->m_connection = "Connection: close";
 }
 
+static std::string readingTheFile(const char *filename)
+{
+
+    std::ifstream myReadFile(filename);
+    std::string text;
+    std::string line;
+
+    text = "";
+    while (std::getline(myReadFile, line))
+    {
+        text += line;
+        if (!myReadFile.eof())
+            text += "\n";
+    }
+    myReadFile.close();
+    return (text);
+}
+
 void Response::contentHeader(std::string status, std::string type1, std::string type2, std::string body)
 {
+    m_type = ROOT;
     statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
@@ -25,6 +44,7 @@ void Response::defaultBody()
 {
     this->m_status = "304 Not Modified";
     this->m_body = "<head>";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">";
     this->m_body += "<title>Welcome to Barnatouti!</title>";
     this->m_body += "<style>";
     this->m_body += "html { color-scheme: light dark; }";
@@ -37,48 +57,190 @@ void Response::defaultBody()
     this->m_body += "<p><em>Thank you for using Barnatouti.</em></p>\n";
 }
 
-void Response::notFoundBody()
+void Response::notFoundBody(Parse parse, std::string root)
 {
     this->m_status = "404 Not Found";
-    this->m_body = "<html>";
-    this->m_body += "<head><title>404 Not Found</title></head>";
-    this->m_body += "<center><h1>404 Not Found</h1></center>\n";
-    this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "<html>";
+    std::string path;
+    int check = 0;
+    for (int i = 0; i < parse.geterror_page().size(); i++)
+    {
+        if (parse.geterror_page()[i].redirec == "404")
+        {
+            path = root;
+            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            if (fileOrDir(path.c_str()) == 1)
+            {
+                std::cout << "shalam camarade" << std::endl;
+                this->m_body = readingTheFile(path.c_str());
+                check = 1;
+            }
+        }
+    }
+    if (check == 0)
+    {
+        this->m_body = "<html>\n";
+        this->m_body += "<head>\n";
+        this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+        this->m_body += "<title>404 Not Found</title>\n</head>";
+        this->m_body += "<center><h1>404 Not Found</h1></center>\n";
+        this->m_body += "<hr><center>Barnatouti</center>\n";
+        this->m_body += "</html>";
+    }
 }
 
-void Response::forbiddenBody()
+void Response::forbiddenBody(Parse parse, std::string root)
 {
     this->m_status = "403 Forbidden";
-    this->m_body = "<html>";
-    this->m_body += "<head><title>403 Forbidden</title></head>";
-    this->m_body = "<center><h1>403 Forbidden</h1></center>\n";
+    std::string path;
+    int check = 0;
+    for (int i = 0; i < parse.geterror_page().size(); i++)
+    {
+        if (parse.geterror_page()[i].redirec == "404")
+        {
+            path = root;
+            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            if (fileOrDir(path.c_str()) == 1)
+            {
+                std::cout << "shalam camarade" << std::endl;
+                this->m_body = readingTheFile(path.c_str());
+                check = 1;
+            }
+        }
+    }
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>403 Forbidden</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>403 Forbidden</h1></center>\n";
     this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "<html>";
+    this->m_body += "</html>";
 }
 
-int Response::checkLocation(LocaTion location)
+void Response::fileDeleted()
 {
-    if (location.get_return().size() != 0)
-        return (1);
-    return (0);
+    this->m_status = "200 OK";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>Deleted</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>File Deleted</h1></center>\n";
+    this->m_body += "</html>";
 }
-void Response::redirectHeader(std::string status, std::string location)
+
+void Response::fileUploaded()
+{
+    this->m_status = "200 OK";
+    this->m_body = "<html>\n";
+    this->m_body += "<head>\n";
+    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    this->m_body += "<title>Uploaded</title>\n";
+    this->m_body += "</head>\n";
+    this->m_body += "<center><h1>File Uploaded</h1></center>\n";
+    this->m_body += "</html>";
+}
+
+void Response::redirectHeader(int socket, std::string status, std::string location)
 {
     m_type = REDIRECT;
     statusIndication(status);
     m_location += location;
     this->setContentType("text", "html");
+    // sendRespone(socket);
+}
+
+std::string justHost(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::string result;
+    std::getline(stringStream, result, ' ');
+    std::getline(stringStream, result, ' ');
+    // std::cout << result << std::endl;
+    return (result);
+}
+
+void Response::redirectHeaderToPath(int socket, std::string status, std::string host, std::string url)
+{
+    std::string path;
+
+    path = "http://";
+    path += justHost(host);
+    path.insert(path.length(), "/");
+    path.insert(path.length(), url);
+    path.insert(path.length(), "/");
+    m_type = REDIRECT;
+    statusIndication(status);
+    m_location += path;
+    std::cout << "m_location _" << m_location << std::endl;
+    this->setContentType("text", "html");
+    setHeader();
+    setResponse();
+    // sendRespone(socket);
+}
+
+std::vector<std::string> listing(const char *fileName)
+{
+    std::vector<std::string> list;
+    struct dirent *ptr;
+    DIR *dr;
+    dr = opendir(fileName);
+    if (dr != NULL)
+    {
+        for (ptr = readdir(dr); ptr != NULL; ptr = readdir(dr))
+        {
+            if (ptr->d_name[0] != '.' && ptr->d_name[1] != '\0')
+                list.push_back(ptr->d_name);
+        }
+        closedir(dr);
+    }
+    else
+        std::cout << "\nError Occurred!" << std::endl;
+    return (list);
+}
+
+std::string Response::autoIndexBody(const char *fileName, const char *url)
+{
+    std::vector<std::string> list;
+    std::string body;
+    list = listing(fileName);
+    body = "<html>\n";
+    body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+    body += "<head><title>Index of ";
+    body += url;
+    body += "</title></head>\n<body>\n";
+    body += "<h1>Index of ";
+    body += url;
+    body += "</h1>\n";
+    body += "<hr><pre>\n";
+    for (int i = 0; i < list.size(); i++)
+    {
+        body += "<a href=\"" + list[i] + "\">";
+        body += list[i];
+        body += "</a>\n";
+    }
+    body += "</pre><hr></body>\n</html>";
+    return (body);
 }
 
 void Response::simpleLocation()
 {
 }
 
+void Response::sendResponse(int socket)
+{
+    setHeader();
+    setResponse();
+    // std::cout << m_response << std::endl;
+    write(socket, m_response.c_str(), m_response.length());
+}
+
 void Response::statusIndication(std::string status)
 {
     if (status == "200")
         this->m_status = "200 OK";
+    else if (status == "301")
+        this->m_status = "301 Moved Permanently";
     else if (status == "304")
         this->m_status = "304 Not Modified";
     else if (status == "403")
@@ -142,13 +304,11 @@ void Response::setHeader()
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";
-    // std::cout << "=================================" << std::endl;
-    // std::cout << "content lenght: " << this->m_contentLength << std::endl;
-    // std::cout << "=================================" << std::endl;
 }
 
 void Response::setResponse()
 {
+
     this->m_response = this->m_header;
     this->m_response += "\n\n";
     if (m_type != REDIRECT)

@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:09:38 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/03 13:56:00 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/10 11:11:39 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char *ft_strjoin_free(char *s1, char const *s2)
 		while (s2[k])
 			p[i++] = s2[k++];
 		p[i] = '\0';
-		free(s1);
+		delete [] (s1);
 		return (p);
 	}
 	return (NULL);
