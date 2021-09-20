@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 13:16:39 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/20 13:28:31 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Parse::Parse()
     
 }
 
-Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("")
+Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("0.0.0.0")
 {
     index.clear();
     error_page.clear();

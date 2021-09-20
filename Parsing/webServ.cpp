@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 13:16:49 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/20 13:55:40 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,40 @@ WebServ::WebServ(std::string _filename)
     }
     count_and_set_index(file_in_vector);
     int i = 0;
-    // std::cout << count_server << std::endl;
-    while (i < count_server)
+    while (i < file_in_vector.size())
     {
-        // std::cout << "amine" << std::endl;
-        Parse parse(_filename);
-        get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]);
-        this->_webserv.push_back(parse);
-        
+        std::vector<std::string> vect_str = splitstring(file_in_vector[i], " ");
+        if (vect_str[0][0] == '#')
+        {
+            file_in_vector.erase(file_in_vector.begin()+i);
+            i--;
+        }
         i++;
     }
+    i = 0;
+    while (i < file_in_vector.size())
+    {
+        std::cout << file_in_vector[i] << std::endl;
+        i++;
+    }
+    int check = 1;
+    check = handle_error(file_in_vector);
+    if (check == -1)
+        std::cout << "wa ra keyn error" << std::endl;
+        
+    // while (i < count_server)
+    // {
+    //     // std::cout << "amine" << std::endl;
+    //     Parse parse(_filename);
+    //     get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]);
+    //     this->_webserv.push_back(parse);
+        
+    //     i++;
+    // }
     /* ha CGI asahbi */
-    CGI cg;
-    cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
-    std::cout << cg.get_outpout();
+    // CGI cg;
+    // cg.execute("/home/amine/Desktop/WebServer_42/Parsing/index.php");
+    // std::cout << cg.get_outpout() << std::endl;
     // i = 0;
     // while (i < this->_webserv.size())
     // {
@@ -60,6 +80,51 @@ WebServ::~WebServ()
 {
 }
 
+int check_line(std::string str)
+{
+    int check = 1;
+    std::vector<std::string> vect_str = splitstring(str, " ");
+    int i = 0;
+    // if (vect_str.size() > 3)
+    //     check = -1;
+    // if (vect_str.size() == 1)
+    // {
+    //     if (vect_str[0] != "["  && vect_str[0] != "]" && vect_str[0] != "server" && vect_str[0] != "}" && vect_str[0] != "{")
+    //         check  = -1;
+    // }
+    // if (vect_str.size() == 3)
+    // {
+    //     if (vect_str[0] != "error page" && vect_str[0] != "return")
+    //         check = -1;
+    // }
+    // if (vect_str.size() == 2)
+    // {
+    //     if (vect_str[0] != "listen" && vect_str[0] != "server_name" && vect_str[0] != "index" &&
+    //         vect_str[0] != "root" && vect_str[0] != "location" && vect_str[0] != "client_max_body_size" &&
+    //         vect_str[0] != "host" && vect_str[0] != "auto_index" && vect_str[0] != "fastcgi_pass" &&
+    //         vect_str[0] != "allow_methods" && vect_str[0] != "upload_methods" &&vect_str[0] != "upload_store")
+    //     check = -1;
+    // }
+    return check;
+}
+
+
+
+int WebServ::handle_error(std::vector<std::string> file_in_vect)
+{
+    int check(1);
+    int i = 0;
+    if (this->server_begin_index.size() < 1 || this->server_end_index.size() < 1 ||
+            this->server_end_index.size() != this->server_begin_index.size())
+        return -1;
+    while (i < file_in_vect.size())
+    {
+        if (check_line(file_in_vect[i]) == -1)
+            return -1;
+        i++;
+    }
+    return 0;
+}
 
 void WebServ::setwebserv(std::vector<Parse> val)
 {
