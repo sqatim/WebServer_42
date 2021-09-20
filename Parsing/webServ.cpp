@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 14:03:07 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/20 15:21:07 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,38 @@ int check_line(std::string str)
     return check;
 }
 
-
+int check_serv_loca(std::vector<std::string> vect)
+{
+    int check(1);
+    // int i = 0;
+    int i = 0;
+    while (i < vect.size())
+    {
+        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+        if (vect_str[0] == "server")
+        {
+            i++;
+            if (i < vect.size())
+            {
+                std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                if (vect_str.size() > 1 || vect_str[0] != "[")
+                    return -1;
+            }
+        }
+        if (vect_str[0] == "location")
+        {
+            i++;
+            if (i < vect.size())
+            {
+                std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                if (vect_str.size() > 1 || vect_str[0] != "{")
+                    return -1;
+            }
+        }
+        i++;
+    }
+    return check;
+}
 
 int WebServ::handle_error(std::vector<std::string> file_in_vect)
 {
@@ -122,7 +153,9 @@ int WebServ::handle_error(std::vector<std::string> file_in_vect)
             return -1;
         i++;
     }
-    return 0;
+    if (check_serv_loca(file_in_vect) == -1)
+        return -1;
+    return check;
 }
 
 void WebServ::setwebserv(std::vector<Parse> val)
