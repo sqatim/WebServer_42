@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/21 14:47:13 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:05:06 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,58 @@ int check_client_max_body_size(std::vector<std::string> vect_str)
     return 1;
 }
 
+int check_host(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() != 2)
+        return -1;
+    if (vect_str[0] != "host")
+        return -1;
+    std::vector<std::string> vect = splitstring_with_point(vect_str[1], ".");
+    int i = 0;
+    if (vect_str[1][0] == '.' || vect_str[1][vect_str[1].length() -1] == '.')
+        return -1;
+    while (i < vect_str[1].length())
+    {
+        if (vect_str[1][i] == '.')
+        {
+            i++;
+            if (i < vect_str[1].length())
+                if (vect_str[1][i] == '.')
+                    return -1;
+        }
+        i++;
+    }
+    if (vect.size() != 4)
+        return -1;
+    i = 0;
+    while (i < vect.size())
+    {
+        if (check_is_digit(vect[i]) == -1)
+            return -1;
+        i++;
+    }
+    i = 0;
+    while (i < vect.size())
+    {
+        if (std::stoi(vect[i]) > 255)
+            return -1;
+        i++;
+    }
+    return 1;
+}
+
+int check_return(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() != 3)
+        return -1;
+    if (vect_str[0] != "return")
+        return -1;
+    if (check_is_digit(vect_str[1]) == -1)
+        return -1;
+    return 1;
+}
+
+
 int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
 {
     int i = 0;
@@ -192,8 +244,9 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         if (vect[i].find("host") != -1)
         {
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (vect_str[0] == "host")
-                parse->sethost(vect_str[1]);
+            if (check_host(vect_str) == -1)
+                return -1;
+            parse->sethost(vect_str[1]);
         }
         std::string str = vect[i];
         
@@ -201,12 +254,7 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         {
             LocaTion loc = LocaTion();
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (vect_str.size() == 3)
-            {
-                loc.setoption(vect_str[1]);
-                loc.setname(vect_str[2]);
-            }
-            else
+            if (vect_str.size() == 2)
                 loc.setname(vect_str[1]);
             while (i < vect.size())
             {
@@ -220,6 +268,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                     if (vect[i].find("index") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (check_index(vect_str) == -1)
+                            return -1;
                         if (vect_str[0] == "index")
                         {
                             vect_str.erase(vect_str.begin());
@@ -229,6 +279,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                     if (vect[i].find("auto_index") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (check_index(vect_str) == -1)
+                            return -1;
                         if (vect_str[0] == "auto_index")
                             loc.setauto_index(vect_str[1]);
                     }
@@ -251,6 +303,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                         t_ret ret;
                         std::vector<t_ret> tmp;
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (check_return(vect_str) == -1)
+                            return -1;
                         if (vect_str[0] == "return")
                         {
                             j = 1;

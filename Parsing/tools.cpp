@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/08/31 17:58:13 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/21 16:27:44 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,39 @@ std::string get_value(std::string str)
     return ret;
 }
 
+std::vector<std::string> splitstring_with_point(std::string str, std::string to_split_with)
+{
+    std::vector<std::string> vect_str;
+    int start = 0;
+    while (start < str.size())
+    {
+        if (str[start] != '\t' && str[start] != ' ')
+            break;
+        start++;
+    }
+    std::string _str = str.substr(start, str.length());
+    // std::cout << _str << std::endl;
+    to_split_with = ".";
+    start = 0;
+    int end = _str.find(to_split_with);
+    while (end != -1)
+    {
+        if (_str.substr(start, end - start).length() > 0)
+            vect_str.push_back(_str.substr(start, end - start));
+        start = end + to_split_with.size();
+        end = _str.find(to_split_with, start);
+    }
+    vect_str.push_back(_str.substr(start, end - start));
+    int i = 0;
+    while (i < vect_str.size())
+    {
+        if (vect_str[i].length() == 0)
+            vect_str.erase(vect_str.begin() + i);
+        i++;
+    }
+    return vect_str;
+}
+
 std::vector<std::string> splitstring(std::string str, std::string to_split_with)
 {
     std::vector<std::string> vect_str;
@@ -121,5 +154,12 @@ std::vector<std::string> splitstring(std::string str, std::string to_split_with)
         end = _str.find(to_split_with, start);
     }
     vect_str.push_back(_str.substr(start, end - start));
+    int i = 0;
+    while (i < vect_str.size())
+    {
+        if (vect_str[i].length() == 0)
+            vect_str.erase(vect_str.begin() + i);
+        i++;
+    }
     return vect_str;
 }

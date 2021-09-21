@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/21 11:03:21 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/21 15:33:40 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,5 @@ int check_accolades(FreqMap wf, std::string filename);
 void error(std::string str);
 int is_printable(std::string str);
 std::vector<std::string> splitstring(std::string str, std::string to_split_with);
-
+std::vector<std::string> splitstring_with_point(std::string str, std::string to_split_with);
 #endif
