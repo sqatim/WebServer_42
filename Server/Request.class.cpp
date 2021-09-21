@@ -15,6 +15,7 @@ void Request::init()
     m_accept = "";
     m_body = "";
     m_request = "";
+    m_mainRequest = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
@@ -134,7 +135,7 @@ void Request::parsingBetweenBoundary()
     }
 }
 
-void Request::parsingRequestPost(int socket, char **buffer, int counter)
+void Request::parsingRequestPost(int socket, char **buffer)
 {
     std::string line;
     std::string boundry;
@@ -163,7 +164,6 @@ void Request::parsingRequestPost(int socket, char **buffer, int counter)
             m_betweenBoundary += line + '\n';
             check = 2;
         }
-        counter++;
         delete[](*buffer);
     }
     this->requestHeaders();
@@ -171,13 +171,13 @@ void Request::parsingRequestPost(int socket, char **buffer, int counter)
     this->concatenation();
 }
 
-void Request::parsingRequestGet(int socket, char **buffer, int counter)
+void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
-        counter++;
         delete[](*buffer);
     }
     this->requestHeaders();
@@ -187,12 +187,7 @@ void Request::parsingRequestGet(int socket, char **buffer, int counter)
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     char *buffer;
-    // char buffer[3000] = {0};
-    int counter;
     int result;
-
-    counter = 0;
-    // if ((result = read(socket, buffer, 3000)) == 0)
     if ((result = get_next_line(socket, &buffer)) == 0)
     {
         std::cout << "disconnected 0" << std::endl;
@@ -200,6 +195,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
         FD_CLR(socket, &(*writeSockets));
+        // init();
         return (0);
     }
     else if (result == -1)
@@ -212,12 +208,10 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         delete[] buffer;
-        counter++;
         if (m_method != "POST")
-            parsingRequestGet(socket, &buffer, counter);
+            parsingRequestGet(socket, &buffer);
         else if (m_method == "POST")
-            parsingRequestPost(socket, &buffer, counter);
-        // std::cout << m_request << std::endl;
+            parsingRequestPost(socket, &buffer);
         return (1);
     }
 }

@@ -24,6 +24,7 @@ private:
     WebServ m_webServ;
     Parse m_parse;
 
+
 public:
     class NotFound
     {
@@ -56,7 +57,7 @@ public:
     Server setServer(Parse &parse);
     void run();
     void acceptNewConnection();
-    void manageRequest(int socket);
+    void manageRequest(int socket, int check);
     int checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path);
     std::string readingTheFile(char *filename);
     void getMethod(int socket);

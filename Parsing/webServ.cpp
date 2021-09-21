@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 11:38:19 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/09/20 13:29:35 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ WebServ::WebServ(std::string _filename)
     {
         // std::cout << "amine" << std::endl;
         Parse parse(_filename);
-        get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]);
+        get_attributs(file_in_vector, &parse, this->server_end_index[i], this->server_begin_index[i]);
         this->_webserv.push_back(parse);
-        
+
         i++;
     }
     /* ha CGI asahbi */
-    CGI cg;
-    cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
-    std::cout << cg.get_outpout();
+    // CGI cg;
+    // cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
+    // std::cout << cg.get_outpout();
     // i = 0;
     // while (i < this->_webserv.size())
     // {
@@ -59,7 +59,6 @@ WebServ::WebServ(std::string _filename)
 WebServ::~WebServ()
 {
 }
-
 
 void WebServ::setwebserv(std::vector<Parse> val)
 {
@@ -76,27 +75,25 @@ void WebServ::count_and_set_index(std::vector<std::string> vect)
     int i = 0;
     int count = 0;
     std::vector<int> tmp;
-    while (i <vect.size())
+    while (i < vect.size())
     {
         std::vector<std::string> vect_str = splitstring(vect[i], " ");
         if (vect_str.size() == 1)
         {
             if (vect_str[0] == "server")
             {
-                this->count_server++;                          
+                this->count_server++;
             }
             if (vect_str[0] == "]")
             {
-                this->server_end_index.push_back(i);                          
+                this->server_end_index.push_back(i);
             }
             if (vect_str[0] == "[")
             {
-                this->server_begin_index.push_back(i);                          
+                this->server_begin_index.push_back(i);
             }
         }
         i++;
     }
     // std::cout << count_server << std::endl;
-
-    
 }

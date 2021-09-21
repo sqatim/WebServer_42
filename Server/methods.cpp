@@ -80,8 +80,10 @@ void WebServer::getMethod(int socket)
     check = location(socket);
     if (check == -1)
     {
+        // std::cout << "e*****************wa ya saide*****************" << std::endl;
         root = getRoot(empty, this->m_parse, 0);
         slash(&root);
+        // debug(root);
         if (getIndex(empty, m_parse, 0, root) == 1)
         {
             path = strdup(root.c_str());

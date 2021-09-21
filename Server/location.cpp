@@ -1,5 +1,43 @@
 #include "WebServer.class.hpp"
 
+void lastSlash(std::string &string)
+{
+    int counter = 0;
+
+    for (int i = 0; i < string.size(); i++)
+    {
+        if (string[i] == '/')
+            counter = i;
+    }
+    if (counter == 0)
+        string = "/";
+    else
+        string = string.substr(0, counter);
+}
+
+std::vector<LocaTion> locationSorted(std::vector<LocaTion> location)
+{
+    std::string string;
+    std::vector<LocaTion> locationSorted;
+    int len = 0;
+    int save = 0;
+    for (int counter = location.size() - 1; counter >= 0; counter--)
+    {
+        len = 0;
+        for (int i = 0; i < location.size(); i++)
+        {
+            if (location[i].getname().size() > len)
+            {
+                len = location[i].getname().size();
+                save = i;
+            }
+        }
+        locationSorted.push_back(location[save]);
+        location.erase(location.begin() + save);
+    }
+    return (locationSorted);
+}
+
 int fastCgi(Request &request, Parse &parse, std::string &root)
 {
     int cgi;
@@ -100,34 +138,46 @@ int WebServer::location(int socket)
 {
     int check;
     int check1;
-    std::string location;
+    std::string locationName;
     std::string root;
+    std::vector<LocaTion> location;
+    std::string url;
 
     check = -1;
     check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root)) == 1)
     {
-        
+
         // std::cout << "fast cgi" << std::endl;
         exit(0);
     }
 
     if (check == -1 || check == 2)
     {
-        std::cout << "location: " << this->m_parse.getlocation().size() << std::endl;
-        for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+        // std::cout << "location: " << this->m_parse.getlocation().size() << std::endl;
+        url = m_request.getPath();
+        while (true)
         {
-            location = this->m_parse.getlocation()[i].getname();
-            location = location.c_str();
-            if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
+            location = locationSorted(this->m_parse.getlocation());
+            for (int i = 0; i < location.size(); i++)
             {
-                if ((check = whichLocation(m_parse, m_parse.getlocation()[i], location, socket)) == 1)
+                locationName = location[i].getname();
+                locationName = locationName.c_str();
+                if (ft_comparaison(locationName.c_str(), url.c_str()))
                 {
-                    check1 = 1;
-                    this->m_response.sendResponse(socket);
-                    return 1;
+                    if ((check = whichLocation(m_parse, location[i], locationName, socket)) == 1)
+                    {
+                        check1 = 1;
+                        this->m_response.sendResponse(socket);
+                        return 1;
+                    }
                 }
             }
+            if (check == 1)
+                break;
+            if (url == "/")
+                break;
+            lastSlash(url);
         }
         if (m_request.getPath() != "/" && this->m_parse.getlocation().size() != 0)
             check = 0;

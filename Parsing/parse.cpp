@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 11:26:16 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/09/21 11:32:15 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Parse::Parse()
     
 }
 
-Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("")
+Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("0.0.0.0")
 {
     index.clear();
     error_page.clear();
@@ -85,7 +85,14 @@ std::vector<int> Parse::getlisten()
 
 void Parse::setserver_name(std::vector<std::string> val)
 {
-    this->server_name = val;
+    this->server_name.clear();
+    int i = 0;
+    while (i < val.size())
+    {
+        this->server_name.push_back(val[i]);
+        i++;
+    }
+    // this->server_name = val;
 }
 std::vector<std::string> Parse::getserver_name()
 {

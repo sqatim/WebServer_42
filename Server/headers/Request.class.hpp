@@ -29,8 +29,8 @@ public:
     void requestHeaders();
     void concatenation();
     void parsingRequestLine(std::string line);
-    void parsingRequestGet(int socket, char **buffer, int counter);
-    void parsingRequestPost(int socket, char **buffer, int counter);
+    void parsingRequestGet(int socket, char **buffer);
+    void parsingRequestPost(int socket, char **buffer);
     void parsingBetweenBoundary();
     void uploadInFile(const char *path);
     void init();

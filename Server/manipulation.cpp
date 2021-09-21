@@ -44,14 +44,19 @@ std::string ft_joinSlash(char **array)
     }
     return (str.c_str());
 }
-void WebServer::manageRequest(int socket)
+void WebServer::manageRequest(int socket, int check)
 {
     char *str;
     std::string response;
+    Parse parse;
     // std::cout << this->m_request.getMethod() << std::endl;
     try
     {
-        if (this->m_request.getMethod() == "GET")
+        if (check == 0)
+        {
+            throw NotFound(parse, "");
+        }
+        else if (this->m_request.getMethod() == "GET")
             getMethod(socket);
         else if (this->m_request.getMethod() == "POST")
             postMethod(socket);
@@ -69,6 +74,7 @@ void WebServer::manageRequest(int socket)
     {
         m_response.notFoundBody(e.getParse(), e.getFileName());
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        std::cout << this->m_response.getResponse() << std::endl;
         this->m_response.sendResponse(socket);
     }
 }

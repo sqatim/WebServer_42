@@ -68,6 +68,7 @@ void WebServer::acceptNewConnection()
     std::string host;
     std::string response;
     std::string m_body = "samir";
+    int check = 0;
     for (i = 0; i <= this->m_maxFd; i++)
     {
         int sd;
@@ -92,45 +93,47 @@ void WebServer::acceptNewConnection()
             sd = m_clientSocket[i];
             if (FD_ISSET(sd, &m_currentSocket))
             {
+                check = 0;
+                this->m_request.init();
                 if (this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i))
                 {
-
+                    requestHost = justHost(this->m_request.getHost());
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {
-                        // std::cout << this->m_webServ.getwebserv().size() << std::endl;
                         parse = this->m_webServ.getwebserv()[k];
                         for (int j = 0; j < parse.getlisten().size(); j++)
                         {
                             host = parse.gethost();
                             host += ":";
                             host += std::to_string(parse.getlisten()[j]);
-                            requestHost = justHost(this->m_request.getHost());
-                            if (host == requestHost)
+                            if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
                             {
                                 m_parse = parse;
+                                check = 1;
                                 break;
+                            }
+                            for (int counter = 0; counter < parse.getserver_name().size(); counter++)
+                            {
+                                requestHost = justHost(this->m_request.getHost());
+                                host = parse.getserver_name()[counter];
+                                host += ":";
+                                host += std::to_string(parse.getlisten()[j]);
+                                if (requestHost == host)
+                                {
+                                    m_parse = parse;
+                                    check = 1;
+                                    break;
+                                }
                             }
                         }
                     }
                     if (FD_ISSET(sd, &m_writeSocket))
                     {
-                        // if (m_request.getMethod() == "GET")
-                        // {
-                        this->manageRequest(sd);
-                        this->m_request.init();
-                        // }
-                        // else if (m_request.getMethod() == "POST")
-                        // {
-                        // response = "HTTP/1.1\nContent-Type: text/html\nContent-Length: 6\n\n samir";
-                        // write(sd, response.c_str(), response.length());
-                        // this->m_request.init();
-                        // }
+                        this->manageRequest(sd, check);
+                        this->m_response.initResponse();
                     }
                 }
             }
-            // {
-            //     std::cout << "salam sahbi samir" << std::endl;
-            // }
         }
     }
 }
