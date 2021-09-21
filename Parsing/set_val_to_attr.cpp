@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/13 22:19:34 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/21 11:03:10 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,7 @@ std::string del_sem_col_in_str(std::string str)
     return str;
 }
 
-void add_locations()
-{
-}
-
-void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
+int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
 {
     int i = 0;
     int j;
@@ -124,7 +120,6 @@ void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len
         }
         if (vect[i].find("host") != -1)
         {
-            // std::cout << "sahbi samir sbe3";
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
             if (vect_str[0] == "host")
                 parse->sethost(vect_str[1]);
@@ -172,17 +167,13 @@ void get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len
                         if (vect_str[0] == "allow_methods")
                         {
                             if (vect_str[1].find("GET") != -1)
-                            {
-                                // std::cout << true << std::endl;
                                 loc.set_GET(1);
-                            }
                             if (vect_str[1].find("POST") != -1)
                                 loc.set_POST(1);
                             if (vect_str[1].find("DELET") != -1)
                                 loc.set_DELET(1);
                         }
                         loc.setallow_methods(vect_str[1]);
-                        // std::cout << vect_str[1] << "}" << std::endl;
                     }
                     if (vect[i].find("return") != -1)
                     {

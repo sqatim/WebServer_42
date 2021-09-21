@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:24:53 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 11:26:25 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/09/21 11:03:21 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ public:
     ~Parse();
 };
 
-void get_attributs(std::vector<std::string> vect, Parse *parse, int server_len, int _begin);
+int get_attributs(std::vector<std::string> vect, Parse *parse, int server_len, int _begin);
 std::ostream &operator<<(std::ostream &out, Parse &pars);
 
 void add_locations();
