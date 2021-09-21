@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/21 11:25:25 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/21 14:47:13 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,74 @@ std::string del_sem_col_in_str(std::string str)
     return str;
 }
 
+int check_is_digit(std::string str)
+{
+    int i = 0;
+    while (i < str.length())
+    {
+        if (std::isdigit(str[i]) == 0)
+            return -1;
+        i++;
+    }
+    return 1;
+}
+
+int check_listen(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() == 1)
+        return -1;
+    if (vect_str[0] != "listen")
+        return -1;
+    int i = 1;
+    while (i < vect_str.size())
+    {
+        if (check_is_digit(vect_str[i]) == -1)
+            return -1;
+        i++;
+    }
+    return 1;
+}
+
+
+
+int check_error_page(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() != 3)
+        return -1;
+    if (vect_str[0] != "error_page")
+        return -1;
+    if (check_is_digit(vect_str[1]) == -1)
+        return -1;
+    return 1;
+}
+
+int check_index(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() != 2)
+        return -1;
+    if (vect_str[1] != "on" && vect_str[1] != "off")
+        return -1;
+    return 1;
+}
+
+int check_client_max_body_size(std::vector<std::string> vect_str)
+{
+    if (vect_str.size() != 2)   
+        return -1;
+    if (vect_str[0] != "client_max_body_size")
+        return -1;
+    if (vect_str[1][vect_str[1].length()-1] != 'm')
+        return -1;
+    int i = 0;
+    while (i < (vect_str[1].length() -1))
+    {
+        if (std::isdigit(vect_str[1][i]) == 0)
+            return -1;
+        i++;
+    }
+    return 1;
+}
+
 int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
 {
     int i = 0;
@@ -53,8 +121,9 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         if (vect[i].find("listen") != -1)
         {
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (vect_str[0] == "listen")
-                tmp4.push_back(std::stoi(vect_str[1]));
+            if (check_listen(vect_str) == -1)
+                return -1;
+            tmp4.push_back(std::stoi(vect_str[1]));
             parse->setlisten(tmp4);
         }
         if (vect[i].find("server_name") != -1)
@@ -76,6 +145,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         {
             // std::vector<std::string> tmp;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (check_index(vect_str) == -1)
+                return -1;
             if (vect_str[0] == "index")
             {
                 int k = 1;
@@ -90,21 +161,19 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         if (vect[i].find("error_page") != -1)
         {
             t_ret ret;
-            // std::vector<t_ret> tmp2;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (vect_str[0] == "error_page")
+            if (check_error_page(vect_str) == -1)
+                return -1;
+            j = 1;
+            if (vect_str.size() < 4)
             {
-                j = 1;
-                if (vect_str.size() < 4)
-                {
-                    ret.path = "";
-                    ret.redirec = "";
-                    ret.redirec = vect_str[1];
-                    ret.path = vect_str[2];
-                    tmp2.push_back(ret);
-                }
-                parse->seterror_page(tmp2);
+                ret.path = "";
+                ret.redirec = "";
+                ret.redirec = vect_str[1];
+                ret.path = vect_str[2];
+                tmp2.push_back(ret);
             }
+            parse->seterror_page(tmp2);
         }
         if (vect[i].find("root") != -1)
         {
@@ -115,6 +184,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         if (vect[i].find("client_max_body_size") != -1)
         {
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
+            if (check_client_max_body_size(vect_str) == -1)
+                return -1;
             if (vect_str[0] == "client_max_body_size")
                 parse->setclient_max_body_size(vect_str[1]);
         }

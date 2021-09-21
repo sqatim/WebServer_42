@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 15:21:07 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/21 13:55:05 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,15 @@ WebServ::WebServ(std::string _filename)
     check = handle_error(file_in_vector);
     if (check == -1)
         std::cout << "wa ra keyn error" << std::endl;
-        
+    i = 0;
     while (i < count_server)
     {
-        // std::cout << "amine" << std::endl;
         Parse parse(_filename);
-        get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]);
+        if (get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]) == -1)
+        {
+            std::cout << "wa ra keyn error f listen" << std::endl;
+            return ;
+        }
         this->_webserv.push_back(parse);
         
         i++;
