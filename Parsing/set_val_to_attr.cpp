@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/21 11:03:10 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/09/21 11:25:25 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,4 +231,5 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         }
         i++;
     }
+    return 1;
 }
