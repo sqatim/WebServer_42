@@ -26,5 +26,7 @@ int checkLocation(LocaTion location);
 int appendUrlCgi(int i, std::string &path, LocaTion location);
 std::string getUrl(Request &request);
 std::string justHost(std::string host);
+std::vector<LocaTion> locationSorted(std::vector<LocaTion> location);
+void lastSlash(std::string &string);
 
 #endif
