@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:21:25 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/14 13:06:13 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/20 13:22:35 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ private:
 public:
     WebServ(std::string filename);
     void setwebserv(std::vector<Parse> val);
+    int handle_error(std::vector<std::string> file_in_vect);
     std::vector<Parse> getwebserv();
     void setserver_end_index(std::vector<int> val);
     std::vector<int> getserver_end_index();

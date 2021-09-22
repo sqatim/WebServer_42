@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 13:29:35 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/09/21 17:13:27 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,35 +29,122 @@ WebServ::WebServ(std::string _filename)
         if (is_printable(word) == 1)
             file_in_vector.push_back(word);
     }
-    count_and_set_index(file_in_vector);
     int i = 0;
-    // std::cout << count_server << std::endl;
+    while (i < file_in_vector.size())
+    {
+        std::vector<std::string> vect_str = splitstring(file_in_vector[i], " ");
+        if (vect_str[0][0] == '#')
+        {
+            file_in_vector.erase(file_in_vector.begin()+i);
+            i--;
+        }
+        i++;
+    }
+    count_and_set_index(file_in_vector);
+    int check = 1;
+    check = handle_error(file_in_vector);
+    if (check == -1)
+        std::cout << "wa ra keyn error" << std::endl;
+    i = 0;
     while (i < count_server)
     {
-        // std::cout << "amine" << std::endl;
         Parse parse(_filename);
-        get_attributs(file_in_vector, &parse, this->server_end_index[i], this->server_begin_index[i]);
+        if (get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]) == -1)
+        {
+            std::cout << "wa ra keyn error f listen" << std::endl;
+            return ;
+        }
         this->_webserv.push_back(parse);
-
+        
         i++;
     }
     /* ha CGI asahbi */
     // CGI cg;
-    // cg.execute("/home/ragegodthor/Desktop/WebServer_42/Parsing/index.php");
-    // std::cout << cg.get_outpout();
-    // i = 0;
-    // while (i < this->_webserv.size())
-    // {
-    //     std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
-    //     std::cout << this->_webserv[i] << std::endl;
-    //     i++;
-    // }
-    // std::cout << parse;
-    // std::cout  << "amine" << std::endl;
+    // cg.execute("/home/amine/Desktop/WebServer_42/Parsing/index.php");
+    // std::cout << cg.get_outpout() << std::endl;
 }
 
 WebServ::~WebServ()
 {
+}
+
+int check_line(std::string str)
+{
+    int check = 1;
+    std::vector<std::string> vect_str = splitstring(str, " ");
+    int i = 0;
+    if (vect_str.size() > 3)
+        check = -1;
+    if (vect_str.size() == 1)
+    {
+        if (vect_str[0] != "["  && vect_str[0] != "]" && vect_str[0] != "server" && vect_str[0] != "}" && vect_str[0] != "{")
+            check  = -1;
+    }
+    if (vect_str.size() == 3)
+    {
+        if (vect_str[0] != "error_page" && vect_str[0] != "return")
+            check = -1;
+    }
+    if (vect_str.size() == 2)
+    {
+        if (vect_str[0] != "listen" && vect_str[0] != "server_name" && vect_str[0] != "index" &&
+            vect_str[0] != "root" && vect_str[0] != "location" && vect_str[0] != "client_max_body_size" &&
+            vect_str[0] != "host" && vect_str[0] != "auto_index" && vect_str[0] != "fastcgi_pass" &&
+            vect_str[0] != "allow_methods" && vect_str[0] != "upload_methods" &&vect_str[0] != "upload_store")
+        check = -1;
+    }
+    return check;
+}
+
+int check_serv_loca(std::vector<std::string> vect)
+{
+    int check(1);
+    // int i = 0;
+    int i = 0;
+    while (i < vect.size())
+    {
+        std::vector<std::string> vect_str = splitstring(vect[i], " ");
+        if (vect_str[0] == "server")
+        {
+            i++;
+            if (i < vect.size())
+            {
+                std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                if (vect_str.size() > 1 || vect_str[0] != "[")
+                    return -1;
+            }
+        }
+        if (vect_str[0] == "location")
+        {
+            i++;
+            if (i < vect.size())
+            {
+                std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                if (vect_str.size() > 1 || vect_str[0] != "{")
+                    return -1;
+            }
+        }
+        i++;
+    }
+    return check;
+}
+
+int WebServ::handle_error(std::vector<std::string> file_in_vect)
+{
+    int check(1);
+    int i = 0;
+    if (this->server_begin_index.size() < 1 || this->server_end_index.size() < 1 ||
+            this->server_end_index.size() != this->server_begin_index.size())
+        return -1;
+    while (i < file_in_vect.size())
+    {
+        if (check_line(file_in_vect[i]) == -1)
+            return -1;
+        i++;
+    }
+    if (check_serv_loca(file_in_vect) == -1)
+        return -1;
+    return check;
 }
 
 void WebServ::setwebserv(std::vector<Parse> val)
@@ -75,25 +162,24 @@ void WebServ::count_and_set_index(std::vector<std::string> vect)
     int i = 0;
     int count = 0;
     std::vector<int> tmp;
-    while (i < vect.size())
+    while (i <vect.size())
     {
         std::vector<std::string> vect_str = splitstring(vect[i], " ");
         if (vect_str.size() == 1)
         {
             if (vect_str[0] == "server")
             {
-                this->count_server++;
+                this->count_server++;                          
             }
             if (vect_str[0] == "]")
             {
-                this->server_end_index.push_back(i);
+                this->server_end_index.push_back(i);                          
             }
             if (vect_str[0] == "[")
             {
-                this->server_begin_index.push_back(i);
+                this->server_begin_index.push_back(i);                          
             }
         }
         i++;
     }
-    // std::cout << count_server << std::endl;
 }
