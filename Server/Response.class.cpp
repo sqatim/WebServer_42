@@ -176,7 +176,7 @@ void Response::redirectHeaderToPath(int socket, std::string status, std::string 
     m_type = REDIRECT;
     statusIndication(status);
     m_location += path;
-    std::cout << "m_location _" << m_location << std::endl;
+    // std::cout << "m_location _" << m_location << std::endl;
     this->setContentType("text", "html");
     setHeader();
     setResponse();
@@ -235,7 +235,7 @@ void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();
-    std::cout << m_response << std::endl;
+    // std::cout << m_response << std::endl;
     write(socket, m_response.c_str(), m_response.length());
 }
 
