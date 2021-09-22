@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/21 13:55:05 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:13:27 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,6 @@ WebServ::WebServ(std::string _filename)
         i++;
     }
     count_and_set_index(file_in_vector);
-    // while (i < file_in_vector.size())
-    // {
-    //     std::cout << file_in_vector[i] << std::endl;
-    //     i++;
-    // }
     int check = 1;
     check = handle_error(file_in_vector);
     if (check == -1)
@@ -67,15 +62,6 @@ WebServ::WebServ(std::string _filename)
     // CGI cg;
     // cg.execute("/home/amine/Desktop/WebServer_42/Parsing/index.php");
     // std::cout << cg.get_outpout() << std::endl;
-    // i = 0;
-    // while (i < this->_webserv.size())
-    // {
-    //     std::cout << "=========================== server number " << i+1 << "========" <<std::endl;
-    //     std::cout << this->_webserv[i] << std::endl;
-    //     i++;
-    // }
-    // std::cout << parse;
-    // std::cout  << "amine" << std::endl;
 }
 
 WebServ::~WebServ()
@@ -196,7 +182,4 @@ void WebServ::count_and_set_index(std::vector<std::string> vect)
         }
         i++;
     }
-    // std::cout << count_server << std::endl;
-
-    
 }
