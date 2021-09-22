@@ -148,11 +148,11 @@ void Request::parsingRequestPost(int socket, char **buffer)
     int check = 0;
     size_t i;
 
-    std::cout << "************* POST *************" << std::endl;
+    // std::cout << "************* POST *************" << std::endl;
     while (get_next_line(socket, &(*buffer)) > 0)
     {
         line = *buffer;
-        std::cout << *buffer << std::endl;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
@@ -179,7 +179,7 @@ void Request::parsingRequestPost(int socket, char **buffer)
     parsingBetweenBoundary();
     this->concatenation();
     // std::cout << m_request << std::endl;
-    std::cout << "*************  *************" << std::endl;
+    // std::cout << "*************  *************" << std::endl;
 }
 
 void Request::parsingRequestGet(int socket, char **buffer)
@@ -192,10 +192,10 @@ void Request::parsingRequestGet(int socket, char **buffer)
         delete[](*buffer);
     }
     this->requestHeaders();
-    std::cout << "************* GET *************" << std::endl;
+    // std::cout << "************* GET *************" << std::endl;
     this->concatenation();
-    std::cout << m_request << std::endl;
-    std::cout << "*************  *************" << std::endl;
+    // std::cout << m_request << std::endl;
+    // std::cout << "*************  *************" << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {

@@ -11,6 +11,8 @@ void WebServer::postMethod(int socket)
     std::string url;
     int check = 0;
     url = m_request.getPath();
+    // if(m_request.getBody == "/")
+
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());
