@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/20 13:16:12 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/22 17:35:26 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char		 **CGI::Maptomatrice(MyMap map)
 	return (ret);
 }
 
-void CGI::set_value_to_maymap()
+void CGI::set_value_to_maymap(Request m_request)
 {
     // map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
     // map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
@@ -104,26 +104,26 @@ void CGI::set_value_to_maymap()
     // map["HTTP_SEC_FETCH_SITE"] = "same-origin";
     // map["HTTP_SEC_FETCH_USER"] = "?1";
     // map["HTTP_IF_MODIFIED_SINCE"] = "Tue, 14  Sep 2021 11:47:07 GMT";
-    map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
-    map["HTTP_USER_AGENT"] = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:92.0) Gecko/20100101 Firefox/92.0";
+    // map["HTTP_REFERER"] = "http://127.0.0.1:8002/cgi/";
+    // map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
+    // map["PATH_TRANSLATED"] = "./www/cgi/index.php";
+    // map["REDIRECT_STATUS"] = "200";
+    // map["REMOTE_USER"] = "user";
+    // map["DOCUMENT_ROOT"] = "./www/cgi";
+    // map["SERVER_NAME"] = "default_server";
     map["AUTH_TYPE"] = "";
+    map["HTTP_USER_AGENT"] = m_request.getUserAgent();
     map["CONTENT_LENGTH"] = "0";
     map["CONTENT_TYPE"] = "text.html";
-    map["DOCUMENT_ROOT"] = "./www/cgi";
     map["GATEWAY_INTERFACE"] = "CGI/1.1";
-    map["HTTP_ACCEPT"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
-    map["HTTP_HOST"] = "127.0.0.1:8002";
-    map["HTTP_REFERER"] = "http://127.0.0.1:8002/cgi/";
+    map["HTTP_ACCEPT"] = m_request.getAccept();
+    map["HTTP_HOST"] = m_request.getHost();
     map["PATH_INFO"] = "/cgi/index.php";
-    map["PATH_TRANSLATED"] = "./www/cgi/index.php";
     map["QUERY_STRING"] = "";
-    map["REDIRECT_STATUS"] = "200";
     map["REMOTE_ADDR"] = "127.0.0.1";
-    map["REMOTE_USER"] = "user";
-    map["REQUEST_METHOD"] = "GET";
+    map["REQUEST_METHOD"] = m_request.getMethod();
     map["REQUEST_URI"] = "/cgi/index.php";
     map["SCRIPT_NAME"] = "/usr/bin/php-cgi";
-    map["SERVER_NAME"] = "default_server";
     map["SERVER_PORT"] = "8002";
     map["SERVER_PROTOCOL"] = "HTTP/1.1";
     map["SERVER_SOFTWARE"] = "webserv/1.0";

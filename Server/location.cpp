@@ -1,5 +1,5 @@
 #include "WebServer.class.hpp"
-
+#include "../../Parsing/cgi.hpp"
 void lastSlash(std::string &string)
 {
     int counter = 0;
@@ -55,8 +55,10 @@ int fastCgi(Request &request, Parse &parse, std::string &root)
                 k++;
         if (parse.getlocation()[k].getname() == "*.php" || parse.getlocation()[k].getname() == "*.py")
         {
+            // std::cout << request.getPath().c_str() << std::endl;
             root = getRoot(parse.getlocation()[k], parse, 1);
-            check = appendUrlCgi(k, root, parse.getlocation()[k]);
+            std::cout << "root ==> " << root << std::endl;
+            check = appendUrlCgi(k, root, parse.getlocation()[k], request.getPath().c_str());
         }
     }
     return (check);
@@ -147,9 +149,16 @@ int WebServer::location(int socket)
     check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root)) == 1)
     {
+        // std::cout << "sahbi nadi" << std::endl;
+        // std::cout << m_request.getVersion() << std::endl;
+        CGI cg;
+        cg.set_value_to_maymap(m_request);
+        cg.execute(root);
+        std::cout << cg.get_outpout() << std::endl;
+        m_response.contentHeader("200", "text", "html", cg.get_outpout());
+                                this->m_response.sendResponse(socket);
 
-        // std::cout << "fast cgi" << std::endl;
-        exit(0);
+        // exit(0);
     }
 
     if (check == -1 || check == 2)

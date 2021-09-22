@@ -106,6 +106,7 @@ void WebServer::acceptNewConnection()
                             host = parse.gethost();
                             host += ":";
                             host += std::to_string(parse.getlisten()[j]);
+                            // std::cout << requestHost << " " << host << std::endl;
                             if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
                             {
                                 m_parse = parse;

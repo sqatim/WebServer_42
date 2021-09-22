@@ -5,30 +5,46 @@ void WebServer::postMethod(int socket)
     m_response.initResponse();
     char *path;
     std::string root;
-    std::string location;
+    std::string locationName;
+    std::vector<LocaTion> location;
     std::string response;
-    for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+    std::string url;
+    int check = 0;
+    url = m_request.getPath();
+    // if(m_request.getBody == "/")
+
+    while (true)
     {
-        location = this->m_parse.getlocation()[i].getname();
-        location = location.c_str();
-        if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
+        location = locationSorted(this->m_parse.getlocation());
+        for (int i = 0; i < location.size(); i++)
         {
-            root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
-            slash(&root);
-            location = &location[1];
-            root.insert(root.length(), location);
-            slash(&root);
-            root.insert(root.length(), this->m_parse.getlocation()[i].getupload_store());
-            slash(&root);
-            if (fileOrDir(root.c_str()) == 2)
-                this->m_request.uploadInFile(root.c_str());
-            else
-                throw NotFound();
-            m_response.fileUploaded();
-            m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-            this->m_response.sendResponse(socket);
-            break;
+            locationName = location[i].getname();
+            locationName = locationName.c_str();
+            if (ft_comparaison(locationName.c_str(), url.c_str()))
+            {
+                root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
+                slash(&root);
+                locationName = &locationName[1];
+                root.insert(root.length(), locationName);
+                slash(&root);
+                root.insert(root.length(), this->m_parse.getlocation()[i].getupload_store());
+                slash(&root);
+                if (fileOrDir(root.c_str()) == 2)
+                    this->m_request.uploadInFile(root.c_str());
+                else
+                    throw NotFound();
+                m_response.fileUploaded();
+                m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+                this->m_response.sendResponse(socket);
+                check = 1;
+                break;
+            }
         }
+        if(check == 1)
+            break;
+        if(url == "/")
+            break;
+        lastSlash(url);
     }
 }
 
