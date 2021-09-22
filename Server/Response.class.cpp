@@ -2,6 +2,7 @@
 
 Response::Response(/* args */) : m_type(0)
 {
+    initResponse();
 }
 
 void Response::initResponse()
@@ -64,13 +65,14 @@ void Response::notFoundBody(Parse parse, std::string root)
     int check = 0;
     for (int i = 0; i < parse.geterror_page().size(); i++)
     {
+
         if (parse.geterror_page()[i].redirec == "404")
         {
             path = root;
             path.insert(path.length(), parse.geterror_page()[i].path.c_str());
             if (fileOrDir(path.c_str()) == 1)
             {
-                std::cout << "shalam camarade" << std::endl;
+                // std::cout << "shalam camarade" << std::endl;
                 this->m_body = readingTheFile(path.c_str());
                 check = 1;
             }
@@ -78,6 +80,7 @@ void Response::notFoundBody(Parse parse, std::string root)
     }
     if (check == 0)
     {
+        // std::cout << "hamza l hmar" << std::endl;
         this->m_body = "<html>\n";
         this->m_body += "<head>\n";
         this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
@@ -132,6 +135,7 @@ void Response::fileDeleted()
 void Response::fileUploaded()
 {
     this->m_status = "200 OK";
+    std::cout << "hamza l hmar" << std::endl;
     this->m_body = "<html>\n";
     this->m_body += "<head>\n";
     this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
@@ -172,7 +176,7 @@ void Response::redirectHeaderToPath(int socket, std::string status, std::string 
     m_type = REDIRECT;
     statusIndication(status);
     m_location += path;
-    std::cout << "m_location _" << m_location << std::endl;
+    // std::cout << "m_location _" << m_location << std::endl;
     this->setContentType("text", "html");
     setHeader();
     setResponse();
