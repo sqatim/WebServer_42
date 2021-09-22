@@ -74,7 +74,13 @@ void WebServer::manageRequest(int socket, int check)
     {
         m_response.notFoundBody(e.getParse(), e.getFileName());
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-        std::cout << this->m_response.getResponse() << std::endl;
+        // std::cout << this->m_response.getResponse() << std::endl;
+        this->m_response.sendResponse(socket);
+    }
+    catch (WebServer::TooLarge &e)
+    {
+        m_response.toLargeBody(e.getParse(), e.getFileName());
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
         this->m_response.sendResponse(socket);
     }
 }

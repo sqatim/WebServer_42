@@ -24,35 +24,7 @@ private:
     WebServ m_webServ;
     Parse m_parse;
 
-
 public:
-    class NotFound
-    {
-    private:
-        Parse m_parse;
-        std::string m_fileName;
-
-    public:
-        NotFound(){};
-        NotFound(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
-        Parse getParse() { return m_parse; };
-        std::string getFileName() { return m_fileName; };
-        std::string notFoundBody() throw();
-        // std::string notFoundBody() throw();
-    };
-    class Forbidden
-    {
-    private:
-        Parse m_parse;
-        std::string m_fileName;
-
-    public:
-        Forbidden(){};
-        Forbidden(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
-        Parse getParse() { return m_parse; };
-        std::string getFileName() { return m_fileName; };
-        std::string forbiddenBody() throw();
-    };
     WebServer(WebServ &webServ);
     Server setServer(Parse &parse);
     void run();
@@ -69,8 +41,47 @@ public:
 
     std::vector<int> getServer() const;
     int getMaxSocket() const;
-    ~WebServer();
     void debug(std::string str);
+    class NotFound
+    {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
+    public:
+        NotFound(){};
+        NotFound(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
+        std::string notFoundBody() throw();
+    };
+    class Forbidden
+    {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
+    public:
+        Forbidden(){};
+        Forbidden(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
+        std::string forbiddenBody() throw();
+    };
+    class TooLarge
+    {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
+    public:
+        TooLarge(){};
+        TooLarge(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
+        std::string toLargeBody() throw();
+    };
+    ~WebServer();
 };
 
 #endif

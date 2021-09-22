@@ -17,12 +17,13 @@ void Request::init()
     m_request = "";
     m_mainRequest = "";
     m_cookie = "";
+    m_contentLength = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie("")
+                     m_cookie(""), m_contentLength("")
 {
 }
 
@@ -41,6 +42,8 @@ void Request::requestHeaders()
             m_accept = line;
         else if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
             m_cookie = line;
+        else if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
+            m_contentLength = line;
     }
 }
 
@@ -51,6 +54,7 @@ void Request::concatenation()
     m_request += m_userAgent + "\r\n";
     m_request += m_accept + "\r\n";
     m_request += m_cookie + "\r\n";
+    m_request += m_contentLength + "\r\n";
 }
 int ft_strlen(char **str)
 {
@@ -178,8 +182,6 @@ void Request::parsingRequestPost(int socket, char **buffer)
     this->requestHeaders();
     parsingBetweenBoundary();
     this->concatenation();
-    // std::cout << m_request << std::endl;
-    // std::cout << "*************  *************" << std::endl;
 }
 
 void Request::parsingRequestGet(int socket, char **buffer)
@@ -192,10 +194,7 @@ void Request::parsingRequestGet(int socket, char **buffer)
         delete[](*buffer);
     }
     this->requestHeaders();
-    // std::cout << "************* GET *************" << std::endl;
     this->concatenation();
-    // std::cout << m_request << std::endl;
-    // std::cout << "*************  *************" << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -290,6 +289,15 @@ std::string Request::getFileName() const
 std::string Request::getBetweenBoundary() const
 {
     return (this->m_betweenBoundary);
+}
+
+std::string Request::getContentLength(void) const
+{
+    std::string length;
+    std::stringstream stringStream(m_contentLength);
+    std::getline(stringStream, length, ' ');
+    std::getline(stringStream, length, ' ');
+    return (length);
 }
 
 void Request::setRequest(std::string request)
