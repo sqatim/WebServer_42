@@ -7,6 +7,7 @@ void WebServer::postMethod(int socket)
     std::string root;
     std::string location;
     std::string response;
+
     for (int i = 0; i < this->m_parse.getlocation().size(); i++)
     {
         location = this->m_parse.getlocation()[i].getname();

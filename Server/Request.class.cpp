@@ -102,6 +102,8 @@ void Request::uploadInFile(const char *path)
     std::string file = path;
     file.insert(file.length(), m_fileName);
     std::ofstream myWriteFile(file);
+    // std::cout << "file name : " << file << std::endl;
+    // std::cout << m_body << std::endl;
     myWriteFile << m_body;
     myWriteFile.close();
 }
@@ -129,13 +131,12 @@ void Request::parsingBetweenBoundary()
             std::getline(stringStream, line, '\n');
             while (line.find(m_boundary) == std::string::npos)
             {
+                // std::cout << line << std::endl;
                 m_body += line;
                 std::getline(stringStream, line, '\n');
                 if (line.find(m_boundary) == std::string::npos)
                     m_body += '\n';
             }
-            // uploadInFile();
-            // std::cout << m_body << std::endl;
         }
     }
 }
@@ -147,9 +148,11 @@ void Request::parsingRequestPost(int socket, char **buffer)
     int check = 0;
     size_t i;
 
+    std::cout << "************* POST *************" << std::endl;
     while (get_next_line(socket, &(*buffer)) > 0)
     {
         line = *buffer;
+        std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
@@ -162,6 +165,7 @@ void Request::parsingRequestPost(int socket, char **buffer)
         {
             if (check == 2 && line.find(m_boundary) != std::string::npos)
             {
+                // std::cout << "line : " << line << std::endl;
                 m_betweenBoundary += line;
                 check = 3;
                 break;
@@ -174,20 +178,24 @@ void Request::parsingRequestPost(int socket, char **buffer)
     this->requestHeaders();
     parsingBetweenBoundary();
     this->concatenation();
+    // std::cout << m_request << std::endl;
+    std::cout << "*************  *************" << std::endl;
 }
 
 void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
     }
     this->requestHeaders();
+    std::cout << "************* GET *************" << std::endl;
     this->concatenation();
-    // std::cout << m_request << std::endl;
+    std::cout << m_request << std::endl;
+    std::cout << "*************  *************" << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -207,13 +215,13 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         delete[] buffer;
-        if (m_method != "POST")
+        if (m_method == "GET" || m_method == "DELETE")
             parsingRequestGet(socket, &buffer);
         else if (m_method == "POST")
             parsingRequestPost(socket, &buffer);
