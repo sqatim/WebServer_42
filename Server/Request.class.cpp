@@ -16,11 +16,13 @@ void Request::init()
     m_body = "";
     m_request = "";
     m_mainRequest = "";
+    m_cookie = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
-                     m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest("")
+                     m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
+                     m_cookie("")
 {
 }
 
@@ -37,6 +39,8 @@ void Request::requestHeaders()
             m_userAgent = line;
         else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
             m_accept = line;
+        else if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
+            m_cookie = line;
     }
 }
 
@@ -46,6 +50,7 @@ void Request::concatenation()
     m_request += m_host + "\r\n";
     m_request += m_userAgent + "\r\n";
     m_request += m_accept + "\r\n";
+    m_request += m_cookie + "\r\n";
 }
 int ft_strlen(char **str)
 {
@@ -175,14 +180,14 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        // std::cout << *buffer << std::endl;
+        std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
     }
     this->requestHeaders();
     this->concatenation();
-    std::cout << m_request << std::endl;
+    // std::cout << m_request << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -202,7 +207,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        // std::cout << buffer << std::endl;
+        std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
@@ -232,6 +237,11 @@ std::string Request::getUserAgent() const
 std::string Request::getAccept() const
 {
     return (this->m_accept);
+}
+
+std::string Request::getCookie() const
+{
+    return (this->m_cookie);
 }
 
 std::string Request::getRequest(void) const

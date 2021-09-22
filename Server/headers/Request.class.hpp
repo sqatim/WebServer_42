@@ -18,6 +18,7 @@ private:
     std::string m_host;
     std::string m_userAgent;
     std::string m_accept;
+    std::string m_cookie;
     std::string m_body;
     std::string m_request;
     std::string m_mainRequest;
@@ -46,6 +47,7 @@ public:
     std::string getAcceptEncoding() const;
     std::string getAcceptLanguage() const;
     std::string getConnection() const;
+    std::string getCookie() const;
     std::string getBody() const;
     std::string getRequest() const;
     std::string getBoundary() const;
