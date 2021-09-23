@@ -21,6 +21,7 @@ private:
     std::string m_userAgent;
     std::string m_accept;
     std::string m_cookie;
+    std::string m_fastCgi;
     std::string m_contentLength;
     std::string m_body;
     std::string m_request;
@@ -53,11 +54,15 @@ public:
     std::string getConnection() const;
     std::string getCookie() const;
     std::string getContentLength() const;
+    std::string getHostSolo() const;
+    std::string getPortSolo() const;
+    std::string getFastCgi() const;
     std::string getBody() const;
     std::string getRequest() const;
     std::string getBoundary() const;
     std::string getFileName() const;
     std::string getBetweenBoundary() const;
+    void setFastCgi(std::string fastCgi);
     void setRequest(std::string request);
     void setBody(std::string body);
 

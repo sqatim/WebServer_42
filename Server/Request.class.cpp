@@ -20,12 +20,13 @@ void Request::init()
     m_mainRequest = "";
     m_cookie = "";
     m_contentLength = "";
+    m_fastCgi = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo("")
+                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo(""), m_fastCgi("")
 {
 }
 
@@ -313,6 +314,20 @@ std::string Request::getContentLength(void) const
     return (length);
 }
 
+std::string Request::getHostSolo(void) const
+{
+    return (this->m_hostSolo);
+}
+
+std::string Request::getPortSolo(void) const
+{
+    return (this->m_portSolo);
+}
+
+std::string Request::getFastCgi(void) const
+{
+    return (this->m_fastCgi);
+}
 void Request::setRequest(std::string request)
 {
     this->m_request = request;
@@ -321,6 +336,11 @@ void Request::setRequest(std::string request)
 void Request::setBody(std::string body)
 {
     this->m_body = body;
+}
+
+void Request::setFastCgi(std::string setFastCgi)
+{
+    this->m_fastCgi = setFastCgi;
 }
 
 Request::~Request()
