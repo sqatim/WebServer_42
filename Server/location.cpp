@@ -1,5 +1,5 @@
 #include "WebServer.class.hpp"
-
+#include "../Parsing/cgi.hpp"
 void lastSlash(std::string &string)
 {
     int counter = 0;
@@ -152,8 +152,12 @@ int WebServer::location(int socket)
     if ((check = fastCgi(m_request, m_parse, root, locationCgi)) == 1)
     {
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
-        // std::cout << "fast cgi" << std::endl;
-        exit(0);
+        CGI cg;
+        cg.set_value_to_maymap(m_request);
+        cg.execute(root);
+        m_response.contentHeader("200", "text", "html", cg.get_outpout());
+        m_response.sendResponse(socket);
+        return (1);
     }
 
     if (check == -1 || check == 2)
