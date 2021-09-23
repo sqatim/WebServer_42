@@ -23,7 +23,7 @@ int getIndex(LocaTion &location, Parse &parse, int which, std::string &root);
 int ft_comparaison(std::string location, std::string uri);
 int ft_cgi(std::string path);
 int checkLocation(LocaTion location);
-int appendUrlCgi(int i, std::string &path, LocaTion location);
+int appendUrlCgi(int i, std::string &path, LocaTion location, std::string url);
 std::string getUrl(Request &request);
 std::string justHost(std::string host);
 std::vector<LocaTion> locationSorted(std::vector<LocaTion> location);

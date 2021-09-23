@@ -55,8 +55,10 @@ int fastCgi(Request &request, Parse &parse, std::string &root)
                 k++;
         if (parse.getlocation()[k].getname() == "*.php" || parse.getlocation()[k].getname() == "*.py")
         {
+            // std::cout << request.getPath().c_str() << std::endl;
             root = getRoot(parse.getlocation()[k], parse, 1);
-            check = appendUrlCgi(k, root, parse.getlocation()[k]);
+            std::cout << "root ==> " << root << std::endl;
+            check = appendUrlCgi(k, root, parse.getlocation()[k], request.getPath().c_str());
         }
     }
     return (check);

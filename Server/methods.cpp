@@ -9,8 +9,10 @@ void WebServer::postMethod(int socket)
     std::vector<LocaTion> location;
     std::string response;
     std::string url;
+
     int check = 0;
     url = m_request.getPath();
+    std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());
@@ -22,6 +24,8 @@ void WebServer::postMethod(int socket)
             {
                 root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
                 slash(&root);
+                if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
+                    throw TooLarge(m_parse, root);
                 locationName = &locationName[1];
                 root.insert(root.length(), locationName);
                 slash(&root);
@@ -38,9 +42,9 @@ void WebServer::postMethod(int socket)
                 break;
             }
         }
-        if(check == 1)
+        if (check == 1)
             break;
-        if(url == "/")
+        if (url == "/")
             break;
         lastSlash(url);
     }

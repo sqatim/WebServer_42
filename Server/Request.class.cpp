@@ -11,36 +11,52 @@ void Request::init()
     m_version = "";
     m_firstRequestheader = "";
     m_host = "";
+    m_hostSolo = "";
+    m_portSolo = "";
     m_userAgent = "";
     m_accept = "";
     m_body = "";
     m_request = "";
     m_mainRequest = "";
     m_cookie = "";
+    m_contentLength = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie("")
+                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo("")
 {
+}
+
+void Request::parseHost(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::getline(stringStream, m_hostSolo, ' ');
+    std::getline(stringStream, m_portSolo, ' ');
 }
 
 void Request::requestHeaders()
 {
     std::istringstream stringStream(m_mainRequest);
     std::string line;
+    std::string host;
 
     while (std::getline(stringStream, line, '\n'))
     {
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
+        {
             m_host = line;
+            host = justHost(line);
+        }
         else if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
             m_userAgent = line;
         else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
             m_accept = line;
         else if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
             m_cookie = line;
+        else if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
+            m_contentLength = line;
     }
 }
 
@@ -51,6 +67,7 @@ void Request::concatenation()
     m_request += m_userAgent + "\r\n";
     m_request += m_accept + "\r\n";
     m_request += m_cookie + "\r\n";
+    m_request += m_contentLength + "\r\n";
 }
 int ft_strlen(char **str)
 {
@@ -102,6 +119,8 @@ void Request::uploadInFile(const char *path)
     std::string file = path;
     file.insert(file.length(), m_fileName);
     std::ofstream myWriteFile(file);
+    // std::cout << "file name : " << file << std::endl;
+    // std::cout << m_body << std::endl;
     myWriteFile << m_body;
     myWriteFile.close();
 }
@@ -129,13 +148,12 @@ void Request::parsingBetweenBoundary()
             std::getline(stringStream, line, '\n');
             while (line.find(m_boundary) == std::string::npos)
             {
+                // std::cout << line << std::endl;
                 m_body += line;
                 std::getline(stringStream, line, '\n');
                 if (line.find(m_boundary) == std::string::npos)
                     m_body += '\n';
             }
-            // uploadInFile();
-            // std::cout << m_body << std::endl;
         }
     }
 }
@@ -147,9 +165,11 @@ void Request::parsingRequestPost(int socket, char **buffer)
     int check = 0;
     size_t i;
 
+    // std::cout << "************* POST *************" << std::endl;
     while (get_next_line(socket, &(*buffer)) > 0)
     {
         line = *buffer;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
@@ -162,6 +182,7 @@ void Request::parsingRequestPost(int socket, char **buffer)
         {
             if (check == 2 && line.find(m_boundary) != std::string::npos)
             {
+                // std::cout << "line : " << line << std::endl;
                 m_betweenBoundary += line;
                 check = 3;
                 break;
@@ -180,14 +201,13 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
     }
     this->requestHeaders();
     this->concatenation();
-    // std::cout << m_request << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -195,7 +215,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
     int result;
     if ((result = get_next_line(socket, &buffer)) == 0)
     {
-        std::cout << "disconnected 0" << std::endl;
+        std::cout << "disconnected" << std::endl;
         close(socket);
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
@@ -207,13 +227,13 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         delete[] buffer;
-        if (m_method != "POST")
+        if (m_method == "GET" || m_method == "DELETE")
             parsingRequestGet(socket, &buffer);
         else if (m_method == "POST")
             parsingRequestPost(socket, &buffer);
@@ -284,6 +304,15 @@ std::string Request::getBetweenBoundary() const
     return (this->m_betweenBoundary);
 }
 
+std::string Request::getContentLength(void) const
+{
+    std::string length;
+    std::stringstream stringStream(m_contentLength);
+    std::getline(stringStream, length, ' ');
+    std::getline(stringStream, length, ' ');
+    return (length);
+}
+
 void Request::setRequest(std::string request)
 {
     this->m_request = request;
@@ -300,6 +329,21 @@ Request::~Request()
 
 std::ostream &operator<<(std::ostream &out, Request &src)
 {
+    // out << src.getRequest() << std::endl;
+    out << src.getMethod() << std::endl;
+    out << src.getPath() << std::endl;
+    out << src.getVersion() << std::endl;
+    out << src.getFirstRequestHeader() << std::endl;
+    out << src.getHost() << std::endl;
+    out << src.getUserAgent() << std::endl;
+    out << src.getAccept() << std::endl;
+    // out << src.getAcceptEncoding() << std::endl;
+    // out << src.getAcceptLanguage() << std::endl;
+    // out << src.getConnection() << std::endl;
+    out << src.getBody() << std::endl;
     out << src.getRequest() << std::endl;
+    out << src.getBoundary() << std::endl;
+    out << src.getFileName() << std::endl;
+    out << src.getBetweenBoundary() << std::endl;
     return (out);
 }

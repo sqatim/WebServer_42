@@ -41,11 +41,12 @@ int checkLocation(LocaTion location)
     return (0);
 }
 
-int appendUrlCgi(int i, std::string &path, LocaTion location)
+int appendUrlCgi(int i, std::string &path, LocaTion location, std::string url)
 {
     int check;
     if (location.getname() != "/")
-        path.insert(path.length(), location.getname().c_str());
+        path.insert(path.length(), url.c_str());
+    std::cout << "path [" << path << "]" << std::endl;
     check = fileOrDir(path.c_str());
     return (check);
 }
