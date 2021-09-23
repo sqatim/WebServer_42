@@ -40,28 +40,37 @@ std::vector<LocaTion> locationSorted(std::vector<LocaTion> location)
 
 int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &location)
 {
-    int cgi;
+    int cgi = -1;
     int check;
 
     check = -1;
-    if ((cgi = ft_cgi(request.getPath().c_str()) == 1) || (cgi = ft_cgi(request.getPath().c_str()) == 2))
+    cgi = ft_cgi(request.getPath().c_str());
+        // std::cout << "lalalallala ==> "  << request.getPath().c_str()<< std::endl;
+    if (cgi > 0)
     {
         int k = 0;
+        std::cout << cgi << std::endl;
         if (cgi == 1)
+        {
             while (parse.getlocation()[k].getname() != "*.php" && k < parse.getlocation().size())
                 k++;
+        }
         else
+        {
             while (parse.getlocation()[k].getname() != "*.py" && k < parse.getlocation().size())
                 k++;
-        if (parse.getlocation()[k].getname() == "*.php" || parse.getlocation()[k].getname() == "*.py")
+                // std::cout <<parse.getlocation()[k].getname() << std::endl;
+        }
+        if ((cgi == 1 && parse.getlocation()[k].getname() == "*.php") || (cgi == 2 && parse.getlocation()[k].getname() == "*.py"))
         {
-            // std::cout << request.getPath().c_str() << std::endl;
+            std::cout << request.getPath().c_str() << std::endl;
             location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
             std::cout << "root ==> " << root << std::endl;
             check = appendUrlCgi(k, root, parse.getlocation()[k], request.getPath().c_str());
         }
     }
+    std::cout << "amine sba3" << std::endl;
     return (check);
 }
 
@@ -151,10 +160,11 @@ int WebServer::location(int socket)
     check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root, locationCgi)) == 1)
     {
+        std::cout << "shalam" << std::endl;
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
         CGI cg;
         cg.set_value_to_maymap(m_request);
-        cg.execute(root);
+        cg.execute(root, m_request.getFastCgi());
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);
