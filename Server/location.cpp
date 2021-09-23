@@ -38,7 +38,7 @@ std::vector<LocaTion> locationSorted(std::vector<LocaTion> location)
     return (locationSorted);
 }
 
-int fastCgi(Request &request, Parse &parse, std::string &root)
+int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &location)
 {
     int cgi;
     int check;
@@ -56,6 +56,7 @@ int fastCgi(Request &request, Parse &parse, std::string &root)
         if (parse.getlocation()[k].getname() == "*.php" || parse.getlocation()[k].getname() == "*.py")
         {
             // std::cout << request.getPath().c_str() << std::endl;
+            location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
             std::cout << "root ==> " << root << std::endl;
             check = appendUrlCgi(k, root, parse.getlocation()[k], request.getPath().c_str());
@@ -143,22 +144,16 @@ int WebServer::location(int socket)
     std::string locationName;
     std::string root;
     std::vector<LocaTion> location;
+    LocaTion locationCgi;
     std::string url;
 
     check = -1;
     check1 = -1;
-    if ((check = fastCgi(m_request, m_parse, root)) == 1)
+    if ((check = fastCgi(m_request, m_parse, root, locationCgi)) == 1)
     {
-        // std::cout << "sahbi nadi" << std::endl;
-        // std::cout << m_request.getVersion() << std::endl;
-        CGI cg;
-        cg.set_value_to_maymap(m_request);
-        cg.execute(root);
-        std::cout << cg.get_outpout() << std::endl;
-        m_response.contentHeader("200", "text", "html", cg.get_outpout());
-                                this->m_response.sendResponse(socket);
-
-        // exit(0);
+        this->m_request.setFastCgi(locationCgi.getfascgi_pass());
+        // std::cout << "fast cgi" << std::endl;
+        exit(0);
     }
 
     if (check == -1 || check == 2)

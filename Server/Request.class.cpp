@@ -11,36 +11,53 @@ void Request::init()
     m_version = "";
     m_firstRequestheader = "";
     m_host = "";
+    m_hostSolo = "";
+    m_portSolo = "";
     m_userAgent = "";
     m_accept = "";
     m_body = "";
     m_request = "";
     m_mainRequest = "";
     m_cookie = "";
+    m_contentLength = "";
+    m_fastCgi = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie("")
+                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo(""), m_fastCgi("")
 {
+}
+
+void Request::parseHost(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::getline(stringStream, m_hostSolo, ' ');
+    std::getline(stringStream, m_portSolo, ' ');
 }
 
 void Request::requestHeaders()
 {
     std::istringstream stringStream(m_mainRequest);
     std::string line;
+    std::string host;
 
     while (std::getline(stringStream, line, '\n'))
     {
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
+        {
             m_host = line;
+            host = justHost(line);
+        }
         else if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
             m_userAgent = line;
         else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
             m_accept = line;
         else if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
             m_cookie = line;
+        else if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
+            m_contentLength = line;
     }
 }
 
@@ -51,6 +68,7 @@ void Request::concatenation()
     m_request += m_userAgent + "\r\n";
     m_request += m_accept + "\r\n";
     m_request += m_cookie + "\r\n";
+    m_request += m_contentLength + "\r\n";
 }
 int ft_strlen(char **str)
 {
@@ -186,7 +204,7 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
@@ -194,8 +212,6 @@ void Request::parsingRequestGet(int socket, char **buffer)
     this->requestHeaders();
     // std::cout << "************* GET *************" << std::endl;
     this->concatenation();
-    // std::cout << m_request << std::endl;
-    // std::cout << "*************  *************" << std::endl;
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
@@ -203,7 +219,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
     int result;
     if ((result = get_next_line(socket, &buffer)) == 0)
     {
-        std::cout << "disconnected 0" << std::endl;
+        std::cout << "disconnected" << std::endl;
         close(socket);
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
@@ -215,7 +231,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
@@ -292,6 +308,29 @@ std::string Request::getBetweenBoundary() const
     return (this->m_betweenBoundary);
 }
 
+std::string Request::getContentLength(void) const
+{
+    std::string length;
+    std::stringstream stringStream(m_contentLength);
+    std::getline(stringStream, length, ' ');
+    std::getline(stringStream, length, ' ');
+    return (length);
+}
+
+std::string Request::getHostSolo(void) const
+{
+    return (this->m_hostSolo);
+}
+
+std::string Request::getPortSolo(void) const
+{
+    return (this->m_portSolo);
+}
+
+std::string Request::getFastCgi(void) const
+{
+    return (this->m_fastCgi);
+}
 void Request::setRequest(std::string request)
 {
     this->m_request = request;
@@ -302,12 +341,18 @@ void Request::setBody(std::string body)
     this->m_body = body;
 }
 
+void Request::setFastCgi(std::string setFastCgi)
+{
+    this->m_fastCgi = setFastCgi;
+}
+
 Request::~Request()
 {
 }
 
 std::ostream &operator<<(std::ostream &out, Request &src)
 {
+    // out << src.getRequest() << std::endl;
     out << src.getMethod() << std::endl;
     out << src.getPath() << std::endl;
     out << src.getVersion() << std::endl;
@@ -323,6 +368,5 @@ std::ostream &operator<<(std::ostream &out, Request &src)
     out << src.getBoundary() << std::endl;
     out << src.getFileName() << std::endl;
     out << src.getBetweenBoundary() << std::endl;
-
     return (out);
 }
