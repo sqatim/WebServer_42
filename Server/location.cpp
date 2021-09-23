@@ -165,6 +165,7 @@ int WebServer::location(int socket)
         CGI cg;
         cg.set_value_to_maymap(m_request);
         cg.execute(root, m_request.getFastCgi());
+        std::cout << cg.get_outpout() << std::endl;
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

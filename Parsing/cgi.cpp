@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/23 11:51:17 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/23 16:53:47 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void		 CGI::execute(std::string target, std::string bin)
 	int						ret = 1;
 
     _binary = bin;
+	_output = "";
 	_fd[0] = dup(STDIN_FILENO);
 	_fd[1] = dup(STDOUT_FILENO);
 	FILE	*input_tmpfile = tmpfile();

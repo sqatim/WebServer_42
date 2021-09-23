@@ -170,7 +170,7 @@ void Request::parsingRequestPost(int socket, char **buffer)
     while (get_next_line(socket, &(*buffer)) > 0)
     {
         line = *buffer;
-        // std::cout << *buffer << std::endl;
+        std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
@@ -204,7 +204,7 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        // std::cout << *buffer << std::endl;
+        std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
@@ -231,7 +231,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        // std::cout << buffer << std::endl;
+        std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
