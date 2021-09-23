@@ -152,6 +152,10 @@ int WebServer::location(int socket)
     if ((check = fastCgi(m_request, m_parse, root, locationCgi)) == 1)
     {
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
+        CGI cg;
+        cg.set_value_to_maymap(m_request);
+        cg.execute(root);
+        // std::cout << cg.get_outpout() << std::endl;
         // std::cout << "fast cgi" << std::endl;
         exit(0);
     }

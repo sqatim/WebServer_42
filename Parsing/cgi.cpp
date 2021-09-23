@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/22 17:35:26 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/23 11:23:45 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ void CGI::set_value_to_maymap(Request m_request)
     // map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
     // map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
     // map["HTTP_CACHE_CONTROL"] = "max-age=0";
-    // map["HTTP_CONNECTION"] = "keep-alive";
     // map["HTTP_SEC_FETCH_DEST"] = "document";
     // map["HTTP_SEC_FETCH_MODE"] = "navigate";
     // map["HTTP_SEC_FETCH_SITE"] = "same-origin";
@@ -111,20 +110,21 @@ void CGI::set_value_to_maymap(Request m_request)
     // map["REMOTE_USER"] = "user";
     // map["DOCUMENT_ROOT"] = "./www/cgi";
     // map["SERVER_NAME"] = "default_server";
+    // map["HTTP_CONNECTION"] = m_request.getConnection();
     map["AUTH_TYPE"] = "";
     map["HTTP_USER_AGENT"] = m_request.getUserAgent();
-    map["CONTENT_LENGTH"] = "0";
+    map["CONTENT_LENGTH"] = m_request.getContentLength();
     map["CONTENT_TYPE"] = "text.html";
     map["GATEWAY_INTERFACE"] = "CGI/1.1";
     map["HTTP_ACCEPT"] = m_request.getAccept();
     map["HTTP_HOST"] = m_request.getHost();
     map["PATH_INFO"] = "/cgi/index.php";
     map["QUERY_STRING"] = "";
-    map["REMOTE_ADDR"] = "127.0.0.1";
+    map["REMOTE_ADDR"] = m_request.getHostSolo();
     map["REQUEST_METHOD"] = m_request.getMethod();
-    map["REQUEST_URI"] = "/cgi/index.php";
-    map["SCRIPT_NAME"] = "/usr/bin/php-cgi";
-    map["SERVER_PORT"] = "8002";
+    map["REQUEST_URI"] = m_request.getPath();
+    map["SCRIPT_NAME"] = m_request.getFastCgi();
+    map["SERVER_PORT"] = m_request.getPortSolo();
     map["SERVER_PROTOCOL"] = "HTTP/1.1";
     map["SERVER_SOFTWARE"] = "webserv/1.0";
 }
