@@ -50,6 +50,23 @@ void WebServer::postMethod(int socket)
     }
 }
 
+int checkPermission(const char *path)
+{
+    struct stat fileStat;
+
+    if (stat(path, &fileStat) == 0)
+    {
+        if (fileStat.st_mode & S_IROTH)
+        {
+            std::cout << "kayna" << std::endl;
+            return (1);
+        }
+        else
+            std::cout << "ma kaynsh" << std::endl;
+    }
+    return (0);
+}
+
 void WebServer::deleteMethod(int socket)
 {
     m_response.initResponse();
@@ -76,6 +93,8 @@ void WebServer::deleteMethod(int socket)
             std::cout << path.c_str() << std::endl;
             if ((check = fileOrDir(path.c_str())) == 1)
             {
+                if (!checkPermission(path.c_str()))
+                    throw Forbidden(m_parse, root);
                 m_response.fileDeleted();
                 m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
                 this->m_response.sendResponse(socket);
