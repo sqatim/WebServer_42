@@ -201,7 +201,7 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        std::cout << *buffer << std::endl;
+        // std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
@@ -215,7 +215,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
     int result;
     if ((result = get_next_line(socket, &buffer)) == 0)
     {
-        std::cout << "disconnected 0" << std::endl;
+        std::cout << "disconnected" << std::endl;
         close(socket);
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
@@ -227,7 +227,7 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     else
     {
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")

@@ -49,7 +49,6 @@ void WebServer::manageRequest(int socket, int check)
     char *str;
     std::string response;
     Parse parse;
-    // std::cout << this->m_request.getMethod() << std::endl;
     try
     {
         if (check == 0)
