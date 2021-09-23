@@ -11,6 +11,8 @@ void Request::init()
     m_version = "";
     m_firstRequestheader = "";
     m_host = "";
+    m_hostSolo = "";
+    m_portSolo = "";
     m_userAgent = "";
     m_accept = "";
     m_body = "";
@@ -23,19 +25,30 @@ void Request::init()
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie(""), m_contentLength("")
+                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo("")
 {
+}
+
+void Request::parseHost(std::string host)
+{
+    std::stringstream stringStream(host);
+    std::getline(stringStream, m_hostSolo, ' ');
+    std::getline(stringStream, m_portSolo, ' ');
 }
 
 void Request::requestHeaders()
 {
     std::istringstream stringStream(m_mainRequest);
     std::string line;
+    std::string host;
 
     while (std::getline(stringStream, line, '\n'))
     {
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
+        {
             m_host = line;
+            host = justHost(line);
+        }
         else if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
             m_userAgent = line;
         else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
@@ -316,6 +329,21 @@ Request::~Request()
 
 std::ostream &operator<<(std::ostream &out, Request &src)
 {
+    // out << src.getRequest() << std::endl;
+    out << src.getMethod() << std::endl;
+    out << src.getPath() << std::endl;
+    out << src.getVersion() << std::endl;
+    out << src.getFirstRequestHeader() << std::endl;
+    out << src.getHost() << std::endl;
+    out << src.getUserAgent() << std::endl;
+    out << src.getAccept() << std::endl;
+    // out << src.getAcceptEncoding() << std::endl;
+    // out << src.getAcceptLanguage() << std::endl;
+    // out << src.getConnection() << std::endl;
+    out << src.getBody() << std::endl;
     out << src.getRequest() << std::endl;
+    out << src.getBoundary() << std::endl;
+    out << src.getFileName() << std::endl;
+    out << src.getBetweenBoundary() << std::endl;
     return (out);
 }

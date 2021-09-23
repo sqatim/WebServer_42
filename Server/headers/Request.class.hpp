@@ -16,6 +16,8 @@ private:
     std::string m_version;
     std::string m_firstRequestheader;
     std::string m_host;
+    std::string m_hostSolo;
+    std::string m_portSolo;
     std::string m_userAgent;
     std::string m_accept;
     std::string m_cookie;
@@ -34,6 +36,7 @@ public:
     void parsingRequestGet(int socket, char **buffer);
     void parsingRequestPost(int socket, char **buffer);
     void parsingBetweenBoundary();
+    void parseHost(std::string host);
     void uploadInFile(const char *path);
     void init();
 
