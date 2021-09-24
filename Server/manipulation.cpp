@@ -44,24 +44,27 @@ std::string ft_joinSlash(char **array)
     }
     return (str.c_str());
 }
-void WebServer::manageRequest(int socket, int check)
+void WebServer::manageRequest(int socket, int check, int request)
 {
     char *str;
     std::string response;
     Parse parse;
     try
     {
-        if (check == 0)
+        if (request == -1)
         {
-            throw NotFound(parse, "");
+
+            std::cout << "kangoul" << std::endl;
+            throw Forbidden();
         }
+        if (check == 0)
+            throw NotFound(parse, "");
         else if (this->m_request.getMethod() == "GET")
             getMethod(socket);
         else if (this->m_request.getMethod() == "POST")
             postMethod(socket);
         else if (this->m_request.getMethod() == "DELETE")
             deleteMethod(socket);
-        this->m_request.init();
     }
     catch (WebServer::Forbidden &e)
     {
@@ -79,6 +82,12 @@ void WebServer::manageRequest(int socket, int check)
     catch (WebServer::TooLarge &e)
     {
         m_response.toLargeBody(e.getParse(), e.getFileName());
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        this->m_response.sendResponse(socket);
+    }
+    catch (WebServer::MethodNotAllowed &e)
+    {
+        m_response.methodNotAllowedBody(e.getParse(), e.getFileName());
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
         this->m_response.sendResponse(socket);
     }

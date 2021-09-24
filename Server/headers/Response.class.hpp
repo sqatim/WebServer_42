@@ -34,6 +34,7 @@ public:
     void notFoundBody(Parse parse, std::string root);
     void forbiddenBody(Parse parse, std::string root);
     void toLargeBody(Parse parse, std::string root);
+    void methodNotAllowedBody(Parse parse, std::string root);
     void fileDeleted();
     void fileUploaded();
     int checkLocation(LocaTion location);

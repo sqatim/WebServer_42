@@ -29,7 +29,7 @@ public:
     Server setServer(Parse &parse);
     void run();
     void acceptNewConnection();
-    void manageRequest(int socket, int check);
+    void manageRequest(int socket, int check, int request);
     int checkForTheIndex(std::vector<std::string> index, std::string root, std::string &path);
     std::string readingTheFile(char *filename);
     void getMethod(int socket);
@@ -80,6 +80,19 @@ public:
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
         std::string toLargeBody() throw();
+    };
+    class MethodNotAllowed
+    {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
+    public:
+        MethodNotAllowed(){};
+        MethodNotAllowed(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
+        std::string methodNotAllowed() throw();
     };
     ~WebServer();
 };

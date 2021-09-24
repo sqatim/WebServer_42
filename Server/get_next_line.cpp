@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 19:07:46 by sqatim            #+#    #+#             */
-/*   Updated: 2021/09/16 10:16:29 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/09/23 16:02:18 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,10 @@ int ft_remplissage(char **tmp, int fd, char **line)
 		return (free_leak(&tmp[fd], 0, fd));
 	}
 	if (tmp[fd][r - 1] == '\r')
+	{
 		*line = ft_substr(tmp[fd], 0, r - 1);
+		std::cout << "[" << *line << "]" << std::endl;
+	}
 	else
 		*line = ft_substr(tmp[fd], 0, r);
 	tmp[fd] = ft_check(tmp, r, fd);

@@ -64,6 +64,7 @@ void WebServer::acceptNewConnection()
     int i;
     int newSocket;
     Parse parse;
+    int request = -2;
     std::string requestHost;
     std::string host;
     std::string response;
@@ -95,7 +96,8 @@ void WebServer::acceptNewConnection()
             {
                 check = 0;
                 this->m_request.init();
-                if (this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i))
+                request = -2;
+                if ((request = this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i)))
                 {
                     requestHost = justHost(this->m_request.getHost());
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
@@ -128,9 +130,11 @@ void WebServer::acceptNewConnection()
                             }
                         }
                     }
-                    if (FD_ISSET(sd, &m_writeSocket))
+                    if (request == 0 && FD_ISSET(sd, &m_writeSocket))
                     {
-                        this->manageRequest(sd, check);
+                        // std::cout << "Writing to client" << std::endl;
+                        this->manageRequest(sd, check, request);
+                        this->m_request.init();
                         this->m_response.initResponse();
                     }
                 }

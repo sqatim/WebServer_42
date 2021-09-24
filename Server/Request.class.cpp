@@ -202,18 +202,21 @@ void Request::parsingRequestGet(int socket, char **buffer)
 {
     while (get_next_line(socket, &(*buffer)) > 0)
     {
-        // std::cout << *buffer << std::endl;
+        std::cout << *buffer << std::endl;
         this->m_mainRequest += *buffer;
         this->m_mainRequest += "\n";
         delete[](*buffer);
     }
+    std::cout << *buffer << std::endl;
     this->requestHeaders();
     this->concatenation();
 }
 int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
-    char *buffer;
+    char buffer[2500];
     int result;
+
+    // if(result = read(socket, buffer, 2500))
     if ((result = get_next_line(socket, &buffer)) == 0)
     {
         std::cout << "disconnected" << std::endl;
@@ -225,14 +228,22 @@ int Request::parsingRequest(int socket, fd_set *readySockets, fd_set *writeSocke
         return (0);
     }
     else if (result == -1)
-        return (0);
+    {
+        return (2);
+    }
     else
     {
-        // std::cout << buffer << std::endl;
+        std::cout << buffer << std::endl;
         this->m_mainRequest += buffer;
         this->m_mainRequest += "\n";
         if (m_firstRequestheader == "")
+        {
             this->parsingRequestLine(buffer);
+        }
+        if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
+        {
+            return (-1);
+        }
         delete[] buffer;
         if (m_method == "GET" || m_method == "DELETE")
             parsingRequestGet(socket, &buffer);

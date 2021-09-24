@@ -56,7 +56,7 @@ int checkPermission(const char *path)
 
     if (stat(path, &fileStat) == 0)
     {
-        if (fileStat.st_mode & S_IROTH)
+        if (fileStat.st_mode & S_IWOTH)
         {
             std::cout << "kayna" << std::endl;
             return (1);
