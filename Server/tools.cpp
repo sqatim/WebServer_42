@@ -23,12 +23,12 @@ int fileOrDir(const char *path)
     {
         if (fileStat.st_mode & S_IFDIR)
         {
-            std::cout << "it's a directory" << std::endl;
+            // std::cout << "it's a directory" << std::endl;
             return (2);
         }
         else if (fileStat.st_mode & S_IFREG)
         {
-            std::cout << "It's a file" << std::endl;
+            // std::cout << "It's a file" << std::endl;
             return (1);
         }
         else

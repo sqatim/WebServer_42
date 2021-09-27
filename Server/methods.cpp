@@ -12,7 +12,7 @@ void WebServer::postMethod(int socket)
 
     int check = 0;
     url = m_request.getPath();
-    std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
+    // std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());

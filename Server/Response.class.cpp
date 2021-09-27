@@ -201,7 +201,6 @@ void Response::fileDeleted()
 void Response::fileUploaded()
 {
     this->m_status = "200 OK";
-    std::cout << "hamza l hmar" << std::endl;
     this->m_body = "<html>\n";
     this->m_body += "<head>\n";
     this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
@@ -370,7 +369,7 @@ void Response::setHeader()
     if (m_type != REDIRECT)
     {
         this->m_header += this->m_contentLength + "\n";
-        this->m_header += this->m_connection;
+        this->m_header += this->m_connection + "\n";
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";

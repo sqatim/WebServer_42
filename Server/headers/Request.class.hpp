@@ -4,11 +4,18 @@
 #include <iostream>
 #include "server.hpp"
 #include <unistd.h>
+#include <map>
 
+typedef struct s_bodyPost
+{
+    std::string filename;
+    std::string m_body;
+} t_bodyPost;
 class Request
 {
 private:
     std::string m_boundary;
+    std::vector<t_bodyPost> m_bodyPost;
     std::string m_fileName;
     std::string m_betweenBoundary;
     std::string m_method;
@@ -23,23 +30,29 @@ private:
     std::string m_cookie;
     std::string m_fastCgi;
     std::string m_contentLength;
+    int m_countContentLength;
+    int m_check;
     std::string m_body;
     std::string m_request;
     std::string m_mainRequest;
+    std::map<int, std::string> m_requestMap;
 
 public:
     Request();
-    int parsingRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
+    int concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
+    int parseRequest(int socket);
     void getWords();
-    void requestHeaders();
+    int requestHeaders(int socket);
     void concatenation();
     void parsingRequestLine(std::string line);
-    void parsingRequestGet(int socket, char **buffer);
-    void parsingRequestPost(int socket, char **buffer);
+    int parsingRequestGet(int socket);
+    int parsingRequestPost(int socket, char *buffer);
     void parsingBetweenBoundary();
     void parseHost(std::string host);
     void uploadInFile(const char *path);
+    void insetMapRequest(int socket);
     void init();
+    int checkTheEndOfRequest(char *buffer);
 
     //  Accessors
     std::string getMethod() const;

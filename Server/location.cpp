@@ -166,7 +166,6 @@ int WebServer::location(int socket)
         url = m_request.getPath();
         while (true)
         {
-            location = locationSorted(this->m_parse.getlocation());
             for (int i = 0; i < location.size(); i++)
             {
                 locationName = location[i].getname();

@@ -52,11 +52,9 @@ void WebServer::manageRequest(int socket, int check, int request)
     try
     {
         if (request == -1)
-        {
-
-            std::cout << "kangoul" << std::endl;
             throw Forbidden();
-        }
+        if (this->m_request.getMethod() != "GET" && this->m_request.getMethod() != "POST" && this->m_request.getMethod() != "DELETE")
+            throw MethodNotAllowed(parse, "");
         if (check == 0)
             throw NotFound(parse, "");
         else if (this->m_request.getMethod() == "GET")

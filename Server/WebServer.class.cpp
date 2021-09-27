@@ -92,13 +92,14 @@ void WebServer::acceptNewConnection()
         for (int i = 0; i < m_clientSocket.size(); i++)
         {
             sd = m_clientSocket[i];
+            request = 0;
             if (FD_ISSET(sd, &m_currentSocket))
             {
                 check = 0;
-                this->m_request.init();
-                request = -2;
-                if ((request = this->m_request.parsingRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i)))
+                if ((request = this->m_request.concatRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
                 {
+                    this->m_request.requestHeaders(sd);
+                    // std::cout << "shalam sahbi" << std::endl;
                     requestHost = justHost(this->m_request.getHost());
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {
@@ -108,7 +109,6 @@ void WebServer::acceptNewConnection()
                             host = parse.gethost();
                             host += ":";
                             host += std::to_string(parse.getlisten()[j]);
-                            // std::cout << requestHost << " " << host << std::endl;
                             if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
                             {
                                 m_parse = parse;
@@ -130,9 +130,8 @@ void WebServer::acceptNewConnection()
                             }
                         }
                     }
-                    if (request == 0 && FD_ISSET(sd, &m_writeSocket))
+                    if (FD_ISSET(sd, &m_writeSocket))
                     {
-                        // std::cout << "Writing to client" << std::endl;
                         this->manageRequest(sd, check, request);
                         this->m_request.init();
                         this->m_response.initResponse();
