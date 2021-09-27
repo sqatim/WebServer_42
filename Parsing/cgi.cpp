@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/23 16:53:47 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/24 17:59:59 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void CGI::set_value_to_maymap(Request m_request)
     // map["DOCUMENT_ROOT"] = "./www/cgi";
     // map["SERVER_NAME"] = "default_server";
     // map["HTTP_CONNECTION"] = m_request.getConnection();
+	map["HTTP_COOKIE"]= "user=Hamza";
     map["AUTH_TYPE"] = "";
     map["HTTP_USER_AGENT"] = m_request.getUserAgent();
     map["CONTENT_LENGTH"] = m_request.getContentLength();
