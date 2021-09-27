@@ -11,11 +11,19 @@ typedef struct s_bodyPost
     std::string filename;
     std::string m_body;
 } t_bodyPost;
+
+typedef struct s_keyValue
+{
+    std::string key;
+    std::string value;
+} t_keyValue;
+
 class Request
 {
 private:
     std::string m_boundary;
     std::vector<t_bodyPost> m_bodyPost;
+    std::vector<t_keyValue> m_keyValue;
     std::string m_fileName;
     std::string m_betweenBoundary;
     std::string m_method;
@@ -29,6 +37,8 @@ private:
     std::string m_accept;
     std::string m_cookie;
     std::string m_fastCgi;
+    std::string m_contentType;
+
     std::string m_contentLength;
     int m_countContentLength;
     int m_check;
@@ -53,6 +63,7 @@ public:
     void insetMapRequest(int socket);
     void init();
     int checkTheEndOfRequest(char *buffer);
+    void parsingKeyValue();
 
     //  Accessors
     std::string getMethod() const;

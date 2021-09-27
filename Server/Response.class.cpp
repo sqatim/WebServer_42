@@ -219,7 +219,7 @@ void Response::redirectHeader(int socket, std::string status, std::string locati
     // sendRespone(socket);
 }
 
-std::string justHost(std::string host)
+std::string justValue(std::string host)
 {
     std::stringstream stringStream(host);
     std::string result;
@@ -234,7 +234,7 @@ void Response::redirectHeaderToPath(int socket, std::string status, std::string 
     std::string path;
 
     path = "http://";
-    path += justHost(host);
+    path += justValue(host);
     path.insert(path.length(), "/");
     path.insert(path.length(), url);
     path.insert(path.length(), "/");

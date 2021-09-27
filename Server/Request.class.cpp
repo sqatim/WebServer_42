@@ -23,13 +23,14 @@ void Request::init()
     m_fastCgi = "";
     m_countContentLength = 0;
     m_check = 0;
+    m_contentType = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
                      m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo(""), m_fastCgi(""),
-                     m_countContentLength(0), m_check(0)
+                     m_countContentLength(0), m_check(0), m_contentType("")
 {
 }
 
@@ -40,12 +41,51 @@ void Request::parseHost(std::string host)
     std::getline(stringStream, m_portSolo, ' ');
 }
 
+void Request::parsingKeyValue()
+{
+    std::stringstream stringStream(m_body);
+    std::stringstream keyValue;
+    std::string line;
+    std::string parseKeyValue;
+    // std::cout << m_betweenBoundary << std::endl;
+    int counter = 0;
+    int i = 0;
+    int l = 0;
+    int check = 0;
+    line = "";
+    while (std::getline(stringStream, line, '&'))
+    {
+        m_keyValue.push_back({"", ""});
+        keyValue.clear();
+        keyValue.str(line);
+        counter = 0;
+        while (std::getline(keyValue, parseKeyValue, '='))
+        {
+            if (counter == 0)
+            {
+                m_keyValue[i].key = parseKeyValue;
+                counter++;
+            }
+            else
+                m_keyValue[i].value = parseKeyValue;
+        }
+        i++;
+    }
+    // for (int i = 0; i < m_keyValue.size(); i++)
+    // {
+    //     std::cout << "*********************" << std::endl;
+    //     std::cout << "key ==> " << m_keyValue[i].key << std::endl;
+    //     std::cout << "value ==> " << m_keyValue[i].value << std::endl;
+    // }
+}
+
 int Request::requestHeaders(int socket)
 {
     std::istringstream stringStream(m_requestMap[socket]);
     std::string line;
     std::string ss = "";
     std::string host;
+    std::string value;
     int i = 0;
 
     while (std::getline(stringStream, line, '\r'))
@@ -54,11 +94,10 @@ int Request::requestHeaders(int socket)
     line = "";
     while (std::getline(file, line, '\n'))
     {
-        // std::cout << line << std::endl;
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
         {
             m_host = line;
-            host = justHost(line);
+            host = justValue(line);
         }
         else if (m_boundary == "11111111" && (i = line.find("boundary=") != std::string::npos))
         {
@@ -73,10 +112,18 @@ int Request::requestHeaders(int socket)
             m_cookie = line;
         else if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
             m_contentLength = line;
+        else if (m_contentType == "" && line.compare(0, 14, "Content-Type: ") == 0)
+            m_contentType = line;
     }
     if (m_method == "POST")
     {
-        parsingBetweenBoundary();
+        value = justValue(m_contentType);
+        if (value == "multipart/form-data;")
+            parsingBetweenBoundary();
+        else if (value == "application/x-www-form-urlencoded")
+            parsingKeyValue();
+
+        // khasni n9ad had blan
     }
     this->concatenation();
     return (0);
@@ -208,39 +255,6 @@ void Request::parsingBetweenBoundary()
         }
         i++;
     }
-    // std::cout << line << std::endl;
-
-    // std::getline(stringStream, line, '\r');
-    // while (std::getline(stringStream, line, '\n') && counter < 4)
-    // {
-    //     std::cout << line << std::endl;
-    //     counter++;
-    // }
-    // while (std::getline(stringStream, line, '\n'))
-    // {
-    //     if (m_fileName == "" && (filename = line.find("filename")) != std::string::npos)
-    //     {
-    //         while (line[filename] != '\"')
-    //             filename++;
-    //         filename++;
-    //         for (; line[filename] != '\"' && line[filename + 1]; filename++)
-    //         {
-    //             m_fileName += line[filename];
-    //         }
-    //         m_fileName += '\0';
-    //         std::getline(stringStream, line, '\n');
-    //         std::getline(stringStream, line, '\n');
-    //         std::getline(stringStream, line, '\n');
-    //         while (line.find(m_boundary) == std::string::npos)
-    //         {
-    //             // std::cout << line << std::endl;
-    //             m_body += line;
-    //             std::getline(stringStream, line, '\n');
-    //             if (line.find(m_boundary) == std::string::npos)
-    //                 m_body += '\n';
-    //         }
-    //     }
-    // }
 }
 
 int Request::parsingRequestPost(int socket, char *buffer)
@@ -325,9 +339,11 @@ int Request::checkTheEndOfRequest(char *buffer)
     std::string body;
     if (m_method == "GET" || m_method == "DELETE")
     {
+        // std::cout << buffer << std::endl;
         while (std::getline(stringStream, line, '\r'))
             request += line;
         line = "";
+        stream.str(request);
         while (std::getline(stream, line, '\n'))
         {
             if (line[0] == '\r' || line[0] == '\0')
@@ -385,7 +401,7 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
     if ((result = read(socket, buffer, 2500)) > 0)
     {
         buffer[result] = '\0';
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         m_requestMap[socket] += buffer;
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);

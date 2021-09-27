@@ -100,7 +100,7 @@ void WebServer::acceptNewConnection()
                 {
                     this->m_request.requestHeaders(sd);
                     // std::cout << "shalam sahbi" << std::endl;
-                    requestHost = justHost(this->m_request.getHost());
+                    requestHost = justValue(this->m_request.getHost());
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {
                         parse = this->m_webServ.getwebserv()[k];
@@ -117,7 +117,7 @@ void WebServer::acceptNewConnection()
                             }
                             for (int counter = 0; counter < parse.getserver_name().size(); counter++)
                             {
-                                requestHost = justHost(this->m_request.getHost());
+                                requestHost = justValue(this->m_request.getHost());
                                 host = parse.getserver_name()[counter];
                                 host += ":";
                                 host += std::to_string(parse.getlisten()[j]);
