@@ -18,12 +18,21 @@ typedef struct s_keyValue
     std::string value;
 } t_keyValue;
 
+typedef struct s_chunked
+{
+    size_t length;
+    size_t pos;
+    int i;
+    std::string m_body;
+} t_chunked;
+
 class Request
 {
 private:
     std::string m_boundary;
     std::vector<t_bodyPost> m_bodyPost;
     std::vector<t_keyValue> m_keyValue;
+    std::vector<t_chunked> m_chunked;
     std::string m_fileName;
     std::string m_betweenBoundary;
     std::string m_method;
@@ -38,6 +47,7 @@ private:
     std::string m_cookie;
     std::string m_fastCgi;
     std::string m_contentType;
+    std::string m_transferEncoding;
 
     std::string m_contentLength;
     int m_countContentLength;

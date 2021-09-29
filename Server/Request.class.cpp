@@ -1,6 +1,29 @@
 #include "Request.class.hpp"
 #include <sstream>
 
+int hexaToInt(std::string hexa)
+{
+    int result;
+    std::stringstream stream;
+    stream << std::hex << hexa;
+    stream >> result;
+    return (result);
+}
+std::string dataToBackSlashR(std::string str)
+{
+    std::string data = "";
+    for (int i = 0; str[i]; i++)
+    {
+        data += str[i];
+        if (str[i + 1] == '\r')
+            break;
+        if (str[i + 1] == '\n')
+            break;
+    }
+    data += "\0";
+    return data;
+}
+
 void Request::init()
 {
     m_boundary = "11111111";
@@ -24,13 +47,14 @@ void Request::init()
     m_countContentLength = 0;
     m_check = 0;
     m_contentType = "";
+    m_transferEncoding = "";
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
                      m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
                      m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
                      m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo(""), m_fastCgi(""),
-                     m_countContentLength(0), m_check(0), m_contentType("")
+                     m_countContentLength(0), m_check(0), m_contentType(""), m_transferEncoding("")
 {
 }
 
@@ -269,11 +293,9 @@ int Request::parsingRequestPost(int socket, char *buffer)
     size_t i = 0;
     size_t j = 0;
 
-    // std::cout << line << std::endl;
-    // exit(0);
     if (m_check == 0)
     {
-        if ((i = line.find("Content-Length: ")) != std::string::npos)
+        if ((i = line.find("Content-Length: ")) != std::string::npos && m_contentLength == "")
         {
             j = i;
             while (line[i + 16] != '\r')
@@ -331,12 +353,18 @@ int Request::parseRequest(int socket)
 
 int Request::checkTheEndOfRequest(char *buffer)
 {
+
+    std::string test;
+    std::string chuncked;
     std::stringstream stringStream(buffer);
     std::stringstream stream;
     std::string line;
+    int length;
     std::string request = "";
     size_t i = 0;
     std::string body;
+    int counter = 0;
+    int counter1 = 0;
     if (m_method == "GET" || m_method == "DELETE")
     {
         // std::cout << buffer << std::endl;
@@ -353,10 +381,79 @@ int Request::checkTheEndOfRequest(char *buffer)
     else if (m_method == "POST")
     {
         line = buffer;
+        // std::cout << "###################################" << std::endl;
         // std::cout << buffer << std::endl;
         if (m_check == 0)
         {
-            if ((i = line.find("Content-Length: ")) != std::string::npos)
+            if ((i = line.find("Transfer-Encoding: chunked")) != std::string::npos || m_transferEncoding == "chunked")
+            {
+                m_transferEncoding = "chunked";
+                if (line.find("application/x-www-form-urlencoded") != std::string::npos || m_contentType == "application/x-www-form-urlencoded")
+                {
+                    m_contentType = "application/x-www-form-urlencoded";
+                    m_chunked.push_back({0, 0, 0, ""});
+                    i = line.find("\r\n\r\n");
+                    i += 4;
+                    line = &line[i];
+                    // std::cout << line << std::endl;
+                    length = hexaToInt(dataToBackSlashR(line));
+                    m_chunked[counter].length = length;
+                    i = line.find("\r\n");
+                    i += 2;
+                    line = &line[i];
+                    std::cout << dataToBackSlashR(line) << std::endl;
+                    m_chunked[counter].m_body = dataToBackSlashR(line);
+                }
+                else if (line.find("multipart/form-data;") != std::string::npos || m_contentType == "multipart/form-data;")
+                {
+                    m_contentType = "multipart/form-data;";
+                    if (m_chunked.size() == 0)
+                    {
+                        m_chunked.push_back({0, 0, 0, ""});
+                        i = line.find("\r\n\r\n");
+                        i += 4;
+                        line = &line[i];
+                        length = hexaToInt(dataToBackSlashR(line));
+                        m_chunked[m_chunked.size() - 1].length = length;
+                        length = ft_strlen(dataToBackSlashR(line).c_str()) + 2;
+                        line = &line[length];
+                        int p;
+                        for (p = 0; p < m_chunked[m_chunked.size() - 1].length; p++)
+                        {
+                            m_chunked[m_chunked.size() - 1].m_body += line[p];
+                        }
+                        m_chunked[m_chunked.size() - 1].m_body += '\0';
+                    }
+                    else
+                    {
+                        // std::cout << line << std::endl;
+                        for (int i = 0; line[i]; i++)
+                        {
+                            m_chunked.push_back({0, 0, 0, ""});
+                            length = hexaToInt(dataToBackSlashR(&line[i]));
+                            // std::cout << "length ==> " << length << std::endl;
+                            m_chunked[m_chunked.size() - 1].length = length;
+                            length = ft_strlen(dataToBackSlashR(&line[i]).c_str()) + 2;
+                            i += length;
+                            // std::cout << m_chunked.size();
+                            // std::cout << &line[i] << std::endl;
+                            int p;
+                            for (p = 0; p < m_chunked[m_chunked.size() - 1].length; p++)
+                            {
+                                // std::cout << line[i];
+                                m_chunked[m_chunked.size() - 1].m_body += line[i];
+                                i++;
+                            }
+                            if (m_chunked[m_chunked.size() - 1].length != 0)
+                                m_chunked[m_chunked.size() - 1].m_body += '\0';
+                            i++;
+                        }
+                    }
+                }
+
+                m_check = 2;
+            }
+            else if ((i = line.find("Content-Length: ")) != std::string::npos)
             {
                 while (line[i + 16] != '\r')
                 {
@@ -385,6 +482,12 @@ int Request::checkTheEndOfRequest(char *buffer)
             }
             if (m_countContentLength == std::atoi(m_contentLength.c_str()))
                 return (1);
+        }
+        if (m_check == 2)
+        {
+            if (m_chunked.size() != 0 && m_chunked[m_chunked.size() - 1].length == 0)
+                return (1);
+            m_check = 0;
         }
     }
     return (0);
@@ -618,3 +721,7 @@ std::ostream &operator<<(std::ostream &out, Request &src)
 // this->requestHeaders(socket);
 // parsingBetweenBoundary();
 // this->concatenation();
+
+// ----------------------------965044085659670129976539
+// Content-Disposition: form-data; name="samir"; filename="said.txt"
+// Content-Type: text/plain
