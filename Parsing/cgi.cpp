@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/24 17:59:59 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/27 16:20:07 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void CGI::set_value_to_maymap(Request m_request)
     map["SERVER_PORT"] = m_request.getPortSolo();
     map["SERVER_PROTOCOL"] = "HTTP/1.1";
     map["SERVER_SOFTWARE"] = "webserv/1.0";
+	map["HTTP_COOKIE"] = "amine=23";
 }
 
 std::string CGI::get_outpout()

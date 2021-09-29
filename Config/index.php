@@ -1,52 +1,46 @@
 <?php
-/*---------------------------------------------------------------*/
-/*
-    Titre : Affiche et compte le nombre de checkbox                                                                       
-                                                                                                                          
-    URL   : https://phpsources.net/code_s.php?id=299
-    Auteur           : david96                                                                                            
-    Date édition     : 05 Sept 2007                                                                                       
-    Date mise à jour : 28 Aout 2019                                                                                      
-    Rapport de la maj:                                                                                                    
-    - fonctionnement du code vérifié                                                                                    
-*/
-/*---------------------------------------------------------------*/?>
-    <html>
-    <head><title>Formulaire exemple</title></head>
-    <body>
-    <form action="" method="post">
-    Element-1 <input type="checkbox" name="checkbox_id[]" value="Element-1"
- /><br />
-    Element-2 <input type="checkbox" name="checkbox_id[]" value="Element-2"
- /><br />
-    <!-- etc... //-->
-    <input type="submit" />
-    </form>
-<?php
-    if(isset($_POST['checkbox_id']))
-    {
-      // On assigne notre variable $_POST['checkbox_id']
-      $nombre=$_POST['checkbox_id'];
-      
-      /* On crée une variable qui comptera le nombre de
-      checkbox choisis grâce à la fonction count() */
-      $total=count($nombre);
-      
-      // On affiche le résultat
-      $s =($total<=1) ? "" : "s"; // astuce pour le singulier ou le pluriel
-      echo "Vous avez sélectionné <strong>".$total."</strong> critère".$s;
-      
-      /* Une petite boucle pour afficher les valeurs qu'on 
-          a sélectionné dans notre formulaire */
-      for( $i=0; $i<$total; $i++ )
-      {
-        echo "<br />",$i+1,"e choix : ".$nombre[$i];
-      }
-    }
-    else
-    {
-      echo "Thanks for ur time.";
-    }
+setcookie("cookie[three]", "cookiethree");
+setcookie("cookie[two]", "cookietwo");
+setcookie("cookie[one]", "cookieone");
+// setcookie("cgi", "value", time() + (86400 * 30), "/");
+// setCookie: user=John%20Doe; expires=Wed, 27-Oct-2021 13:33:54 GMT; Max-Age=2592000; path=/
 ?>
-    </body>
-    </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<title><?php
+		echo "HERE".$_COOKIE["user"];	
+	?></title>
+	<style>
+z		html {
+			font-family: sans-serif;
+			height: 100%;
+		}
+		body {
+			height: 100vh;
+		}
+		.size {
+			font-size: 66px;
+			color: white;
+		}
+		.-mt {
+			margin-top: -30px;
+		}
+	</style>
+</head>
+
+<body class="bg-info overflow-hidden">
+	<h1 class="text-white text-center">webserv</h1>
+	<div class="mx-auto h-75 d-flex w-100 justify-content-center -mt">
+		<div class="d-flex flex-column my-auto">
+			<h1 class="size text-center">Logged in</h1>
+			<a href="home.php" class="btn btn-primary text-center mt-5 text-decoration-none">Go Home</a>
+		</div>
+	</div>
+</body>
+</html>
