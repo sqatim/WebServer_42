@@ -131,3 +131,10 @@ void WebServer::getMethod(int socket)
             throw NotFound(m_parse, root);
     }
 }
+
+
+/*
+
+Set-Cookie:
+
+*/

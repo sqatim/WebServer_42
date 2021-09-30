@@ -99,7 +99,6 @@ void WebServer::acceptNewConnection()
                 if ((request = this->m_request.concatRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
                 {
                     this->m_request.requestHeaders(sd);
-                    // std::cout << "shalam sahbi" << std::endl;
                     requestHost = justValue(this->m_request.getHost());
                     for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {

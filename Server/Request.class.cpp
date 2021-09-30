@@ -48,6 +48,8 @@ void Request::init()
     m_check = 0;
     m_contentType = "";
     m_transferEncoding = "";
+    m_chunked.clear();
+    m_bodyPost.clear();
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
@@ -118,30 +120,35 @@ int Request::requestHeaders(int socket)
     line = "";
     while (std::getline(file, line, '\n'))
     {
+        // std::cout << line << std::endl;
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
         {
             m_host = line;
             host = justValue(line);
         }
-        else if (m_boundary == "11111111" && (i = line.find("boundary=") != std::string::npos))
+        if (m_boundary == "11111111" && (i = line.find("boundary=") != std::string::npos))
         {
             i = line.find("boundary=");
             m_boundary = &line[i + 9];
         }
-        else if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
+        if (m_userAgent == "" && line.compare(0, 12, "User-Agent: ") == 0)
             m_userAgent = line;
-        else if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
+        if (m_accept == "" && line.compare(0, 8, "Accept: ") == 0)
             m_accept = line;
-        else if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
+        if (m_cookie == "" && line.compare(0, 8, "Cookie: ") == 0)
             m_cookie = line;
-        else if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
+        if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
             m_contentLength = line;
-        else if (m_contentType == "" && line.compare(0, 14, "Content-Type: ") == 0)
+        if (m_contentType == "" && line.compare(0, 14, "Content-Type: ") == 0)
+        {
+            // std::cout << line << std::endl;
             m_contentType = line;
+        }
     }
     if (m_method == "POST")
     {
         value = justValue(m_contentType);
+        // std::cout << value << std::endl;
         if (value == "multipart/form-data;")
             parsingBetweenBoundary();
         else if (value == "application/x-www-form-urlencoded")
@@ -209,11 +216,21 @@ std::string justBoundary(std::string host)
 
 void Request::uploadInFile(const char *path)
 {
-    std::string file = path;
-    file.insert(file.length(), m_fileName);
-    std::ofstream myWriteFile(file);
-    myWriteFile << m_body;
-    myWriteFile.close();
+    std::string file;
+    std::stringstream stream;
+    std::string line;
+    for (int i = 0; i < m_bodyPost.size(); i++)
+    {
+        file = path;
+        file.insert(file.length(), m_bodyPost[i].filename);
+        std::ofstream myWriteFile(file);
+        stream.str(m_bodyPost[i].m_body);
+        std::getline(stream, line, '\r');
+        line = line.c_str();
+        myWriteFile << line;
+        stream.clear();
+        myWriteFile.close();
+    }
 }
 
 void Request::parsingBetweenBoundary()
@@ -223,14 +240,11 @@ void Request::parsingBetweenBoundary()
     std::stringstream stringStream(buffer);
     std::string line;
     size_t filename;
-    // std::cout << m_betweenBoundary << std::endl;
     int counter = 0;
     int i = 0;
     int l = 0;
     int check = 0;
-    // while()
     // std::cout << m_body << std::endl;
-    // exit(0);
     while (std::getline(countBoundary, line, '\r'))
     {
         if (line.find(m_boundary) != std::string::npos)
@@ -249,10 +263,17 @@ void Request::parsingBetweenBoundary()
             l = 0;
             for (; line[l] != '\"' && line[l + 1]; l++)
                 m_bodyPost[0].filename += line[l];
+            m_bodyPost[0].filename += "\0";
             l = 0;
             while (std::getline(stringStream, line, '\r') && l < 2)
+            {
                 l++;
-            line = &line[1];
+            }
+            if (m_transferEncoding == "chunked")
+                line = &line[2];
+            else
+                line = &line[1];
+            // std::cout << line << std::endl;
             if (line.c_str()[line.length() - 1] == '\n')
                 line[line.length() - 1] = '\0';
             m_bodyPost[0].m_body = line;
@@ -269,16 +290,27 @@ void Request::parsingBetweenBoundary()
             l = 0;
             for (; line[l] != '\"' && line[l + 1]; l++)
                 m_bodyPost[i].filename += line[l];
+            m_bodyPost[i].filename += "\0";
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
-            line = &line[1];
+            if (m_transferEncoding == "chunked")
+                line = &line[2];
+            else
+                line = &line[1];
             if (line.c_str()[line.length() - 1] == '\n')
                 line[line.length() - 1] = '\0';
             m_bodyPost[i].m_body = line;
         }
         i++;
     }
+    // for (int i = 0; i < m_bodyPost.size(); i++)
+    // {
+    //     std::cout << "*******************" << std::endl;
+    //     std::cout << "filename: " << m_bodyPost[i].filename << std::endl;
+    //     std::cout << "body: \n"
+    //               << m_bodyPost[i].m_body << std::endl;
+    // }
 }
 
 int Request::parsingRequestPost(int socket, char *buffer)
@@ -395,14 +427,13 @@ int Request::checkTheEndOfRequest(char *buffer)
                     i = line.find("\r\n\r\n");
                     i += 4;
                     line = &line[i];
-                    // std::cout << line << std::endl;
                     length = hexaToInt(dataToBackSlashR(line));
                     m_chunked[counter].length = length;
                     i = line.find("\r\n");
                     i += 2;
                     line = &line[i];
-                    std::cout << dataToBackSlashR(line) << std::endl;
                     m_chunked[counter].m_body = dataToBackSlashR(line);
+                    m_chunked.push_back({0, 0, 0, ""});
                 }
                 else if (line.find("multipart/form-data;") != std::string::npos || m_contentType == "multipart/form-data;")
                 {
@@ -426,21 +457,17 @@ int Request::checkTheEndOfRequest(char *buffer)
                     }
                     else
                     {
-                        // std::cout << line << std::endl;
                         for (int i = 0; line[i]; i++)
                         {
+                            // std::cout << "i am here" << std::endl;
                             m_chunked.push_back({0, 0, 0, ""});
                             length = hexaToInt(dataToBackSlashR(&line[i]));
-                            // std::cout << "length ==> " << length << std::endl;
                             m_chunked[m_chunked.size() - 1].length = length;
                             length = ft_strlen(dataToBackSlashR(&line[i]).c_str()) + 2;
                             i += length;
-                            // std::cout << m_chunked.size();
-                            // std::cout << &line[i] << std::endl;
                             int p;
                             for (p = 0; p < m_chunked[m_chunked.size() - 1].length; p++)
                             {
-                                // std::cout << line[i];
                                 m_chunked[m_chunked.size() - 1].m_body += line[i];
                                 i++;
                             }
@@ -472,7 +499,6 @@ int Request::checkTheEndOfRequest(char *buffer)
         if (m_check == 1)
         {
             body = &line[i];
-            // std::cout << body << std::endl;
             i = 0;
             while (m_countContentLength < std::atoi(m_contentLength.c_str()) && i < body.length())
             {
@@ -480,18 +506,27 @@ int Request::checkTheEndOfRequest(char *buffer)
                 i++;
                 m_countContentLength++;
             }
+            // std::cout << "m_countContentLength ==> " << m_countContentLength << std::endl;
+            // std::cout << "m_contentLength.c_str()" << m_contentLength.c_str() << std::endl;
             if (m_countContentLength == std::atoi(m_contentLength.c_str()))
                 return (1);
         }
         if (m_check == 2)
         {
             if (m_chunked.size() != 0 && m_chunked[m_chunked.size() - 1].length == 0)
+            {
+                for (int l = 0; l < m_chunked.size(); l++)
+                {
+                    m_body += m_chunked[l].m_body;
+                }
                 return (1);
+            }
             m_check = 0;
         }
     }
     return (0);
 }
+
 int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     char buffer[2500];
