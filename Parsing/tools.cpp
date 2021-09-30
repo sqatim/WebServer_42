@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/09/21 16:27:44 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/30 14:56:04 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,35 @@ std::string get_value(std::string str)
     return ret;
 }
 
+std::string get_key_tab(std::string str)
+{
+    std::string ret;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    while (i < str.length())
+    {
+        if (str[i] == ' ' || str[i] == '\t')
+            i++;
+        else
+            break;
+    }
+    j = 0;
+    k = i;
+    while (k < str.length())
+    {
+        if (str[k] != '\t')
+        {
+            j++;
+            k++;
+        }
+        else
+            break;
+    }
+    ret = str.substr(i, j);
+    return ret;
+}
+
 std::vector<std::string> splitstring_with_point(std::string str, std::string to_split_with)
 {
     std::vector<std::string> vect_str;
@@ -157,6 +186,8 @@ std::vector<std::string> splitstring(std::string str, std::string to_split_with)
     int i = 0;
     while (i < vect_str.size())
     {
+        // std::string str  = get_key_tab
+        // vect_str[i] = get_key_tab(vect_str[i]);
         if (vect_str[i].length() == 0)
             vect_str.erase(vect_str.begin() + i);
         i++;

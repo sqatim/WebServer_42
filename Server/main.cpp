@@ -6,6 +6,7 @@ int main()
     try
     {
         WebServ parse("webserv.conf");
+        // std::cout << "im here" << std::endl;
         WebServer webServer(parse);
         for (int i = 0; i < parse.getwebserv().size(); i++)
         {

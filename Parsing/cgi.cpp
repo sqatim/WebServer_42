@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/27 16:20:07 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/30 12:17:10 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string.h>
 #include <sys/wait.h>
 
-CGI::CGI(/* args */)
+CGI::CGI()
 {
     this->executable = "/usr/bin/php-cgi";
 }
@@ -112,7 +112,7 @@ void CGI::set_value_to_maymap(Request m_request)
     // map["DOCUMENT_ROOT"] = "./www/cgi";
     // map["SERVER_NAME"] = "default_server";
     // map["HTTP_CONNECTION"] = m_request.getConnection();
-	map["HTTP_COOKIE"]= "user=Hamza";
+	map["HTTP_COOKIE"]= m_request.getCookie();
     map["AUTH_TYPE"] = "";
     map["HTTP_USER_AGENT"] = m_request.getUserAgent();
     map["CONTENT_LENGTH"] = m_request.getContentLength();
