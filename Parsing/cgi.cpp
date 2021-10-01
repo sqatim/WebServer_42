@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/01 13:21:21 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/09/30 12:17:10 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <string.h>
 #include <sys/wait.h>
 
-CGI::CGI(/* args */)
+CGI::CGI()
 {
     this->executable = "/usr/bin/php-cgi";
 }
@@ -31,6 +31,7 @@ void		 CGI::execute(std::string target, std::string bin)
 	int						ret = 1;
 
     _binary = bin;
+	_output = "";
 	_fd[0] = dup(STDIN_FILENO);
 	_fd[1] = dup(STDOUT_FILENO);
 	FILE	*input_tmpfile = tmpfile();
@@ -111,6 +112,7 @@ void CGI::set_value_to_maymap(Request m_request)
     // map["DOCUMENT_ROOT"] = "./www/cgi";
     // map["SERVER_NAME"] = "default_server";
     // map["HTTP_CONNECTION"] = m_request.getConnection();
+	map["HTTP_COOKIE"]= m_request.getCookie();
     map["AUTH_TYPE"] = "";
     map["HTTP_USER_AGENT"] = m_request.getUserAgent();
     map["CONTENT_LENGTH"] = m_request.getContentLength();
@@ -127,6 +129,7 @@ void CGI::set_value_to_maymap(Request m_request)
     map["SERVER_PORT"] = m_request.getPortSolo();
     map["SERVER_PROTOCOL"] = "HTTP/1.1";
     map["SERVER_SOFTWARE"] = "webserv/1.0";
+	map["HTTP_COOKIE"] = "amine=23";
 }
 
 std::string CGI::get_outpout()

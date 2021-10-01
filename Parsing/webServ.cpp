@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/21 17:13:27 by amine            ###   ########.fr       */
+/*   Updated: 2021/09/30 16:49:14 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ WebServ::WebServ(std::string _filename)
     std::string name;
     count_server = 0;
     filename = _filename;
-    // this->file = filename;
     file.open(filename);
     std::vector<std::string> file_in_vector;
     while (getline(file, word))
@@ -40,11 +39,34 @@ WebServ::WebServ(std::string _filename)
         }
         i++;
     }
+    i = 0;
+    while (i < file_in_vector.size())
+    {
+        int j = 0;
+        std::vector<std::string> vect_s = splitstring(file_in_vector[i], " ");
+        std::string str;
+        while (j < vect_s.size())
+        {
+            std::string str_get = get_key(vect_s[j]);
+            str_get = get_key_tab(str_get);
+            if (str_get.length() > 0)
+            {
+                str += str_get;
+                str += " ";
+            }
+            j++;
+        }
+        file_in_vector[i] = str;
+        i++;
+    }
     count_and_set_index(file_in_vector);
     int check = 1;
     check = handle_error(file_in_vector);
     if (check == -1)
+    {
         std::cout << "wa ra keyn error" << std::endl;
+        exit(0);
+    }
     i = 0;
     while (i < count_server)
     {
@@ -54,14 +76,9 @@ WebServ::WebServ(std::string _filename)
             std::cout << "wa ra keyn error f listen" << std::endl;
             return ;
         }
-        this->_webserv.push_back(parse);
-        
+        this->_webserv.push_back(parse);        
         i++;
     }
-    /* ha CGI asahbi */
-    // CGI cg;
-    // cg.execute("/home/amine/Desktop/WebServer_42/Parsing/index.php");
-    // std::cout << cg.get_outpout() << std::endl;
 }
 
 WebServ::~WebServ()
@@ -99,7 +116,6 @@ int check_line(std::string str)
 int check_serv_loca(std::vector<std::string> vect)
 {
     int check(1);
-    // int i = 0;
     int i = 0;
     while (i < vect.size())
     {
@@ -135,7 +151,9 @@ int WebServ::handle_error(std::vector<std::string> file_in_vect)
     int i = 0;
     if (this->server_begin_index.size() < 1 || this->server_end_index.size() < 1 ||
             this->server_end_index.size() != this->server_begin_index.size())
+    {
         return -1;
+    }
     while (i < file_in_vect.size())
     {
         if (check_line(file_in_vect[i]) == -1)
@@ -162,6 +180,7 @@ void WebServ::count_and_set_index(std::vector<std::string> vect)
     int i = 0;
     int count = 0;
     std::vector<int> tmp;
+    i = 0;
     while (i <vect.size())
     {
         std::vector<std::string> vect_str = splitstring(vect[i], " ");
