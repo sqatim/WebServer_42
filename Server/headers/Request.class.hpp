@@ -73,7 +73,7 @@ public:
     void insetMapRequest(int socket);
     void init();
     int checkTheEndOfRequest(char *buffer);
-    void parsingKeyValue();
+    void parsingKeyValue(std::string body);
 
     //  Accessors
     std::string getMethod() const;

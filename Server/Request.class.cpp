@@ -50,6 +50,7 @@ void Request::init()
     m_transferEncoding = "";
     m_chunked.clear();
     m_bodyPost.clear();
+    m_keyValue.clear();
 }
 
 Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
@@ -67,17 +68,14 @@ void Request::parseHost(std::string host)
     std::getline(stringStream, m_portSolo, ' ');
 }
 
-void Request::parsingKeyValue()
+void Request::parsingKeyValue(std::string body)
 {
-    std::stringstream stringStream(m_body);
+    std::stringstream stringStream(body);
     std::stringstream keyValue;
     std::string line;
     std::string parseKeyValue;
-    // std::cout << m_betweenBoundary << std::endl;
     int counter = 0;
     int i = 0;
-    int l = 0;
-    int check = 0;
     line = "";
     while (std::getline(stringStream, line, '&'))
     {
@@ -97,12 +95,6 @@ void Request::parsingKeyValue()
         }
         i++;
     }
-    // for (int i = 0; i < m_keyValue.size(); i++)
-    // {
-    //     std::cout << "*********************" << std::endl;
-    //     std::cout << "key ==> " << m_keyValue[i].key << std::endl;
-    //     std::cout << "value ==> " << m_keyValue[i].value << std::endl;
-    // }
 }
 
 int Request::requestHeaders(int socket)
@@ -140,21 +132,15 @@ int Request::requestHeaders(int socket)
         if (m_contentLength == "" && line.compare(0, 16, "Content-Length: ") == 0)
             m_contentLength = line;
         if (m_contentType == "" && line.compare(0, 14, "Content-Type: ") == 0)
-        {
-            // std::cout << line << std::endl;
             m_contentType = line;
-        }
     }
     if (m_method == "POST")
     {
         value = justValue(m_contentType);
-        // std::cout << value << std::endl;
         if (value == "multipart/form-data;")
             parsingBetweenBoundary();
         else if (value == "application/x-www-form-urlencoded")
-            parsingKeyValue();
-
-        // khasni n9ad had blan
+            parsingKeyValue(m_body);
     }
     this->concatenation();
     return (0);
@@ -191,6 +177,8 @@ void Request::parsingRequestLine(std::string buffer)
     std::string path;
     std::istringstream stringStream;
     this->m_firstRequestheader = buffer;
+    size_t i;
+    std::string keyValue;
     stringStream.str(this->m_firstRequestheader);
     getline(stringStream, word, ' ');
     this->m_method = word;
@@ -203,6 +191,13 @@ void Request::parsingRequestLine(std::string buffer)
         path[j] = '\0';
     }
     this->m_path = path.c_str();
+    if ((i = this->m_path.find("?")) != std::string::npos)
+    {
+        keyValue = &this->m_path[i + 1];
+        this->m_path[i] = '\0';
+        this->m_path = this->m_path.c_str();
+        parsingKeyValue(keyValue);
+    }
 }
 
 std::string justBoundary(std::string host)
@@ -244,7 +239,6 @@ void Request::parsingBetweenBoundary()
     int i = 0;
     int l = 0;
     int check = 0;
-    // std::cout << m_body << std::endl;
     while (std::getline(countBoundary, line, '\r'))
     {
         if (line.find(m_boundary) != std::string::npos)
@@ -273,7 +267,6 @@ void Request::parsingBetweenBoundary()
                 line = &line[2];
             else
                 line = &line[1];
-            // std::cout << line << std::endl;
             if (line.c_str()[line.length() - 1] == '\n')
                 line[line.length() - 1] = '\0';
             m_bodyPost[0].m_body = line;
@@ -304,13 +297,6 @@ void Request::parsingBetweenBoundary()
         }
         i++;
     }
-    // for (int i = 0; i < m_bodyPost.size(); i++)
-    // {
-    //     std::cout << "*******************" << std::endl;
-    //     std::cout << "filename: " << m_bodyPost[i].filename << std::endl;
-    //     std::cout << "body: \n"
-    //               << m_bodyPost[i].m_body << std::endl;
-    // }
 }
 
 int Request::parsingRequestPost(int socket, char *buffer)
@@ -399,7 +385,6 @@ int Request::checkTheEndOfRequest(char *buffer)
     int counter1 = 0;
     if (m_method == "GET" || m_method == "DELETE")
     {
-        // std::cout << buffer << std::endl;
         while (std::getline(stringStream, line, '\r'))
             request += line;
         line = "";
@@ -413,8 +398,6 @@ int Request::checkTheEndOfRequest(char *buffer)
     else if (m_method == "POST")
     {
         line = buffer;
-        // std::cout << "###################################" << std::endl;
-        // std::cout << buffer << std::endl;
         if (m_check == 0)
         {
             if ((i = line.find("Transfer-Encoding: chunked")) != std::string::npos || m_transferEncoding == "chunked")
@@ -506,8 +489,6 @@ int Request::checkTheEndOfRequest(char *buffer)
                 i++;
                 m_countContentLength++;
             }
-            // std::cout << "m_countContentLength ==> " << m_countContentLength << std::endl;
-            // std::cout << "m_contentLength.c_str()" << m_contentLength.c_str() << std::endl;
             if (m_countContentLength == std::atoi(m_contentLength.c_str()))
                 return (1);
         }
@@ -545,7 +526,7 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
             this->parsingRequestLine(buffer);
         if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
             return (-2);
-        if (m_method == "GET" || m_method == "POST")
+        if (m_method == "GET" || m_method == "POST" || m_method == "DELETE")
         {
             if ((result = this->checkTheEndOfRequest(buffer)) == 1)
                 return (-2);
