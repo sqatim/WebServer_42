@@ -2,7 +2,6 @@
 
 WebServer::WebServer(WebServ &webServ) : m_maxSocket(0), m_addrlen(sizeof(m_address)), m_webServ(webServ)
 {
-    // m_webServ = webServ;
 }
 
 Server WebServer::setServer(Parse &parse)
@@ -58,20 +57,81 @@ void WebServer::run()
         this->acceptNewConnection();
     }
 }
+// an9adha fal 9ahwa
+int WebServer::theRightServerName(std::string &requestHost, Parse &parse, std::string &host, size_t &j)
+{
+    for (size_t counter = 0; counter < parse.getserver_name().size(); counter++)
+    {
+        requestHost = justValue(this->m_request.getHost());
+        host = parse.getserver_name()[counter];
+        host += ":";
+        host += std::to_string(parse.getlisten()[j]);
+        if (requestHost == host)
+        {
+            m_parse = parse;
+            return (1);
+        }
+    }
+    return (0);
+}
+void WebServer::choosingTheRightServer(std::string &requestHost, int &check)
+{
+    Parse parse;
+    std::string host;
+    for (size_t k = 0; k < this->m_webServ.getwebserv().size(); k++)
+    {
+        parse = this->m_webServ.getwebserv()[k];
+        for (size_t j = 0; j < parse.getlisten().size(); j++)
+        {
+            host = parse.gethost();
+            host += ":";
+            host += std::to_string(parse.getlisten()[j]);
+            if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
+            {
+                m_parse = parse;
+                check = 1;
+                break;
+            }
+            check = theRightServerName(requestHost, parse, host, j);
+        }
+    }
+}
+void WebServer::checkingClient()
+{
+    int request;
+    std::string requestHost;
+    int check = 0;
+    int socket;
+
+    for (size_t i = 0; i < m_clientSocket.size(); i++)
+    {
+        socket = m_clientSocket[i];
+        request = 0;
+        if (FD_ISSET(socket, &m_currentSocket))
+        {
+            check = 0;
+            if ((request = this->m_request.concatRequest(socket, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
+            {
+                this->m_request.requestHeaders(socket);
+                requestHost = justValue(this->m_request.getHost());
+                choosingTheRightServer(requestHost, check);
+                if (FD_ISSET(socket, &m_writeSocket))
+                {
+                    this->manageRequest(socket, check, request);
+                    this->m_request.init();
+                    this->m_response.initResponse();
+                }
+            }
+        }
+    }
+}
 
 void WebServer::acceptNewConnection()
 {
     int i;
     int newSocket;
-    Parse parse;
-    int request = -2;
-    std::string requestHost;
-    std::string host;
-    std::string response;
-    int check = 0;
     for (i = 0; i <= this->m_maxFd; i++)
     {
-        int sd;
         if (i < (int)m_server.size())
         {
             if (FD_ISSET(this->m_server[i], &m_currentSocket))
@@ -88,55 +148,7 @@ void WebServer::acceptNewConnection()
                     this->m_maxFd = newSocket;
             }
         }
-        for (size_t i = 0; i < m_clientSocket.size(); i++)
-        {
-            sd = m_clientSocket[i];
-            request = 0;
-            if (FD_ISSET(sd, &m_currentSocket))
-            {
-                check = 0;
-                if ((request = this->m_request.concatRequest(sd, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
-                {
-                    this->m_request.requestHeaders(sd);
-                    requestHost = justValue(this->m_request.getHost());
-                    for (size_t k = 0; k < this->m_webServ.getwebserv().size(); k++)
-                    {
-                        parse = this->m_webServ.getwebserv()[k];
-                        for (size_t j = 0; j < parse.getlisten().size(); j++)
-                        {
-                            host = parse.gethost();
-                            host += ":";
-                            host += std::to_string(parse.getlisten()[j]);
-                            if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
-                            {
-                                m_parse = parse;
-                                check = 1;
-                                break;
-                            }
-                            for (size_t counter = 0; counter < parse.getserver_name().size(); counter++)
-                            {
-                                requestHost = justValue(this->m_request.getHost());
-                                host = parse.getserver_name()[counter];
-                                host += ":";
-                                host += std::to_string(parse.getlisten()[j]);
-                                if (requestHost == host)
-                                {
-                                    m_parse = parse;
-                                    check = 1;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (FD_ISSET(sd, &m_writeSocket))
-                    {
-                        this->manageRequest(sd, check, request);
-                        this->m_request.init();
-                        this->m_response.initResponse();
-                    }
-                }
-            }
-        }
+        checkingClient();
     }
 }
 
@@ -150,11 +162,4 @@ int WebServer::getMaxSocket(void) const
 }
 WebServer::~WebServer(void)
 {
-}
-
-void WebServer::debug(std::string str)
-{
-    std::cout << "********************************" << std::endl;
-    std::cout << "##" << str << "##" << std::endl;
-    std::cout << "********************************" << std::endl;
 }
