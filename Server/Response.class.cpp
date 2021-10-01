@@ -63,7 +63,7 @@ void Response::notFoundBody(Parse parse, std::string root)
     this->m_status = "404 Not Found";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
 
         if (parse.geterror_page()[i].redirec == "404")
@@ -96,7 +96,7 @@ void Response::toLargeBody(Parse parse, std::string root)
     this->m_status = "413 Payload Too Large";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
 
         if (parse.geterror_page()[i].redirec == "413")
@@ -129,7 +129,7 @@ void Response::methodNotAllowedBody(Parse parse, std::string root)
     this->m_status = "405 Method Not Allowed";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
 
         if (parse.geterror_page()[i].redirec == "405")
@@ -162,7 +162,7 @@ void Response::forbiddenBody(Parse parse, std::string root)
     this->m_status = "403 Forbidden";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
         if (parse.geterror_page()[i].redirec == "404")
         {
@@ -210,7 +210,7 @@ void Response::fileUploaded()
     this->m_body += "</html>";
 }
 
-void Response::redirectHeader(int socket, std::string status, std::string location)
+void Response::redirectHeader(std::string status, std::string location)
 {
     m_type = REDIRECT;
     statusIndication(status);
@@ -229,7 +229,7 @@ std::string justValue(std::string host)
     return (result);
 }
 
-void Response::redirectHeaderToPath(int socket, std::string status, std::string host, std::string url)
+void Response::redirectHeaderToPath(std::string status, std::string host, std::string url)
 {
     std::string path;
 
@@ -282,7 +282,7 @@ std::string Response::autoIndexBody(const char *fileName, const char *url)
     body += url;
     body += "</h1>\n";
     body += "<hr><pre>\n";
-    for (int i = 0; i < list.size(); i++)
+    for (size_t i = 0; i < list.size(); i++)
     {
         body += "<a href=\"" + list[i] + "\">";
         body += list[i];

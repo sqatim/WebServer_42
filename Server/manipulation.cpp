@@ -46,7 +46,6 @@ std::string ft_joinSlash(char **array)
 }
 void WebServer::manageRequest(int socket, int check, int request)
 {
-    char *str;
     std::string response;
     Parse parse;
     try

@@ -29,12 +29,6 @@ typedef struct s_chunked
 class Request
 {
 private:
-    std::string m_boundary;
-    std::vector<t_bodyPost> m_bodyPost;
-    std::vector<t_keyValue> m_keyValue;
-    std::vector<t_chunked> m_chunked;
-    std::string m_fileName;
-    std::string m_betweenBoundary;
     std::string m_method;
     std::string m_path;
     std::string m_version;
@@ -48,10 +42,15 @@ private:
     std::string m_fastCgi;
     std::string m_contentType;
     std::string m_transferEncoding;
-
     std::string m_contentLength;
-    int m_countContentLength;
+    std::string m_fileName;
+    std::string m_betweenBoundary;
+    std::string m_boundary;
+    size_t m_countContentLength;
     int m_check;
+    std::vector<t_bodyPost> m_bodyPost;
+    std::vector<t_keyValue> m_keyValue;
+    std::vector<t_chunked> m_chunked;
     std::string m_body;
     std::string m_request;
     std::string m_mainRequest;
@@ -66,7 +65,7 @@ public:
     void concatenation();
     void parsingRequestLine(std::string line);
     int parsingRequestGet(int socket);
-    int parsingRequestPost(int socket, char *buffer);
+    int parsingRequestPost(char *buffer);
     void parsingBetweenBoundary();
     void parseHost(std::string host);
     void uploadInFile(const char *path);

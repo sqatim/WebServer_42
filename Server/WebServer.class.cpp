@@ -13,7 +13,7 @@ Server WebServer::setServer(Parse &parse)
 
 void WebServer::run()
 {
-    int i;
+    size_t i;
     // struct timeval _tv = {1, 0};
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
@@ -39,7 +39,7 @@ void WebServer::run()
             FD_SET(this->m_server[i], &this->m_currentSocket);
             this->m_maxFd = this->m_server[i];
         }
-        for (int i = 0; i < m_clientSocket.size(); i++)
+        for (size_t i = 0; i < m_clientSocket.size(); i++)
         {
             sd = m_clientSocket[i];
             if (sd > 0)
@@ -68,12 +68,11 @@ void WebServer::acceptNewConnection()
     std::string requestHost;
     std::string host;
     std::string response;
-    std::string m_body = "samir";
     int check = 0;
     for (i = 0; i <= this->m_maxFd; i++)
     {
         int sd;
-        if (i < m_server.size())
+        if (i < (int)m_server.size())
         {
             if (FD_ISSET(this->m_server[i], &m_currentSocket))
             {
@@ -89,7 +88,7 @@ void WebServer::acceptNewConnection()
                     this->m_maxFd = newSocket;
             }
         }
-        for (int i = 0; i < m_clientSocket.size(); i++)
+        for (size_t i = 0; i < m_clientSocket.size(); i++)
         {
             sd = m_clientSocket[i];
             request = 0;
@@ -100,10 +99,10 @@ void WebServer::acceptNewConnection()
                 {
                     this->m_request.requestHeaders(sd);
                     requestHost = justValue(this->m_request.getHost());
-                    for (int k = 0; k < this->m_webServ.getwebserv().size(); k++)
+                    for (size_t k = 0; k < this->m_webServ.getwebserv().size(); k++)
                     {
                         parse = this->m_webServ.getwebserv()[k];
-                        for (int j = 0; j < parse.getlisten().size(); j++)
+                        for (size_t j = 0; j < parse.getlisten().size(); j++)
                         {
                             host = parse.gethost();
                             host += ":";
@@ -114,7 +113,7 @@ void WebServer::acceptNewConnection()
                                 check = 1;
                                 break;
                             }
-                            for (int counter = 0; counter < parse.getserver_name().size(); counter++)
+                            for (size_t counter = 0; counter < parse.getserver_name().size(); counter++)
                             {
                                 requestHost = justValue(this->m_request.getHost());
                                 host = parse.getserver_name()[counter];

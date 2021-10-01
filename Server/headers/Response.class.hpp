@@ -38,8 +38,8 @@ public:
     void fileDeleted();
     void fileUploaded();
     int checkLocation(LocaTion location);
-    void redirectHeader(int socket, std::string status, std::string location);
-    void redirectHeaderToPath(int socket, std::string status, std::string host, std::string url);
+    void redirectHeader(std::string status, std::string location);
+    void redirectHeaderToPath(std::string status, std::string host, std::string url);
     void simpleLocation();
     std::string autoIndexBody(const char *fileName, const char *url);
     void sendResponse(int socket);

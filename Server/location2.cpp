@@ -43,7 +43,7 @@ int checkLocation(LocaTion location)
     return (0);
 }
 
-int appendUrlCgi(int i, std::string &path, LocaTion location, std::string url)
+int appendUrlCgi(std::string &path, LocaTion location, std::string url)
 {
     int check;
     if (location.getname() != "/")

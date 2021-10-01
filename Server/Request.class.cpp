@@ -53,11 +53,11 @@ void Request::init()
     m_keyValue.clear();
 }
 
-Request::Request() : m_boundary("11111111"), m_fileName(""), m_betweenBoundary(""),
-                     m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
-                     m_userAgent(""), m_accept(""), m_body(""), m_request(""), m_mainRequest(""),
-                     m_cookie(""), m_contentLength(""), m_portSolo(""), m_hostSolo(""), m_fastCgi(""),
-                     m_countContentLength(0), m_check(0), m_contentType(""), m_transferEncoding("")
+Request::Request() : m_method(""), m_path(""), m_version(""), m_firstRequestheader(""), m_host(""),
+                     m_hostSolo(""), m_portSolo(""), m_userAgent(""), m_accept(""), m_cookie(""),
+                     m_fastCgi(""), m_contentType(""), m_transferEncoding(""), m_contentLength(""),
+                     m_fileName(""), m_betweenBoundary(""), m_boundary("11111111"),
+                     m_countContentLength(0), m_check(0), m_body(""), m_request(""), m_mainRequest("")
 {
 }
 
@@ -214,7 +214,7 @@ void Request::uploadInFile(const char *path)
     std::string file;
     std::stringstream stream;
     std::string line;
-    for (int i = 0; i < m_bodyPost.size(); i++)
+    for (size_t i = 0; i < m_bodyPost.size(); i++)
     {
         file = path;
         file.insert(file.length(), m_bodyPost[i].filename);
@@ -299,7 +299,7 @@ void Request::parsingBetweenBoundary()
     }
 }
 
-int Request::parsingRequestPost(int socket, char *buffer)
+int Request::parsingRequestPost(char *buffer)
 {
     std::stringstream stringStream(buffer);
     std::stringstream string;
@@ -307,7 +307,6 @@ int Request::parsingRequestPost(int socket, char *buffer)
     std::string line(buffer);
     std::string boundry;
     std::string body;
-    int check = 0;
     size_t i = 0;
     size_t j = 0;
 
@@ -334,13 +333,13 @@ int Request::parsingRequestPost(int socket, char *buffer)
     {
         body = &line[i];
         int i = 0;
-        while (m_countContentLength < std::atoi(m_contentLength.c_str()) && m_countContentLength < body.length())
+        while ((int)m_countContentLength < std::atoi(m_contentLength.c_str()) && m_countContentLength < body.length())
         {
             m_body += body[i];
             i++;
             m_countContentLength++;
         }
-        if (m_countContentLength == std::atoi(m_contentLength.c_str()))
+        if ((int)m_countContentLength == std::atoi(m_contentLength.c_str()))
             return (-2);
     }
     return (1);
@@ -382,7 +381,6 @@ int Request::checkTheEndOfRequest(char *buffer)
     size_t i = 0;
     std::string body;
     int counter = 0;
-    int counter1 = 0;
     if (m_method == "GET" || m_method == "DELETE")
     {
         while (std::getline(stringStream, line, '\r'))
@@ -431,7 +429,7 @@ int Request::checkTheEndOfRequest(char *buffer)
                         m_chunked[m_chunked.size() - 1].length = length;
                         length = ft_strlen(dataToBackSlashR(line).c_str()) + 2;
                         line = &line[length];
-                        int p;
+                        size_t p;
                         for (p = 0; p < m_chunked[m_chunked.size() - 1].length; p++)
                         {
                             m_chunked[m_chunked.size() - 1].m_body += line[p];
@@ -440,23 +438,22 @@ int Request::checkTheEndOfRequest(char *buffer)
                     }
                     else
                     {
-                        for (int i = 0; line[i]; i++)
+                        for (int j = 0; line[j]; j++)
                         {
                             // std::cout << "i am here" << std::endl;
                             m_chunked.push_back({0, 0, 0, ""});
-                            length = hexaToInt(dataToBackSlashR(&line[i]));
+                            length = hexaToInt(dataToBackSlashR(&line[j]));
                             m_chunked[m_chunked.size() - 1].length = length;
-                            length = ft_strlen(dataToBackSlashR(&line[i]).c_str()) + 2;
-                            i += length;
-                            int p;
+                            length = ft_strlen(dataToBackSlashR(&line[j]).c_str()) + 2;
+                            j += length;
+                            size_t p;
                             for (p = 0; p < m_chunked[m_chunked.size() - 1].length; p++)
                             {
-                                m_chunked[m_chunked.size() - 1].m_body += line[i];
-                                i++;
+                                m_chunked[m_chunked.size() - 1].m_body += line[j];
+                                j++;
                             }
                             if (m_chunked[m_chunked.size() - 1].length != 0)
                                 m_chunked[m_chunked.size() - 1].m_body += '\0';
-                            i++;
                         }
                     }
                 }
@@ -483,20 +480,20 @@ int Request::checkTheEndOfRequest(char *buffer)
         {
             body = &line[i];
             i = 0;
-            while (m_countContentLength < std::atoi(m_contentLength.c_str()) && i < body.length())
+            while ((int)m_countContentLength < std::atoi(m_contentLength.c_str()) && i < body.length())
             {
                 m_body += body[i];
                 i++;
                 m_countContentLength++;
             }
-            if (m_countContentLength == std::atoi(m_contentLength.c_str()))
+            if ((int)m_countContentLength == std::atoi(m_contentLength.c_str()))
                 return (1);
         }
         if (m_check == 2)
         {
             if (m_chunked.size() != 0 && m_chunked[m_chunked.size() - 1].length == 0)
             {
-                for (int l = 0; l < m_chunked.size(); l++)
+                for (size_t l = 0; l < m_chunked.size(); l++)
                 {
                     m_body += m_chunked[l].m_body;
                 }
@@ -673,71 +670,3 @@ std::ostream &operator<<(std::ostream &out, Request &src)
     out << src.getBetweenBoundary() << std::endl;
     return (out);
 }
-// // if ((result = get_next_line(socket, &buffer)) == 0)
-// {
-//     std::cout << "disconnected" << std::endl;
-//     close(socket);
-//     clientSocket.erase(clientSocket.begin() + i);
-//     FD_CLR(socket, &(*readySockets));
-//     FD_CLR(socket, &(*writeSockets));
-//     // init();
-//     return (0);
-// }
-// else if (result == -1)
-// {
-//     return (2);
-// }
-// else
-// {
-//     std::cout << buffer << std::endl;
-//     this->m_mainRequest += buffer;
-//     this->m_mainRequest += "\n";
-//     if (m_firstRequestheader == "")
-//     {
-//         this->parsingRequestLine(buffer);
-//     }
-//     if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
-//     {
-//         return (-1);
-//     }
-//     delete[] buffer;
-//     if (m_method == "GET" || m_method == "DELETE")
-//         parsingRequestGet(socket, &buffer);
-//     else if (m_method == "POST")
-//         parsingRequestPost(socket, &buffer);
-//     return (1);
-// }
-
-// while (get_next_line(socket, &(*buffer)) > 0)
-// {
-// line = *buffer;
-// std::cout << *buffer << std::endl;
-// this->m_mainRequest += *buffer;
-// this->m_mainRequest += "\n";
-// if (check == 0 && ((i = line.find("boundary")) != std::string::npos))
-// {
-//     boundry = &line[i];
-//     m_boundary = justBoundary(boundry);
-//     check++;
-// }
-// else if (check == 2 || line.find(m_boundary) != std::string::npos)
-// {
-//     if (check == 2 && li----------------------------495361025204011784128785ne.find(m_boundary) != std::string::npos)
-//     {
-//         m_betweenBoundary += line;
-//         check = 3;
-//         // break;
-//     }
-//     m_betweenBoundary += line + '\n';
-//     check = 2;
-// }
-// delete[](*buffer);
-// }
-// while ()
-// this->requestHeaders(socket);
-// parsingBetweenBoundary();
-// this->concatenation();
-
-// ----------------------------965044085659670129976539
-// Content-Disposition: form-data; name="samir"; filename="said.txt"
-// Content-Type: text/plain

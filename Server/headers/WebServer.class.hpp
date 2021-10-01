@@ -36,8 +36,8 @@ public:
     void postMethod(int socket);
     void deleteMethod(int socket);
     int location(int socket);
-    int whichLocation(Parse &parse, LocaTion location, std::string locationName, int socket);
-    int appendLocation(LocaTion location, int socket);
+    int whichLocation(LocaTion location);
+    int appendLocation(LocaTion location);
 
     std::vector<int> getServer() const;
     int getMaxSocket() const;

@@ -4,7 +4,7 @@ void lastSlash(std::string &string)
 {
     int counter = 0;
 
-    for (int i = 0; i < string.size(); i++)
+    for (size_t i = 0; i < string.size(); i++)
     {
         if (string[i] == '/')
             counter = i;
@@ -19,12 +19,12 @@ std::vector<LocaTion> locationSorted(std::vector<LocaTion> location)
 {
     std::string string;
     std::vector<LocaTion> locationSorted;
-    int len = 0;
+    size_t len = 0;
     int save = 0;
     for (int counter = location.size() - 1; counter >= 0; counter--)
     {
         len = 0;
-        for (int i = 0; i < location.size(); i++)
+        for (size_t i = 0; i < location.size(); i++)
         {
             if (location[i].getname().size() > len)
             {
@@ -46,7 +46,7 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
     check = -1;
     if ((cgi = ft_cgi(request.getPath().c_str()) == 1) || (cgi = ft_cgi(request.getPath().c_str()) == 2))
     {
-        int k = 0;
+        size_t k = 0;
         if (cgi == 1)
             while (parse.getlocation()[k].getname() != "*.php" && k < parse.getlocation().size())
                 k++;
@@ -59,13 +59,13 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
             location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
             std::cout << "root ==> " << root << std::endl;
-            check = appendUrlCgi(k, root, parse.getlocation()[k], request.getPath().c_str());
+            check = appendUrlCgi(root, parse.getlocation()[k], request.getPath().c_str());
         }
     }
     return (check);
 }
 
-int WebServer::appendLocation(LocaTion location, int socket)
+int WebServer::appendLocation(LocaTion location)
 {
     std::string root;
     int check = 0;
@@ -86,7 +86,7 @@ int WebServer::appendLocation(LocaTion location, int socket)
     }
     if (root[root.length() - 1] != '/' && check == 2)
     {
-        m_response.redirectHeaderToPath(socket, "301", m_request.getHost(), url);
+        m_response.redirectHeaderToPath("301", m_request.getHost(), url);
         return (2);
     }
     slash(&root);
@@ -112,25 +112,22 @@ int WebServer::appendLocation(LocaTion location, int socket)
     return (check);
 }
 
-int WebServer::whichLocation(Parse &parse, LocaTion location, std::string locationName, int socket)
+int WebServer::whichLocation(LocaTion location)
 {
     if (checkLocation(location) == 2)
     {
         std::cout << "sasa yasoso" << std::endl;
-        this->m_response.redirectHeader(socket, location.get_return()[0].redirec,
-                                        location.get_return()[0].path);
+        this->m_response.redirectHeader(location.get_return()[0].redirec, location.get_return()[0].path);
         return (1);
     }
-    else if ((appendLocation(location, socket)) != 0)
+    else if ((appendLocation(location)) != 0)
         return (1);
-    // else
-    // return (-1);
     return (0);
 }
 
 int checkForSlashLocation(std::vector<LocaTion> &location)
 {
-    for (int i = 0; i < location.size(); i++)
+    for (size_t i = 0; i < location.size(); i++)
     {
         if (location[i].getname() == "/")
             return (1);
@@ -166,13 +163,13 @@ int WebServer::location(int socket)
         url = m_request.getPath();
         while (true)
         {
-            for (int i = 0; i < location.size(); i++)
+            for (size_t i = 0; i < location.size(); i++)
             {
                 locationName = location[i].getname();
                 locationName = locationName.c_str();
                 if (ft_comparaison(locationName.c_str(), url.c_str()))
                 {
-                    if ((check = whichLocation(m_parse, location[i], locationName, socket)) == 1)
+                    if ((check = whichLocation(location[i])) == 1)
                     {
                         check1 = 1;
                         this->m_response.sendResponse(socket);

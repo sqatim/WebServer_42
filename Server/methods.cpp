@@ -3,7 +3,6 @@
 void WebServer::postMethod(int socket)
 {
     m_response.initResponse();
-    char *path;
     std::string root;
     std::string locationName;
     std::vector<LocaTion> location;
@@ -16,7 +15,7 @@ void WebServer::postMethod(int socket)
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());
-        for (int i = 0; i < location.size(); i++)
+        for (size_t i = 0; i < location.size(); i++)
         {
             locationName = location[i].getname();
             locationName = locationName.c_str();
@@ -79,7 +78,7 @@ void WebServer::deleteMethod(int socket)
     std::string url;
     // check = location(socket);
     std::cout << this->m_parse.getlocation().size() << std::endl;
-    for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+    for (size_t i = 0; i < this->m_parse.getlocation().size(); i++)
     {
         location = this->m_parse.getlocation()[i].getname();
         location = location.c_str();
@@ -129,7 +128,6 @@ void WebServer::getMethod(int socket)
             throw NotFound(m_parse, root);
     }
 }
-
 
 /*
 
