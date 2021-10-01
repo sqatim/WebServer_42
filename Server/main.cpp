@@ -8,7 +8,7 @@ int main()
         WebServ parse("webserv.conf");
         // std::cout << "im here" << std::endl;
         WebServer webServer(parse);
-        for (int i = 0; i < parse.getwebserv().size(); i++)
+        for (size_t i = 0; i < parse.getwebserv().size(); i++)
         {
             webServer.setServer(parse.getwebserv()[i]);
             // server.manipulation();

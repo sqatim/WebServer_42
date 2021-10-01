@@ -3,7 +3,6 @@
 void WebServer::postMethod(int socket)
 {
     m_response.initResponse();
-    char *path;
     std::string root;
     std::string locationName;
     std::vector<LocaTion> location;
@@ -12,11 +11,11 @@ void WebServer::postMethod(int socket)
 
     int check = 0;
     url = m_request.getPath();
-    std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
+    // std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());
-        for (int i = 0; i < location.size(); i++)
+        for (size_t i = 0; i < location.size(); i++)
         {
             locationName = location[i].getname();
             locationName = locationName.c_str();
@@ -50,6 +49,23 @@ void WebServer::postMethod(int socket)
     }
 }
 
+int checkPermission(const char *path)
+{
+    struct stat fileStat;
+
+    if (stat(path, &fileStat) == 0)
+    {
+        if (fileStat.st_mode & S_IWOTH)
+        {
+            std::cout << "kayna" << std::endl;
+            return (1);
+        }
+        else
+            std::cout << "ma kaynsh" << std::endl;
+    }
+    return (0);
+}
+
 void WebServer::deleteMethod(int socket)
 {
     m_response.initResponse();
@@ -62,7 +78,7 @@ void WebServer::deleteMethod(int socket)
     std::string url;
     // check = location(socket);
     std::cout << this->m_parse.getlocation().size() << std::endl;
-    for (int i = 0; i < this->m_parse.getlocation().size(); i++)
+    for (size_t i = 0; i < this->m_parse.getlocation().size(); i++)
     {
         location = this->m_parse.getlocation()[i].getname();
         location = location.c_str();
@@ -76,6 +92,8 @@ void WebServer::deleteMethod(int socket)
             std::cout << path.c_str() << std::endl;
             if ((check = fileOrDir(path.c_str())) == 1)
             {
+                if (!checkPermission(path.c_str()))
+                    throw Forbidden(m_parse, root);
                 m_response.fileDeleted();
                 m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
                 this->m_response.sendResponse(socket);
@@ -98,10 +116,8 @@ void WebServer::getMethod(int socket)
     check = location(socket);
     if (check == -1)
     {
-        // std::cout << "e*****************wa ya saide*****************" << std::endl;
         root = getRoot(empty, this->m_parse, 0);
         slash(&root);
-        // debug(root);
         if (getIndex(empty, m_parse, 0, root) == 1)
         {
             path = strdup(root.c_str());
@@ -112,3 +128,9 @@ void WebServer::getMethod(int socket)
             throw NotFound(m_parse, root);
     }
 }
+
+/*
+
+Set-Cookie:
+
+*/
