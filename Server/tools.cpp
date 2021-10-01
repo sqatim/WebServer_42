@@ -23,12 +23,12 @@ int fileOrDir(const char *path)
     {
         if (fileStat.st_mode & S_IFDIR)
         {
-            std::cout << "it's a directory" << std::endl;
+            // std::cout << "it's a directory" << std::endl;
             return (2);
         }
         else if (fileStat.st_mode & S_IFREG)
         {
-            std::cout << "It's a file" << std::endl;
+            // std::cout << "It's a file" << std::endl;
             return (1);
         }
         else
@@ -87,7 +87,7 @@ int getIndex(LocaTion &location, Parse &parse, int which, std::string &root)
         else if (parse.get_Index().size() != 0)
             index = parse.get_Index();
     }
-    for (int i = 0; i < index.size(); i++)
+    for (size_t i = 0; i < index.size(); i++)
     {
         path = root;
         slash(&path);
@@ -99,4 +99,16 @@ int getIndex(LocaTion &location, Parse &parse, int which, std::string &root)
         }
     }
     return (0);
+}
+
+size_t ft_strlen(const char *str)
+{
+    int i;
+
+    i = 0;
+    if (!str)
+        return (0);
+    while (str[i])
+        i++;
+    return (i);
 }

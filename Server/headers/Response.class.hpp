@@ -34,11 +34,12 @@ public:
     void notFoundBody(Parse parse, std::string root);
     void forbiddenBody(Parse parse, std::string root);
     void toLargeBody(Parse parse, std::string root);
+    void methodNotAllowedBody(Parse parse, std::string root);
     void fileDeleted();
     void fileUploaded();
     int checkLocation(LocaTion location);
-    void redirectHeader(int socket, std::string status, std::string location);
-    void redirectHeaderToPath(int socket, std::string status, std::string host, std::string url);
+    void redirectHeader(std::string status, std::string location);
+    void redirectHeaderToPath(std::string status, std::string host, std::string url);
     void simpleLocation();
     std::string autoIndexBody(const char *fileName, const char *url);
     void sendResponse(int socket);

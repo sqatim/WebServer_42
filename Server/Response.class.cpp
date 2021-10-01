@@ -63,7 +63,7 @@ void Response::notFoundBody(Parse parse, std::string root)
     this->m_status = "404 Not Found";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
 
         if (parse.geterror_page()[i].redirec == "404")
@@ -96,7 +96,7 @@ void Response::toLargeBody(Parse parse, std::string root)
     this->m_status = "413 Payload Too Large";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
 
         if (parse.geterror_page()[i].redirec == "413")
@@ -124,12 +124,45 @@ void Response::toLargeBody(Parse parse, std::string root)
     }
 }
 
+void Response::methodNotAllowedBody(Parse parse, std::string root)
+{
+    this->m_status = "405 Method Not Allowed";
+    std::string path;
+    int check = 0;
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
+    {
+
+        if (parse.geterror_page()[i].redirec == "405")
+        {
+            path = root;
+            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            if (fileOrDir(path.c_str()) == 1)
+            {
+                // std::cout << "shalam camarade" << std::endl;
+                this->m_body = readingTheFile(path.c_str());
+                check = 1;
+            }
+        }
+    }
+    if (check == 0)
+    {
+        // std::cout << "hamza l hmar" << std::endl;
+        this->m_body = "<html>\n";
+        this->m_body += "<head>\n";
+        this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+        this->m_body += "<title>405 Method Not Allowed</title>\n</head>";
+        this->m_body += "<center><h1>Method Not Allowed</h1></center>\n";
+        this->m_body += "<hr><center>Barnatouti</center>\n";
+        this->m_body += "</html>";
+    }
+}
+
 void Response::forbiddenBody(Parse parse, std::string root)
 {
     this->m_status = "403 Forbidden";
     std::string path;
     int check = 0;
-    for (int i = 0; i < parse.geterror_page().size(); i++)
+    for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
         if (parse.geterror_page()[i].redirec == "404")
         {
@@ -168,7 +201,6 @@ void Response::fileDeleted()
 void Response::fileUploaded()
 {
     this->m_status = "200 OK";
-    std::cout << "hamza l hmar" << std::endl;
     this->m_body = "<html>\n";
     this->m_body += "<head>\n";
     this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
@@ -178,7 +210,7 @@ void Response::fileUploaded()
     this->m_body += "</html>";
 }
 
-void Response::redirectHeader(int socket, std::string status, std::string location)
+void Response::redirectHeader(std::string status, std::string location)
 {
     m_type = REDIRECT;
     statusIndication(status);
@@ -187,7 +219,7 @@ void Response::redirectHeader(int socket, std::string status, std::string locati
     // sendRespone(socket);
 }
 
-std::string justHost(std::string host)
+std::string justValue(std::string host)
 {
     std::stringstream stringStream(host);
     std::string result;
@@ -197,12 +229,12 @@ std::string justHost(std::string host)
     return (result);
 }
 
-void Response::redirectHeaderToPath(int socket, std::string status, std::string host, std::string url)
+void Response::redirectHeaderToPath(std::string status, std::string host, std::string url)
 {
     std::string path;
 
     path = "http://";
-    path += justHost(host);
+    path += justValue(host);
     path.insert(path.length(), "/");
     path.insert(path.length(), url);
     path.insert(path.length(), "/");
@@ -250,7 +282,7 @@ std::string Response::autoIndexBody(const char *fileName, const char *url)
     body += url;
     body += "</h1>\n";
     body += "<hr><pre>\n";
-    for (int i = 0; i < list.size(); i++)
+    for (size_t i = 0; i < list.size(); i++)
     {
         body += "<a href=\"" + list[i] + "\">";
         body += list[i];
@@ -337,7 +369,7 @@ void Response::setHeader()
     if (m_type != REDIRECT)
     {
         this->m_header += this->m_contentLength + "\n";
-        this->m_header += this->m_connection;
+        this->m_header += this->m_connection + "\n";
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";

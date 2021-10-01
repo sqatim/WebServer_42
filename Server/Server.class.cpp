@@ -19,7 +19,7 @@ Server::Server(Parse parse, int &maxSocket, std::vector<int> &servers, struct so
     /*     - IPROTO_TCP : TCP                                                 */
     /*     - IPROTO_UDP : UCP                                                 */
     /**************************************************************************/
-    int i;
+    size_t i;
 
     for (i = 0; i < parse.getlisten().size(); i++)
     {

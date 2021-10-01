@@ -20,15 +20,12 @@ SRC_NAME_SERVER= main.cpp\
 				location.cpp\
 				location2.cpp\
 				tools.cpp\
-				get_next_line.cpp\
-				get_next_line_utils.cpp\
 
 
 HDR_SERVER_NAME= Server.class.hpp\
 				WebServer.class.hpp\
 				server.hpp\
 				Request.class.hpp\
-				get_next_line.hpp\
 				# parse.hpp\
 
 OBJ_NAME_SERVER= $(SRC_NAME_SERVER:.cpp=.o)
@@ -38,15 +35,15 @@ HDR_SERVER= $(addprefix $(HDR_SERVER_PATH)/,$(HDR_SERVER_NAME))
 H_SERVER_FLAG= -I $(HDR_SERVER_PATH)
 
 
-# FLAGS= -Wall -Wextra -Werror
+FLAGS= -Wall -Wextra -Werror
 LPARSING_FLAG= -L$(PARSING_PATH) Parsing/libparsing.a
 
-COMP= clang++
+COMP= clang++ 
 
 all: Parse $(NAME)
 
 WebServer : $(PARSING_PATH)/$(PARSING) $(OBJ_SERVER)
-	@$(COMP) $(H_SERVER_FLAG) $(OBJ_SERVER) $(LPARSING_FLAG) -o $@
+	@$(COMP) $(H_SERVER_FLAG) $(FLAGS) $(OBJ_SERVER) $(LPARSING_FLAG) -o $@
 	@echo "Compilation of WebServer:  \033[1;32mOK\033[m"
 
 Parse:

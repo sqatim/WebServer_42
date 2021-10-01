@@ -6,7 +6,7 @@
 /*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/23 11:39:41 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/10/01 13:21:21 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ CGI::~CGI()
 {
 }
 
-void		 CGI::execute(std::string target)
+void		 CGI::execute(std::string target, std::string bin)
 {
     pid_t					pid;
 	int						_fd[2];
 	char					tmp[65536];
 	int						ret = 1;
 
-    _binary = "/usr/bin/php-cgi";
+    _binary = bin;
 	_fd[0] = dup(STDIN_FILENO);
 	_fd[1] = dup(STDOUT_FILENO);
 	FILE	*input_tmpfile = tmpfile();
