@@ -47,6 +47,7 @@ private:
     std::string m_betweenBoundary;
     std::string m_boundary;
     size_t m_countContentLength;
+    std::string m_query;
     int m_check;
     std::vector<t_bodyPost> m_bodyPost;
     std::vector<t_keyValue> m_keyValue;
@@ -75,6 +76,7 @@ public:
     void parsingKeyValue(std::string body);
 
     //  Accessors
+    std::string getquery() const;
     std::string getMethod() const;
     std::string getPath() const;
     std::string getVersion() const;
@@ -95,6 +97,7 @@ public:
     std::string getBoundary() const;
     std::string getFileName() const;
     std::string getBetweenBoundary() const;
+    std::vector<t_keyValue> getm_keyvalue() const;
     void setFastCgi(std::string fastCgi);
     void setRequest(std::string request);
     void setBody(std::string body);

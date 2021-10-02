@@ -193,6 +193,8 @@ void Request::parsingRequestLine(std::string buffer)
     this->m_path = path.c_str();
     if ((i = this->m_path.find("?")) != std::string::npos)
     {
+        std::string str = this->m_path.substr(i + 1);
+        this->m_query = str;
         keyValue = &this->m_path[i + 1];
         this->m_path[i] = '\0';
         this->m_path = this->m_path.c_str();
@@ -644,6 +646,16 @@ void Request::setBody(std::string body)
 void Request::setFastCgi(std::string setFastCgi)
 {
     this->m_fastCgi = setFastCgi;
+}
+
+std::vector<t_keyValue>Request::getm_keyvalue() const
+{
+    return this->m_keyValue;
+}
+
+std::string Request::getquery() const
+{
+    return this->m_query;
 }
 
 Request::~Request()

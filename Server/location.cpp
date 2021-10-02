@@ -156,11 +156,13 @@ int WebServer::location(int socket)
     check1 = -1;
     if ((check = fastCgi(m_request, m_parse, root, locationCgi)) == 1)
     {
-        std::cout << "shalam" << std::endl;
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
         CGI cg;
         cg.set_value_to_maymap(m_request);
         cg.execute(root, m_request.getFastCgi());
+        // std::cout << "*********************" << std::endl;
+        // std::cout << cg.get_outpout() << std::endl;
+        // std::cout << "*********************" << std::endl;
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);
