@@ -368,19 +368,13 @@ int Request::parseRequest(int socket)
     return (1);
 }
 
-int Request::checkTheEndOfRequest(char *buffer)
+int Request::checkTheEndOfRequestGetAndDelete(char *buffer)
 {
-
-    std::string test;
-    std::string chuncked;
     std::stringstream stringStream(buffer);
-    std::stringstream stream;
     std::string line;
-    int length;
     std::string request = "";
-    size_t i = 0;
-    std::string body;
-    int counter = 0;
+    std::stringstream stream;
+
     if (m_method == "GET" || m_method == "DELETE")
     {
         while (std::getline(stringStream, line, '\r'))
@@ -393,6 +387,23 @@ int Request::checkTheEndOfRequest(char *buffer)
                 return (1);
         }
     }
+    return (0);
+}
+int Request::checkTheEndOfRequest(char *buffer)
+{
+
+    std::string test;
+    std::string chuncked;
+    std::stringstream stringStream(buffer);
+    std::stringstream stream;
+    std::string line;
+    std::string request = "";
+    int length;
+    size_t i = 0;
+    std::string body;
+    int counter = 0;
+    if (checkTheEndOfRequestGetAndDelete(buffer))
+        return (1);
     else if (m_method == "POST")
     {
         line = buffer;
@@ -457,7 +468,6 @@ int Request::checkTheEndOfRequest(char *buffer)
                         }
                     }
                 }
-
                 m_check = 2;
             }
             else if ((i = line.find("Content-Length: ")) != std::string::npos)
@@ -505,30 +515,32 @@ int Request::checkTheEndOfRequest(char *buffer)
     return (0);
 }
 
-int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
+int Request::readingRequest(int socket, int &result)
 {
     char buffer[2500];
-    int result;
-    std::istringstream stringStream;
-    std::istringstream string;
-    std::string removeBackSlashR = "";
-    std::string line;
 
     if ((result = read(socket, buffer, 2500)) > 0)
     {
         buffer[result] = '\0';
-        // std::cout << buffer << std::endl;
         m_requestMap[socket] += buffer;
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
-            return (-2);
+            return (1);
         if (m_method == "GET" || m_method == "POST" || m_method == "DELETE")
         {
             if ((result = this->checkTheEndOfRequest(buffer)) == 1)
-                return (-2);
+                return (1);
         }
     }
+    return (0);
+}
+int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
+{
+    int result;
+
+    if (readingRequest(socket, result) == 1)
+        return (-2);
     else if (result == -1)
         return (0);
     else if (result == 0)
@@ -541,7 +553,6 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
         m_requestMap.erase(socket);
         return (0);
     }
-    // else
     return (result);
 }
 

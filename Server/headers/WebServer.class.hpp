@@ -42,6 +42,7 @@ public:
     int checkingForTheRightLocation(LocaTion &location, std::string &url, int &check, int socket);
     int whichLocation(LocaTion location);
     int appendLocation(LocaTion location);
+    int theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check);
     void checkingClient();
     void choosingTheRightServer(std::string &requestHost, int &check);
     int theRightServerName(std::string &requestHost, Parse &parse, std::string &host, size_t &j);

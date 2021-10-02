@@ -73,30 +73,11 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
     return (check);
 }
 
-int WebServer::appendLocation(LocaTion location)
+int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check)
 {
-    std::string root;
-    int check = 0;
-    std::string url;
     std::string body;
-    char *path;
+    std::string path;
 
-    url = getUrl(this->m_request);
-    root = getRoot(location, this->m_parse, 1);
-    slash(&root);
-    root.insert(root.length(), url.c_str());
-    if ((check = fileOrDir(root.c_str())) == 1)
-    {
-        path = strdup(root.c_str());
-        m_response.contentHeader("200", "text", "html", readingTheFile(path));
-        return (1);
-    }
-    if (root[root.length() - 1] != '/' && check == 2)
-    {
-
-        m_response.redirectHeaderToPath("301", m_request.getHost(), url);
-        return (2);
-    }
     slash(&root);
     if ((check = getIndex(location, m_parse, 1, root)) == 0)
     {
@@ -110,15 +91,40 @@ int WebServer::appendLocation(LocaTion location)
     }
     else
     {
-        path = strdup(root.c_str());
-        std::cout << "i am here" << std::endl;
-        m_response.contentHeader("200", "text", "html", readingTheFile(path));
+        path = root.c_str();
+        m_response.contentHeader("200", "text", "html", readingTheFile((char *)path.c_str()));
     }
     return (check);
 }
 
+int WebServer::appendLocation(LocaTion location)
+{
+    std::string root;
+    int check = 0;
+    std::string url;
+    std::string path;
+
+    url = getUrl(this->m_request);
+    root = getRoot(location, this->m_parse, 1);
+    slash(&root);
+    root.insert(root.length(), url.c_str());
+    if ((check = fileOrDir(root.c_str())) == 1)
+    {
+        path = root.c_str();
+        m_response.contentHeader("200", "text", "html", readingTheFile((char *)path.c_str()));
+        return (1);
+    }
+    if (root[root.length() - 1] != '/' && check == 2)
+    {
+        m_response.redirectHeaderToPath("301", m_request.getHost(), url);
+        return (2);
+    }
+    return (theRestOfAppendLocation(location, url, root, check));
+}
+
 int WebServer::whichLocation(LocaTion location)
 {
+
     if (checkLocation(location) == 2)
     {
         this->m_response.redirectHeader(location.get_return()[0].redirec, location.get_return()[0].path);
@@ -166,6 +172,8 @@ int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url,
     locationName = locationName.c_str();
     if (ft_comparaison(locationName.c_str(), url.c_str()))
     {
+        // std::cout << "allaaa a camarade maablansh" << std::endl;
+
         std::cout << "locationName: " << locationName.c_str() << std::endl;
         if ((check = whichLocation(location)) == 1)
         {
@@ -187,6 +195,7 @@ int WebServer::location(int socket)
     check = -1;
     if (CheckingForCgi(socket) == 1)
         return (1);
+
     if (check == -1 || check == 2)
     {
         url = m_request.getPath();
@@ -199,7 +208,9 @@ int WebServer::location(int socket)
                     return (1);
             }
             if (url == "/")
+            {
                 break;
+            }
             lastSlash(url);
         }
         if (m_request.getPath() != "/" && this->m_parse.getlocation().size() != 0)

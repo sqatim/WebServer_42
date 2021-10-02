@@ -108,7 +108,7 @@ void WebServer::deleteMethod(int socket)
 void WebServer::getMethod(int socket)
 {
     m_response.initResponse();
-    char *path;
+    std::string path;
     int check;
     std::string root;
     LocaTion empty;
@@ -120,8 +120,8 @@ void WebServer::getMethod(int socket)
         slash(&root);
         if (getIndex(empty, m_parse, 0, root) == 1)
         {
-            path = strdup(root.c_str());
-            m_response.contentHeader("200", "text", "html", readingTheFile(path));
+            path = root.c_str();
+            m_response.contentHeader("200", "text", "html", readingTheFile((char *)path.c_str()));
             this->m_response.sendResponse(socket);
         }
         else

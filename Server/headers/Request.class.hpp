@@ -59,6 +59,7 @@ private:
 public:
     Request();
     int concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
+    int readingRequest(int socket, int &result);
     int parseRequest(int socket);
     void getWords();
     int requestHeaders(int socket);
@@ -72,6 +73,7 @@ public:
     void insetMapRequest(int socket);
     void init();
     int checkTheEndOfRequest(char *buffer);
+    int checkTheEndOfRequestGetAndDelete(char *buffer);
     void parsingKeyValue(std::string body);
 
     //  Accessors

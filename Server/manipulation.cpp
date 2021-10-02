@@ -16,7 +16,6 @@ std::string WebServer::readingTheFile(char *filename)
     std::string text;
     std::string line;
 
-    delete[] filename;
     if (!myReadFile)
         throw WebServer::Forbidden();
     text = "";
