@@ -5,6 +5,9 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
     std::string root;
     std::string locationName;
 
+    std::cout << "GET: " << location.get_GET() << std::endl;
+    std::cout << "POST: " << location.get_POST() << std::endl;
+    std::cout << "DELETE: " << location.get_DELET() << std::endl;
     root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
     slash(&root);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))

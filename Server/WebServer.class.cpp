@@ -112,7 +112,6 @@ void WebServer::checkingClient()
             check = 0;
             if ((request = this->m_request.concatRequest(socket, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
             {
-                std::cout << "mara" << std::endl;
                 this->m_request.requestHeaders(socket);
                 requestHost = justValue(this->m_request.getHost());
                 choosingTheRightServer(requestHost, check);
