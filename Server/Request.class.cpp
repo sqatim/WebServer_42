@@ -648,15 +648,6 @@ void Request::setFastCgi(std::string setFastCgi)
     this->m_fastCgi = setFastCgi;
 }
 
-std::vector<t_keyValue>Request::getm_keyvalue() const
-{
-    return this->m_keyValue;
-}
-
-std::string Request::getquery() const
-{
-    return this->m_query;
-}
 
 Request::~Request()
 {

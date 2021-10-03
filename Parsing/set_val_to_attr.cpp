@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/09/21 17:05:06 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/03 14:31:47 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,6 +289,9 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
                         if (vect_str[0] == "allow_methods")
                         {
+                            loc.set_GET(0);
+                            loc.set_POST(0);
+                            loc.set_DELET(0);
                             if (vect_str[1].find("GET") != -1)
                                 loc.set_GET(1);
                             if (vect_str[1].find("POST") != -1)
