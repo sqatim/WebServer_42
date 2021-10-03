@@ -79,7 +79,8 @@ void Request::parsingKeyValue(std::string body)
     line = "";
     while (std::getline(stringStream, line, '&'))
     {
-        m_keyValue.push_back({"", ""});
+        t_keyValue value = {"", ""};
+        m_keyValue.push_back(value);
         keyValue.clear();
         keyValue.str(line);
         counter = 0;
@@ -197,6 +198,7 @@ void Request::parsingRequestLine(std::string buffer)
     this->m_path = path.c_str();
     if ((i = this->m_path.find("?")) != std::string::npos)
     {
+        this->m_query = this->m_path.substr(i + 1);
         keyValue = &this->m_path[i + 1];
         this->m_path[i] = '\0';
         this->m_path = this->m_path.c_str();
@@ -255,7 +257,8 @@ void Request::parsingBetweenBoundary()
         {
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
-            m_bodyPost.push_back({"", ""});
+            t_keyValue value = {"", ""};
+            m_keyValue.push_back(value);
             filename = line.find("filename");
             line = &line[filename + 10];
             l = 0;
@@ -278,7 +281,8 @@ void Request::parsingBetweenBoundary()
         }
         else
         {
-            m_bodyPost.push_back({"", ""});
+            t_keyValue value = {"", ""};
+            m_keyValue.push_back(value);
             line = "";
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
@@ -358,7 +362,7 @@ int Request::parsingRequestGet(int socket)
 
 void Request::insetMapRequest(int socket)
 {
-    m_requestMap.insert({socket, ""});
+    m_requestMap.insert(std::pair<int, std::string>(socket, ""));
 }
 
 int Request::parseRequest(int socket)
@@ -395,9 +399,9 @@ int Request::checkTheEndOfRequestGetAndDelete(char *buffer)
 void Request::chunkedContentTypeApplication(std::string &line, int &length)
 {
     size_t i;
-
+    t_chunked chunckedStructer = {0, 0, 0, ""};
     m_contentType = "application/x-www-form-urlencoded";
-    m_chunked.push_back({0, 0, 0, ""});
+    m_chunked.push_back(chunckedStructer);
     i = line.find("\r\n\r\n");
     i += 4;
     line = &line[i];
@@ -407,14 +411,15 @@ void Request::chunkedContentTypeApplication(std::string &line, int &length)
     i += 2;
     line = &line[i];
     m_chunked[0].m_body = dataToBackSlashR(line);
-    m_chunked.push_back({0, 0, 0, ""});
+    m_chunked.push_back(chunckedStructer);
 }
 
 void Request::chunkedContentTypeMultipartFirstBoundary(std::string &line, int &length)
 {
     size_t i;
+    t_chunked chunckedStructer = {0, 0, 0, ""};
 
-    m_chunked.push_back({0, 0, 0, ""});
+    m_chunked.push_back(chunckedStructer);
     i = line.find("\r\n\r\n");
     i += 4;
     line = &line[i];
@@ -432,6 +437,7 @@ void Request::chunkedContentTypeMultipartFirstBoundary(std::string &line, int &l
 
 void Request::chunkedContentTypeMultipart(std::string &line, int &length)
 {
+    t_chunked chunckedStructer = {0, 0, 0, ""};
 
     m_contentType = "multipart/form-data;";
     if (m_chunked.size() == 0)
@@ -440,7 +446,7 @@ void Request::chunkedContentTypeMultipart(std::string &line, int &length)
     {
         for (int j = 0; line[j]; j++)
         {
-            m_chunked.push_back({0, 0, 0, ""});
+            m_chunked.push_back(chunckedStructer);
             length = hexaToInt(dataToBackSlashR(&line[j]));
             m_chunked[m_chunked.size() - 1].length = length;
             if (m_chunked[m_chunked.size() - 1].length == 0)
@@ -672,6 +678,15 @@ std::string Request::getFastCgi(void) const
 {
     return (this->m_fastCgi);
 }
+std::string Request::getquery(void) const
+{
+    return this->m_query;
+}
+std::vector<t_keyValue> Request::getm_keyvalue(void) const
+{
+    return this->m_keyValue;
+}
+
 void Request::setRequest(std::string request)
 {
     this->m_request = request;
