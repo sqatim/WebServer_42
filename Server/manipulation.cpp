@@ -49,7 +49,7 @@ void WebServer::manageRequest(int socket, int check, int request)
     Parse parse;
     try
     {
-        if (request == -1)
+        if (request == -2)
             throw Forbidden();
         if (this->m_request.getMethod() != "GET" && this->m_request.getMethod() != "POST" && this->m_request.getMethod() != "DELETE")
             throw MethodNotAllowed(parse, "");

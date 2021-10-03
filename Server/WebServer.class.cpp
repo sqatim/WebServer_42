@@ -110,7 +110,7 @@ void WebServer::checkingClient()
         if (FD_ISSET(socket, &m_currentSocket))
         {
             check = 0;
-            if ((request = this->m_request.concatRequest(socket, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) == -2)
+            if ((request = this->m_request.concatRequest(socket, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) < 0)
             {
                 this->m_request.requestHeaders(socket);
                 requestHost = justValue(this->m_request.getHost());

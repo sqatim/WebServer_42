@@ -107,6 +107,9 @@ int WebServer::appendLocation(LocaTion location)
     url = getUrl(this->m_request);
     root = getRoot(location, this->m_parse, 1);
     slash(&root);
+    if (location.get_GET() != 1)
+        throw MethodNotAllowed(m_parse, root);
+    // std::cout << "root -->< " << root << std::endl;
     root.insert(root.length(), url.c_str());
     if ((check = fileOrDir(root.c_str())) == 1)
     {
@@ -154,6 +157,11 @@ int WebServer::CheckingForCgi(int socket)
 
     if (fastCgi(m_request, m_parse, root, locationCgi) == 1)
     {
+        if (locationCgi.get_GET() != 1)
+        {
+            lastSlash(root);
+            throw MethodNotAllowed(m_parse, root);
+        }
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
         CGI cg;
         cg.set_value_to_maymap(m_request);

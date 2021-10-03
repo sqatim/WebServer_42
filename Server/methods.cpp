@@ -5,24 +5,19 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
     std::string root;
     std::string locationName;
 
-    std::cout << "GET: " << location.get_GET() << std::endl;
-    std::cout << "POST: " << location.get_POST() << std::endl;
-    std::cout << "DELETE: " << location.get_DELET() << std::endl;
     root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
     slash(&root);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
         throw TooLarge(m_parse, root);
+    if (location.get_POST() != 1) // ba9a dual "on" ol "off"
+        throw MethodNotAllowed(m_parse, root);
     locationName = &location.getname()[1];
     root.insert(root.length(), locationName);
     slash(&root);
     root.insert(root.length(), location.getupload_store());
-    // std::cout << location.getupload_store() << std::endl;
     slash(&root);
     if (fileOrDir(root.c_str()) == 2)
-    {
-        // std::cout << "kawalamaka" << std::endl;
         this->m_request.uploadInFile(root.c_str());
-    }
     else
         throw NotFound();
     m_response.fileUploaded();

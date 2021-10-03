@@ -561,20 +561,21 @@ int Request::checkTheEndOfRequest(char *buffer)
 int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     int result;
-    char buffer[3500] = {0};
-    if ((result = read(socket, buffer, 3500)) > 0)
+    char buffer[35001] = {0};
+    if ((result = read(socket, buffer, 35000)) > 0)
 
     {
         buffer[result] = '\0';
         m_requestMap[socket] += buffer;
+        std::cout << buffer << std::endl;
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
-            return (1);
+            return (-2);
         if (m_method == "GET" || m_method == "POST" || m_method == "DELETE")
         {
             if (this->checkTheEndOfRequest(buffer) == 1)
-                return (-2);
+                return (-1);
         }
     }
     else if (result == -1)
