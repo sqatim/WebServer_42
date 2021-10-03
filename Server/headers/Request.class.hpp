@@ -67,6 +67,12 @@ public:
     void parsingRequestLine(std::string line);
     int parsingRequestGet(int socket);
     int parsingRequestPost(char *buffer);
+    void chunkedEncodingPost(std::string &line, int &length);
+    void chunkedContentTypeApplication(std::string &line, int &length);
+    void chunkedContentTypeMultipart(std::string &line, int &length);
+    void chunkedContentTypeMultipartFirstBoundary(std::string &line, int &length);
+    void contentLengthPost(std::string &line, size_t &i);
+    int checkIfFinishedOrNot(std::string &line, size_t &i);
     void parsingBetweenBoundary();
     void parseHost(std::string host);
     void uploadInFile(const char *path);
@@ -74,6 +80,7 @@ public:
     void init();
     int checkTheEndOfRequest(char *buffer);
     int checkTheEndOfRequestGetAndDelete(char *buffer);
+    int checkTheEndOfRequestPost(char *buffer, int &length);
     void parsingKeyValue(std::string body);
 
     //  Accessors

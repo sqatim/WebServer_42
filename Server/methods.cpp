@@ -1,20 +1,25 @@
 #include "WebServer.class.hpp"
 
-void WebServer::postMethodComparaison(int socket, size_t &i, std::string &locationName, int &check)
+void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check)
 {
     std::string root;
+    std::string locationName;
 
     root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
     slash(&root);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
         throw TooLarge(m_parse, root);
-    locationName = &locationName[1];
+    locationName = &location.getname()[1];
     root.insert(root.length(), locationName);
     slash(&root);
-    root.insert(root.length(), this->m_parse.getlocation()[i].getupload_store());
+    root.insert(root.length(), location.getupload_store());
+    // std::cout << location.getupload_store() << std::endl;
     slash(&root);
     if (fileOrDir(root.c_str()) == 2)
+    {
+        // std::cout << "kawalamaka" << std::endl;
         this->m_request.uploadInFile(root.c_str());
+    }
     else
         throw NotFound();
     m_response.fileUploaded();
@@ -41,7 +46,7 @@ void WebServer::postMethod(int socket)
             locationName = locationName.c_str();
             if (ft_comparaison(locationName.c_str(), url.c_str()))
             {
-                postMethodComparaison(socket, i, locationName, check);
+                postMethodComparaison(socket, i, location[i], check);
                 break;
             }
         }
