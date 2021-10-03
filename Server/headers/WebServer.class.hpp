@@ -35,7 +35,7 @@ public:
     void getMethod(int socket);
     void postMethod(int socket);
     void deleteMethod(int socket);
-    void deleteMethodComparaison(int socket, size_t &i);
+    void deleteMethodComparaison(int socket, LocaTion location, int &check);
     void postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check);
     int location(int socket);
     int CheckingForCgi(int socket);

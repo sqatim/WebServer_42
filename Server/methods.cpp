@@ -35,9 +35,9 @@ void WebServer::postMethod(int socket)
 
     int check = 0;
     url = m_request.getPath();
+    location = locationSorted(this->m_parse.getlocation());
     while (true)
     {
-        location = locationSorted(this->m_parse.getlocation());
         for (size_t i = 0; i < location.size(); i++)
         {
             locationName = location[i].getname();
@@ -68,18 +68,19 @@ int checkPermission(const char *path)
     return (0);
 }
 
-void WebServer::deleteMethodComparaison(int socket, size_t &i)
+void WebServer::deleteMethodComparaison(int socket, LocaTion location, int &check)
 {
     std::string url;
     std::string root;
     std::string path;
 
     url = getUrl(this->m_request);
-    root = getRoot(this->m_parse.getlocation()[i], this->m_parse, 1);
+    root = getRoot(location, this->m_parse, 1);
     slash(&root);
     path = root;
+    if (location.get_DELET() != 1)
+        throw MethodNotAllowed(m_parse, root);
     path.insert(path.length(), url.c_str());
-    std::cout << path.c_str() << std::endl;
     if (fileOrDir(path.c_str()) == 1)
     {
         if (!checkPermission(path.c_str()))
@@ -88,6 +89,7 @@ void WebServer::deleteMethodComparaison(int socket, size_t &i)
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
         this->m_response.sendResponse(socket);
         remove(path.c_str());
+        check = 1;
     }
     else
         throw NotFound(m_parse, root);
@@ -96,16 +98,29 @@ void WebServer::deleteMethodComparaison(int socket, size_t &i)
 void WebServer::deleteMethod(int socket)
 {
     m_response.initResponse();
-    std::string location;
-    for (size_t i = 0; i < this->m_parse.getlocation().size(); i++)
+    std::vector<LocaTion> location;
+    std::string locationName;
+    std::string url;
+    int check = 0;
+    url = m_request.getPath().c_str();
+    location = locationSorted(this->m_parse.getlocation());
+    while (true)
     {
-        location = this->m_parse.getlocation()[i].getname();
-        location = location.c_str();
-        if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
+        for (size_t i = 0; i < location.size(); i++)
         {
-            deleteMethodComparaison(socket, i);
-            break;
+            locationName = location[i].getname();
+            locationName = locationName.c_str();
+            if (ft_comparaison(locationName.c_str(), url.c_str()))
+            {
+                deleteMethodComparaison(socket, location[i], check);
+                break;
+            }
         }
+        if (check == 1)
+            break;
+        if (url == "/")
+            break;
+        lastSlash(url);
     }
 }
 void WebServer::getMethod(int socket)
