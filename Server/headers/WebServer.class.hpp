@@ -35,10 +35,17 @@ public:
     void getMethod(int socket);
     void postMethod(int socket);
     void deleteMethod(int socket);
+    void deleteMethodComparaison(int socket, size_t &i);
+    void postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check);
     int location(int socket);
+    int CheckingForCgi(int socket);
+    int checkingForTheRightLocation(LocaTion &location, std::string &url, int &check, int socket);
     int whichLocation(LocaTion location);
     int appendLocation(LocaTion location);
-
+    int theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check);
+    void checkingClient();
+    void choosingTheRightServer(std::string &requestHost, int &check);
+    int theRightServerName(std::string &requestHost, Parse &parse, std::string &host, size_t &j);
     std::vector<int> getServer() const;
     int getMaxSocket() const;
     void debug(std::string str);

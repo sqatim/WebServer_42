@@ -170,7 +170,6 @@ void Response::forbiddenBody(Parse parse, std::string root)
             path.insert(path.length(), parse.geterror_page()[i].path.c_str());
             if (fileOrDir(path.c_str()) == 1)
             {
-                std::cout << "shalam camarade" << std::endl;
                 this->m_body = readingTheFile(path.c_str());
                 check = 1;
             }

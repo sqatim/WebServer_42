@@ -28,5 +28,6 @@ std::string justValue(std::string host);
 std::vector<LocaTion> locationSorted(std::vector<LocaTion> location);
 void lastSlash(std::string &string);
 size_t ft_strlen(const char *str);
+char *ft_strdup(const char *s1);
 
 #endif
