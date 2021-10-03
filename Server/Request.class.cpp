@@ -567,7 +567,7 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
     {
         buffer[result] = '\0';
         m_requestMap[socket] += buffer;
-        std::cout << buffer << std::endl;
+        // std::cout << buffer << std::endl;
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
         if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")

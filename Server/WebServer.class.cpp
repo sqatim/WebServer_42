@@ -57,7 +57,7 @@ void WebServer::run()
         this->acceptNewConnection();
     }
 }
-// an9adha fal 9ahwa
+
 int WebServer::theRightServerName(std::string &requestHost, Parse &parse, std::string &host, size_t &j)
 {
     for (size_t counter = 0; counter < parse.getserver_name().size(); counter++)
@@ -86,13 +86,16 @@ void WebServer::choosingTheRightServer(std::string &requestHost, int &check)
             host = parse.gethost();
             host += ":";
             host += std::to_string(parse.getlisten()[j]);
-            if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0)
+            if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0 || host.compare(0, 7, "0.0.0.0") == 0)
             {
+                std::cout << "host: > " << host << "length: " << host.length() << std::endl;
+                std::cout << "requestHost: > " << requestHost << "length: " << host.length() << std::endl;
                 m_parse = parse;
                 check = 1;
                 break;
             }
-            check = theRightServerName(requestHost, parse, host, j);
+            if (check == 0)
+                check = theRightServerName(requestHost, parse, host, j);
         }
     }
 }

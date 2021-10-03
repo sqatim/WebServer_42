@@ -7,7 +7,7 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
 
     root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
     slash(&root);
-    if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
+    if (std::atoi(m_request.getContentLength().c_str()) / 1048576 >= std::atoi(m_parse.getclient_max_body_size().c_str()))
         throw TooLarge(m_parse, root);
     if (location.get_POST() != 1) // ba9a dual "on" ol "off"
         throw MethodNotAllowed(m_parse, root);
