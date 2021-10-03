@@ -35,7 +35,7 @@ HDR_SERVER= $(addprefix $(HDR_SERVER_PATH)/,$(HDR_SERVER_NAME))
 H_SERVER_FLAG= -I $(HDR_SERVER_PATH)
 
 
-FLAGS= -Wall -Wextra -Werror
+# FLAGS= -Wall -Wextra -Werror
 LPARSING_FLAG= -L$(PARSING_PATH) Parsing/libparsing.a
 
 COMP= clang++ 

@@ -46,8 +46,8 @@ private:
     std::string m_fileName;
     std::string m_betweenBoundary;
     std::string m_boundary;
-    size_t m_countContentLength;
     std::string m_query;
+    size_t m_countContentLength;
     int m_check;
     std::vector<t_bodyPost> m_bodyPost;
     std::vector<t_keyValue> m_keyValue;
@@ -60,6 +60,7 @@ private:
 public:
     Request();
     int concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i);
+    int readingRequest(int socket, int &result);
     int parseRequest(int socket);
     void getWords();
     int requestHeaders(int socket);
@@ -67,12 +68,20 @@ public:
     void parsingRequestLine(std::string line);
     int parsingRequestGet(int socket);
     int parsingRequestPost(char *buffer);
+    void chunkedEncodingPost(std::string &line, int &length);
+    void chunkedContentTypeApplication(std::string &line, int &length);
+    void chunkedContentTypeMultipart(std::string &line, int &length);
+    void chunkedContentTypeMultipartFirstBoundary(std::string &line, int &length);
+    void contentLengthPost(std::string &line, size_t &i);
+    int checkIfFinishedOrNot(std::string &line, size_t &i);
     void parsingBetweenBoundary();
     void parseHost(std::string host);
     void uploadInFile(const char *path);
     void insetMapRequest(int socket);
     void init();
     int checkTheEndOfRequest(char *buffer);
+    int checkTheEndOfRequestGetAndDelete(char *buffer);
+    int checkTheEndOfRequestPost(char *buffer, int &length);
     void parsingKeyValue(std::string body);
 
     //  Accessors

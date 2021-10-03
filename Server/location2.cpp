@@ -6,8 +6,6 @@ int ft_comparaison(std::string location, std::string url)
 {
     int i;
 
-    // std::cout << "location: " << location.c_str() << std::endl;
-    // std::cout << "url: " << url.c_str() << std::endl;
     for (i = 0; location.c_str()[i]; i++)
     {
         if (location == "/")

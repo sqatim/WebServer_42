@@ -1,17 +1,45 @@
 #include "WebServer.class.hpp"
 
+void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check)
+{
+    std::string root;
+    std::string locationName;
+
+    std::cout << "GET: " << location.get_GET() << std::endl;
+    std::cout << "POST: " << location.get_POST() << std::endl;
+    std::cout << "DELETE: " << location.get_DELET() << std::endl;
+    root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
+    slash(&root);
+    if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
+        throw TooLarge(m_parse, root);
+    locationName = &location.getname()[1];
+    root.insert(root.length(), locationName);
+    slash(&root);
+    root.insert(root.length(), location.getupload_store());
+    // std::cout << location.getupload_store() << std::endl;
+    slash(&root);
+    if (fileOrDir(root.c_str()) == 2)
+    {
+        // std::cout << "kawalamaka" << std::endl;
+        this->m_request.uploadInFile(root.c_str());
+    }
+    else
+        throw NotFound();
+    m_response.fileUploaded();
+    m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+    this->m_response.sendResponse(socket);
+    check = 1;
+}
+
 void WebServer::postMethod(int socket)
 {
     m_response.initResponse();
-    std::string root;
     std::string locationName;
     std::vector<LocaTion> location;
-    std::string response;
     std::string url;
 
     int check = 0;
     url = m_request.getPath();
-    // std::cout << "[" << std::atoi(m_request.getContentLength().c_str()) / 1048576 << "]" << std::endl;
     while (true)
     {
         location = locationSorted(this->m_parse.getlocation());
@@ -21,23 +49,7 @@ void WebServer::postMethod(int socket)
             locationName = locationName.c_str();
             if (ft_comparaison(locationName.c_str(), url.c_str()))
             {
-                root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
-                slash(&root);
-                if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
-                    throw TooLarge(m_parse, root);
-                locationName = &locationName[1];
-                root.insert(root.length(), locationName);
-                slash(&root);
-                root.insert(root.length(), this->m_parse.getlocation()[i].getupload_store());
-                slash(&root);
-                if (fileOrDir(root.c_str()) == 2)
-                    this->m_request.uploadInFile(root.c_str());
-                else
-                    throw NotFound();
-                m_response.fileUploaded();
-                m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-                this->m_response.sendResponse(socket);
-                check = 1;
+                postMethodComparaison(socket, i, location[i], check);
                 break;
             }
         }
@@ -56,59 +68,55 @@ int checkPermission(const char *path)
     if (stat(path, &fileStat) == 0)
     {
         if (fileStat.st_mode & S_IWOTH)
-        {
-            std::cout << "kayna" << std::endl;
             return (1);
-        }
-        else
-            std::cout << "ma kaynsh" << std::endl;
     }
     return (0);
+}
+
+void WebServer::deleteMethodComparaison(int socket, size_t &i)
+{
+    std::string url;
+    std::string root;
+    std::string path;
+
+    url = getUrl(this->m_request);
+    root = getRoot(this->m_parse.getlocation()[i], this->m_parse, 1);
+    slash(&root);
+    path = root;
+    path.insert(path.length(), url.c_str());
+    std::cout << path.c_str() << std::endl;
+    if (fileOrDir(path.c_str()) == 1)
+    {
+        if (!checkPermission(path.c_str()))
+            throw Forbidden(m_parse, root);
+        m_response.fileDeleted();
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        this->m_response.sendResponse(socket);
+        remove(path.c_str());
+    }
+    else
+        throw NotFound(m_parse, root);
 }
 
 void WebServer::deleteMethod(int socket)
 {
     m_response.initResponse();
-    int check;
-    std::string root;
-    LocaTion empty;
     std::string location;
-    std::string path;
-    // char *response = "HTTP/1.1 200 OK\nContent-Type: text/html\nConnection: close\nContent-Length: 5\n\nsamir";
-    std::string url;
-    // check = location(socket);
-    std::cout << this->m_parse.getlocation().size() << std::endl;
     for (size_t i = 0; i < this->m_parse.getlocation().size(); i++)
     {
         location = this->m_parse.getlocation()[i].getname();
         location = location.c_str();
         if (ft_comparaison(location.c_str(), m_request.getPath().c_str()))
         {
-            url = getUrl(this->m_request);
-            root = getRoot(this->m_parse.getlocation()[i], this->m_parse, 1);
-            slash(&root);
-            path = root;
-            path.insert(path.length(), url.c_str());
-            std::cout << path.c_str() << std::endl;
-            if ((check = fileOrDir(path.c_str())) == 1)
-            {
-                if (!checkPermission(path.c_str()))
-                    throw Forbidden(m_parse, root);
-                m_response.fileDeleted();
-                m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-                this->m_response.sendResponse(socket);
-                remove(path.c_str());
-                break;
-            }
-            else
-                throw NotFound(m_parse, root);
+            deleteMethodComparaison(socket, i);
+            break;
         }
     }
 }
 void WebServer::getMethod(int socket)
 {
     m_response.initResponse();
-    char *path;
+    std::string path;
     int check;
     std::string root;
     LocaTion empty;
@@ -120,17 +128,11 @@ void WebServer::getMethod(int socket)
         slash(&root);
         if (getIndex(empty, m_parse, 0, root) == 1)
         {
-            path = strdup(root.c_str());
-            m_response.contentHeader("200", "text", "html", readingTheFile(path));
+            path = root.c_str();
+            m_response.contentHeader("200", "text", "html", readingTheFile((char *)path.c_str()));
             this->m_response.sendResponse(socket);
         }
         else
             throw NotFound(m_parse, root);
     }
 }
-
-/*
-
-Set-Cookie:
-
-*/
