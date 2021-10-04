@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:01:44 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 17:14:29 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 17:34:55 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ private:
     std::string		_binary;
 	std::string		_output;
 	std::string		_input;
+    std::string     Query;
     std::vector<std::string> _to_set_cookies;
 public:
     CGI(/* args */);
@@ -33,6 +34,7 @@ public:
     void execute(std::string target, std::string bin);
     void set_value_to_maymap(Request m_request, std::string root);
     std::string get_outpout();
+    std::string get_query();
     std::vector<std::string> getto_set_cookies();
     void check_cookie_and_body();
     ~CGI();

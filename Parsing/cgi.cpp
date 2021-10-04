@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 17:13:32 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 18:17:34 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,12 +121,30 @@ void CGI::check_cookie_and_body()
 	while (i < vect.size())
 	{
 		std::string tmp = "Set-Cookie: " + vect[i];
-		this->_to_set_cookies.push_back(tmp);
+		if (tmp[tmp.length() - 1] != '\n')
+			this->_to_set_cookies.push_back(tmp);
 		i++;
 	}
 	int find_doc = _output.find("<!DOCTYPE html>");
 	if (find_doc != -1)
 		_output = _output.substr(find_doc);
+
+	if (this->Query.length() > 0)
+	{
+		std::vector<std::string> vect = splitstring_with_coma(this->Query, "");
+		int i = 0;
+		std::cout << "####################" << std::endl;
+		while (i < vect.size())
+		{
+			// std::cout << "=======> " << vect[i] << std::endl;;
+			std::string tmp = "Set-Cookie: " + vect[i];
+			this->_to_set_cookies.push_back(tmp);
+			std::cout << tmp << std::endl;
+			i++;
+		}
+		std::cout << "####################" << std::endl;
+		// exit(0);
+	}
 }
 
 char **CGI::Maptomatrice(MyMap map)
@@ -150,6 +168,19 @@ char **CGI::Maptomatrice(MyMap map)
 
 void CGI::set_value_to_maymap(Request m_request, std::string root)
 {
+	this->Query = " ";
+	int i = 0;
+	while (i < m_request.getm_keyvalue().size())
+	{
+		this->Query += m_request.getm_keyvalue()[i].key;
+		this->Query += "=";
+		this->Query += m_request.getm_keyvalue()[i].value;
+		if (i != (m_request.getm_keyvalue().size() - 1))
+			this->Query += "; ";
+		i++;
+	}
+	this->Query += "\0";
+	// std::cout << "{{{" << this->Query << "}}}" << std::endl;
 	map["AUTH_TYPE"] = "";
 	map["CONTENT_LENGTH"] = m_request.getContentLength();
 	map["CONTENT_TYPE"] = "text.html";
@@ -167,6 +198,7 @@ void CGI::set_value_to_maymap(Request m_request, std::string root)
 	map["SERVER_PROTOCOL"] = "HTTP/1.1";
 	map["SERVER_SOFTWARE"] = "WebsServer/1.0";
 	// map["REQUEST_URI"] = m_request.getPath();
+	map["HTTP_COOKIE"] = this->Query;
 	map["HTTP_ACCEPT"] = m_request.getAccept();
 	map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
 	map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
@@ -184,6 +216,10 @@ void CGI::set_value_to_maymap(Request m_request, std::string root)
 std::string CGI::get_outpout()
 {
 	return _output;
+}
+std::string CGI::get_query()
+{
+	return Query;
 }
 
 std::vector<std::string> CGI::getto_set_cookies()

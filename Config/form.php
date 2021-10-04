@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <?php
-session_start();
+// session_start();
 // print_r($_SERVER);
 
 //     $_SERVER['QUERY_STRING'];
