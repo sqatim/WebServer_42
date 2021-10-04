@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 00:34:21 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 11:54:24 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,16 @@ void CGI::execute(std::string target, std::string bin)
 	int ret = 1;
 
 	_binary = bin;
-	_output = "";
+	// _output = "";
 	_fd[0] = dup(STDIN_FILENO);
 	_fd[1] = dup(STDOUT_FILENO);
 	FILE *input_tmpfile = tmpfile();
 	FILE *output_tmpfile = tmpfile();
 	int input_fd = fileno(input_tmpfile);
 	int output_fd = fileno(output_tmpfile);
-
+	write(input_fd, _input.c_str() , _input.length());
+	lseek(input_fd , 0 , SEEK_SET);
+	std::cout << "{{{" << _binary << "}}" << std::endl;
 	pid = fork();
 	if (pid == -1)
 	{
@@ -55,6 +57,9 @@ void CGI::execute(std::string target, std::string bin)
 		strcpy(tab[0], _binary.c_str());
 		strcpy(tab[1], target.c_str());
 		tab[2] = NULL;
+		// std::cout << "tab [0] ==>"  << "{" << tab[0] <<  "}" << std::endl;
+		// std::cout << "tab [1] ==>"  << "{" << tab[1] <<  "}" << std::endl;
+		// std::cout << "tab [2] ==>"  << "{" << tab[2] <<  "}" << std::endl;
 		extern char **environ;
 		int i = 0;
 		// std::cout << "++++++++++++++++++++++++++++" << std::endl;
@@ -84,6 +89,8 @@ void CGI::execute(std::string target, std::string bin)
 		// std::cout << "------------------------" << std::endl;
 		close(output_fd);
 		close(input_fd);
+		dup2(_fd[0], STDIN_FILENO);
+		dup2(_fd[1], STDOUT_FILENO);
 	}
 }
 
@@ -127,11 +134,23 @@ void CGI::set_value_to_maymap(Request m_request)
 	// }
 	// std::cout << "{" << str << "}" << std::endl;
 	// map["HTTP_COOKIE"] = str;
+	// map["REMOTE_USER"] = "user";
 	map["AUTH_TYPE"] = "";
 	map["CONTENT_LENGTH"] = m_request.getContentLength();
 	map["CONTENT_TYPE"] = "text.html";
-	map["DOCUMENT_ROOT"] = "/home/amine/Desktop/test/";
+	map["DOCUMENT_ROOT"] = "/Users/ahaddad/Desktop/WebServer_42/";
 	map["GATEWAY_INTERFACE"] = "CGI/1.1";
+	map["PATH_INFO"] = m_request.getPath();
+	map["PATH_TRANSLATED"] = "/Users/ahaddad/Desktop/WebServer_42/config/login.php";
+	map["QUERY_STRING"] = m_request.getquery();
+	map["REDIRECT_STATUS"] = "200";
+	map["REMOTE_ADDR"] = m_request.getHostSolo();
+	map["REQUEST_METHOD"] = m_request.getMethod();
+	map["SCRIPT_NAME"] = m_request.getFastCgi();
+	map["SERVER_PORT"] = m_request.getPortSolo();
+	map["SERVER_PROTOCOL"] = "HTTP/1.1";
+	map["SERVER_SOFTWARE"] = "WebsServer/1.0";
+	// map["REQUEST_URI"] = m_request.getPath();
 	map["HTTP_ACCEPT"] = m_request.getAccept();
 	map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
 	map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
@@ -144,18 +163,6 @@ void CGI::set_value_to_maymap(Request m_request)
 	map["HTTP_SEC_FETCH_USER"] = "?1";
 	map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
 	map["HTTP_USER_AGENT"] = m_request.getUserAgent();
-	map["PATH_INFO"] = m_request.getPath();
-	// map["REMOTE_USER"] = "user";
-	map["PATH_TRANSLATED"] = "/home/amine/Desktop/WebServer_42/config/login.php";
-	map["QUERY_STRING"] = m_request.getquery();
-	map["REDIRECT_STATUS"] = "200";
-	map["REMOTE_ADDR"] = m_request.getHostSolo();
-	map["REQUEST_METHOD"] = m_request.getMethod();
-	map["REQUEST_URI"] = m_request.getPath();
-	map["SCRIPT_NAME"] = m_request.getFastCgi();
-	map["SERVER_PORT"] = m_request.getPortSolo();
-	map["SERVER_PROTOCOL"] = "HTTP/1.1";
-	map["SERVER_SOFTWARE"] = "webserv/1.0";
 
 	// setenv("HTTP_COOKIE", str.c_str(), 1);
 	// setenv("AUTH_TYPE", "", 1);

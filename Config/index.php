@@ -1,16 +1,8 @@
 <?php
-<<<<<<< HEAD
-setcookie("cookie[three]", "cookiethree");
-setcookie("cookie[two]", "cookietwo");
-setcookie("cookie[one]", "cookieone");
-// setcookie("cgi", "value", time() + (86400 * 30), "/");
-// setCookie: user=John%20Doe; expires=Wed, 27-Oct-2021 13:33:54 GMT; Max-Age=2592000; path=/
-=======
 
 setcookie("Auction_Item", "Luxury Car", time()+2*24*60*60);
 // setcookie: user=John%20Doe; expires=Wed, 27-Oct-2021 13:33:54 GMT; Max-Age=2592000; path=/
 // setcookie("cgi", "value", time() + (86400 * 30), "/");
->>>>>>> c2ddd63c9dd41fba9c524d00e8cc852d2f5d548a
 ?>
 
 <!DOCTYPE html>

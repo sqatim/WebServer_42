@@ -372,7 +372,7 @@ void Response::setHeader()
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";
-    this->m_header += "Set-Cookie: user=John%20Doe; expires=Wed, 27-Oct-2021 13:33:54 GMT; Max-Age=2592000; path=/";
+    // this->m_header += "Set-Cookie: user=John%20Doe; expires=Wed, 27-Oct-2021 13:33:54 GMT; Max-Age=2592000; path=/";
     // std::cout << this->m_header << std::endl;
 }
 
