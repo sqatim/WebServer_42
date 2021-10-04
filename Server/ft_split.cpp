@@ -79,8 +79,6 @@ char			**ft_split(std::string s, char c)
 	char		*str;
 
 	j = 0;
-	// if (!s)
-	// 	return (NULL);
 	str = (char *)s.c_str();
 	tab = new char*[words(str, c) + 1];
 	if (!tab)

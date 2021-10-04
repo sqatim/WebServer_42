@@ -113,7 +113,6 @@ int Request::requestHeaders(int socket)
     line = "";
     while (std::getline(file, line, '\n'))
     {
-        // std::cout << line << std::endl;
         if (m_host == "" && line.compare(0, 6, "Host: ") == 0)
         {
             m_host = line;
@@ -143,10 +142,6 @@ int Request::requestHeaders(int socket)
         else if (value == "application/x-www-form-urlencoded")
             parsingKeyValue(m_body);
     }
-    // for (size_t i = 0; i < m_chunked.size(); i++)
-    // {
-    //     std::cout << m_chunked[i].m_body << std::endl;
-    // }
     this->concatenation();
     return (0);
 }
@@ -196,6 +191,8 @@ void Request::parsingRequestLine(std::string buffer)
         path[j] = '\0';
     }
     this->m_path = path.c_str();
+    getline(stringStream, word, ' ');
+    this->m_version = word;
     if ((i = this->m_path.find("?")) != std::string::npos)
     {
         this->m_query = this->m_path.substr(i + 1);
@@ -373,7 +370,6 @@ int Request::parseRequest(int socket)
     return (1);
 }
 
-// khasni normi had man ba3d
 int Request::checkTheEndOfRequestGetAndDelete(char *buffer)
 {
     std::stringstream stringStream(buffer);
@@ -567,10 +563,9 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
     {
         buffer[result] = '\0';
         m_requestMap[socket] += buffer;
-        // std::cout << buffer << std::endl;
         if (m_firstRequestheader == "")
             this->parsingRequestLine(buffer);
-        if (m_method != "POST" && m_method != "GET" && m_method != "DELETE")
+        if (m_method != "POST" && m_method != "GET" && m_method != "DELETE" && m_version != "HTTP/1.1")
             return (-2);
         if (m_method == "GET" || m_method == "POST" || m_method == "DELETE")
         {
@@ -586,7 +581,7 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
         close(socket);
         clientSocket.erase(clientSocket.begin() + i);
         FD_CLR(socket, &(*readySockets));
-        FD_CLR(socket, &(*writeSockets)); // if (m_method == "GET" || m_method == "POST" || m_method == "DELETE")
+        FD_CLR(socket, &(*writeSockets));
         m_requestMap.erase(socket);
         return (0);
     }

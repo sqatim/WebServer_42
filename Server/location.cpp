@@ -109,7 +109,6 @@ int WebServer::appendLocation(LocaTion location)
     slash(&root);
     if (location.get_GET() != 1)
         throw MethodNotAllowed(m_parse, root);
-    // std::cout << "root -->< " << root << std::endl;
     root.insert(root.length(), url.c_str());
     if ((check = fileOrDir(root.c_str())) == 1)
     {
@@ -180,9 +179,6 @@ int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url,
     locationName = locationName.c_str();
     if (ft_comparaison(locationName.c_str(), url.c_str()))
     {
-        // std::cout << "allaaa a camarade maablansh" << std::endl;
-
-        std::cout << "locationName: " << locationName.c_str() << std::endl;
         if ((check = whichLocation(location)) == 1)
         {
             this->m_response.sendResponse(socket);

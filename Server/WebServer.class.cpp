@@ -13,7 +13,6 @@ Server WebServer::setServer(Parse &parse)
 void WebServer::run()
 {
     size_t i;
-    // struct timeval _tv = {1, 0};
     /**************************************************************************/
     /* int listen(int sockfd, int backlog)                                    */
     /*                                                                        */

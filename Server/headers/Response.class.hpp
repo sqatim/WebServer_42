@@ -11,7 +11,6 @@
 #define ROOT 1
 #define REDIRECT 2
 
-// class LocaTion;
 class Response
 {
 private:
@@ -34,6 +33,7 @@ public:
     void notFoundBody(Parse parse, std::string root);
     void forbiddenBody(Parse parse, std::string root);
     void toLargeBody(Parse parse, std::string root);
+    void badRequestBody(Parse parse, std::string root);
     void methodNotAllowedBody(Parse parse, std::string root);
     void fileDeleted();
     void fileUploaded();

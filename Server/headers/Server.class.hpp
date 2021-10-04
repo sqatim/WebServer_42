@@ -20,7 +20,6 @@
 #define REDIRECTION 2
 
 class LocaTion;
-// class Parse;
 
 class Server
 {
@@ -31,9 +30,6 @@ private:
     int m_newSocket;
     struct sockaddr_in m_address;
     int m_addrlen;
-    // Parse m_parse;
-    // Request m_request;
-    // Response m_response;
 
 public:
     Server(Parse parse, int &socket, std::vector<int> &servers, struct sockaddr_in &m_address);

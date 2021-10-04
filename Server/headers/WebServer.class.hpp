@@ -11,7 +11,6 @@ class WebServer
 {
 private:
     std::vector<int> m_server;
-    // int m_maxSocketPerServer;
     int m_maxSocket;
     fd_set m_writeSocket;
     fd_set m_currentSocket;
@@ -60,7 +59,6 @@ public:
         NotFound(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
-        std::string notFoundBody() throw();
     };
     class Forbidden
     {
@@ -73,7 +71,6 @@ public:
         Forbidden(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
-        std::string forbiddenBody() throw();
     };
     class TooLarge
     {
@@ -86,7 +83,6 @@ public:
         TooLarge(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
-        std::string toLargeBody() throw();
     };
     class MethodNotAllowed
     {
@@ -99,7 +95,19 @@ public:
         MethodNotAllowed(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
-        std::string methodNotAllowed() throw();
+    };
+
+    class BadRequest
+    {
+    private:
+        Parse m_parse;
+        std::string m_fileName;
+
+    public:
+        BadRequest(){};
+        BadRequest(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
+        Parse getParse() { return m_parse; };
+        std::string getFileName() { return m_fileName; };
     };
     ~WebServer();
 };

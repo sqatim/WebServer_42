@@ -1,7 +1,5 @@
 #include "Server.class.hpp"
 
-// la contunie du location 1 et des fonction utiles
-
 int ft_comparaison(std::string location, std::string url)
 {
     int i;

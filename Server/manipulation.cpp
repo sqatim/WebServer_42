@@ -50,7 +50,7 @@ void WebServer::manageRequest(int socket, int check, int request)
     try
     {
         if (request == -2)
-            throw Forbidden();
+            throw BadRequest();
         if (this->m_request.getMethod() != "GET" && this->m_request.getMethod() != "POST" && this->m_request.getMethod() != "DELETE")
             throw MethodNotAllowed(parse, "");
         if (check == 0)
@@ -72,7 +72,6 @@ void WebServer::manageRequest(int socket, int check, int request)
     {
         m_response.notFoundBody(e.getParse(), e.getFileName());
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
-        // std::cout << this->m_response.getResponse() << std::endl;
         this->m_response.sendResponse(socket);
     }
     catch (WebServer::TooLarge &e)
@@ -84,6 +83,12 @@ void WebServer::manageRequest(int socket, int check, int request)
     catch (WebServer::MethodNotAllowed &e)
     {
         m_response.methodNotAllowedBody(e.getParse(), e.getFileName());
+        m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
+        this->m_response.sendResponse(socket);
+    }
+    catch (WebServer::BadRequest &e)
+    {
+        m_response.badRequestBody(e.getParse(), e.getFileName());
         m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
         this->m_response.sendResponse(socket);
     }
