@@ -192,7 +192,7 @@ int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url,
             return 1;
         }
         else
-            throw NotFound(m_parse, error);
+            throw Forbidden(m_parse, error);
     }
     return (0);
 }
