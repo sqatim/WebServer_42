@@ -75,11 +75,10 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
     return (check);
 }
 
-int fastCgiPost(Request &request, Parse &parse, std::string &root)
+int fastCgiPost(Request &request, Parse &parse, std::string &root, LocaTion &location)
 {
     int cgi;
     int check;
-    LocaTion location;
     check = 0;
 
     if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
@@ -101,6 +100,7 @@ int fastCgiPost(Request &request, Parse &parse, std::string &root)
             location = parse.getlocation()[k];
             root = getRoot(location, parse, 1);
             slash(&root);
+            location = parse.getlocation()[k];
             return (1);
         }
     }
@@ -201,6 +201,7 @@ int WebServer::CheckingForCgi(int socket)
         cg.execute(root, m_request.getFastCgi());
         cg.check_cookie_and_body();
         this->m_response.setCookies(cg.getto_set_cookies());
+        std::cout << cg.get_outpout().length() << std::endl;
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

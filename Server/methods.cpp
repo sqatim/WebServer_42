@@ -10,7 +10,7 @@ std::string firstSlash(std::string string)
     }
     return (string);
 }
-void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check)
+void WebServer::postMethodComparaison(int socket, int i, LocaTion &location, int &check)
 {
     std::string root;
     std::string cgi;
@@ -27,12 +27,9 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
         throw TooLarge(m_parse, error);
     if (location.get_POST() != 1)
     {
-        std::cout << "d====================> <====================" << std::endl;
         throw MethodNotAllowed(m_parse, error);
     }
-    if (fastCgiPost(m_request, m_parse, cgi) == 1)
-        root = cgi;
-    else
+    if (i != -1)
     {
         locationName = &location.getname()[1];
         root.insert(root.length(), locationName);
@@ -42,7 +39,9 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
     root.insert(root.length(), upload_store);
     slash(&root);
     if (fileOrDir(root.c_str()) == 2)
+    {
         this->m_request.uploadInFile(root.c_str());
+    }
     else
         throw NotFound(m_parse, error);
     m_response.fileUploaded();
@@ -57,8 +56,14 @@ void WebServer::postMethod(int socket)
     std::string locationName;
     std::vector<LocaTion> location;
     std::string url;
-
     int check = 0;
+    LocaTion locationCgi;
+
+    if (fastCgiPost(m_request, m_parse, url, locationCgi) == 1)
+    {
+        postMethodComparaison(socket, -1, locationCgi, check);
+        return;
+    }
     url = m_request.getPath();
     location = locationSorted(this->m_parse.getlocation());
     while (true)
