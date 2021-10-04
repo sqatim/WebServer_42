@@ -21,15 +21,23 @@ void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location,
     root = getRoot(location, this->m_parse, 1);
     slash(&root);
     error = root;
-    if (std::atoi(m_parse.getclient_max_body_size().c_str()) == 0 && std::atoi(m_request.getContentLength().c_str()) > 0)
+    if (std::stoi(m_parse.getclient_max_body_size()) == 0 && std::stoi(m_request.getContentLength()) > 0)
         throw BadRequest(m_parse, error);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
         throw TooLarge(m_parse, error);
     if (location.get_POST() != 1)
+    {
+        std::cout << "d====================> <====================" << std::endl;
         throw MethodNotAllowed(m_parse, error);
-    locationName = &location.getname()[1];
-    root.insert(root.length(), locationName);
-    slash(&root);
+    }
+    if (fastCgiPost(m_request, m_parse, cgi) == 1)
+        root = cgi;
+    else
+    {
+        locationName = &location.getname()[1];
+        root.insert(root.length(), locationName);
+        slash(&root);
+    }
     upload_store = firstSlash(location.getupload_store());
     root.insert(root.length(), upload_store);
     slash(&root);

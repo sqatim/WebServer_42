@@ -315,7 +315,6 @@ void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();
-    std::cout << m_response << std::endl;
     write(socket, m_response.c_str(), m_response.length());
 }
 

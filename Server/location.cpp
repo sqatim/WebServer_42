@@ -80,7 +80,7 @@ int fastCgiPost(Request &request, Parse &parse, std::string &root)
     int cgi;
     int check;
     LocaTion location;
-    check = -1;
+    check = 0;
 
     if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
         (cgi = ft_cgi(request.getPath().c_str()) == 2))
@@ -98,13 +98,13 @@ int fastCgiPost(Request &request, Parse &parse, std::string &root)
         if (parse.getlocation()[k].getname() == "*.php" ||
             parse.getlocation()[k].getname() == "*.py")
         {
-
             location = parse.getlocation()[k];
             root = getRoot(location, parse, 1);
-            check = appendUrlCgi(root, parse.getlocation()[k], request.getPath().c_str());
+            slash(&root);
+            return (1);
         }
     }
-    return (check);
+    return (0);
 }
 
 int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check)

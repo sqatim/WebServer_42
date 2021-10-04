@@ -68,7 +68,6 @@ void CGI::execute(std::string target, std::string bin)
 		{
 			memset(tmp, 0, 65536);
 			ret = read(output_fd, tmp, 65536 - 1);
-			std::cout << tmp << std::endl;
 			_output += tmp;
 		}
 		close(output_fd);
@@ -133,17 +132,12 @@ void CGI::check_cookie_and_body()
 	{
 		std::vector<std::string> vect = splitstring_with_coma(this->Query, "");
 		int i = 0;
-		std::cout << "####################" << std::endl;
 		while (i < vect.size())
 		{
-			// std::cout << "=======> " << vect[i] << std::endl;;
 			std::string tmp = "Set-Cookie: " + vect[i];
 			this->_to_set_cookies.push_back(tmp);
-			std::cout << tmp << std::endl;
 			i++;
 		}
-		std::cout << "####################" << std::endl;
-		// exit(0);
 	}
 }
 
