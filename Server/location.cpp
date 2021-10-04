@@ -159,6 +159,7 @@ int WebServer::CheckingForCgi(int socket)
         cg.set_value_to_maymap(m_request);
         std::cout << "=>" << m_request.getFastCgi() << std::endl;
         cg.execute(root, m_request.getFastCgi());
+        cg.check_cookie_and_body();
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);
