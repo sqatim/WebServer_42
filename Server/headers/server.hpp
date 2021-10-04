@@ -29,5 +29,7 @@ std::vector<LocaTion> locationSorted(std::vector<LocaTion> location);
 void lastSlash(std::string &string);
 size_t ft_strlen(const char *str);
 char *ft_strdup(const char *s1);
+int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &location);
+int fastCgiPost(Request &request, Parse &parse, std::string &root, LocaTion& location);
 
 #endif

@@ -75,6 +75,38 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
     return (check);
 }
 
+int fastCgiPost(Request &request, Parse &parse, std::string &root, LocaTion &location)
+{
+    int cgi;
+    int check;
+    check = 0;
+
+    if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
+        (cgi = ft_cgi(request.getPath().c_str()) == 2))
+    {
+
+        size_t k = 0;
+        if (cgi == 1)
+            while (parse.getlocation()[k].getname() != "*.php" &&
+                   k < parse.getlocation().size())
+                k++;
+        else
+            while (parse.getlocation()[k].getname() != "*.py" &&
+                   k < parse.getlocation().size())
+                k++;
+        if (parse.getlocation()[k].getname() == "*.php" ||
+            parse.getlocation()[k].getname() == "*.py")
+        {
+            location = parse.getlocation()[k];
+            root = getRoot(location, parse, 1);
+            slash(&root);
+            location = parse.getlocation()[k];
+            return (1);
+        }
+    }
+    return (0);
+}
+
 int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check)
 {
     std::string body;
@@ -158,7 +190,6 @@ int WebServer::CheckingForCgi(int socket)
 
     if (fastCgi(m_request, m_parse, root, locationCgi) == 1)
     {
-
         if (locationCgi.get_GET() != 1)
         {
             lastSlash(root);
@@ -170,6 +201,7 @@ int WebServer::CheckingForCgi(int socket)
         cg.execute(root, m_request.getFastCgi());
         cg.check_cookie_and_body();
         this->m_response.setCookies(cg.getto_set_cookies());
+        std::cout << cg.get_outpout().length() << std::endl;
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

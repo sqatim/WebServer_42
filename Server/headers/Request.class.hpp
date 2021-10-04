@@ -72,7 +72,7 @@ public:
     void chunkedContentTypeApplication(std::string &line, int &length);
     void chunkedContentTypeMultipart(std::string &line, int &length);
     void chunkedContentTypeMultipartFirstBoundary(std::string &line, int &length);
-    void contentLengthPost(std::string &line, size_t &i);
+    void contentLengthPost(std::string &line, size_t i);
     int checkIfFinishedOrNot(std::string &line, size_t &i);
     void parsingBetweenBoundary(int& check);
     void parseHost(std::string host);

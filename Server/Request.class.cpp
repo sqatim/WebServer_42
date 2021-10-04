@@ -256,12 +256,12 @@ void Request::parsingBetweenBoundary(int &checkRequest)
             std::getline(stringStream, line, '\r');
             t_bodyPost value = {"", ""};
             m_bodyPost.push_back(value);
-            filename = line.find("filename");
+            if ((filename = line.find("filename")) == std::string::npos)
+                return;
             line = &line[filename + 10];
             l = 0;
             if (line[0] == '\"')
             {
-                std::cout << "==>" << line[0] << "<==" << std::endl;
                 checkRequest = -2;
                 return;
             }
@@ -272,9 +272,7 @@ void Request::parsingBetweenBoundary(int &checkRequest)
             m_bodyPost[0].filename += "\0";
             l = 0;
             while (std::getline(stringStream, line, '\r') && l < 2)
-            {
                 l++;
-            }
             if (m_transferEncoding == "chunked")
                 line = &line[2];
             else
@@ -291,7 +289,8 @@ void Request::parsingBetweenBoundary(int &checkRequest)
             line = "";
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
-            filename = line.find("filename");
+            if ((filename = line.find("filename")) == std::string::npos)
+                return;
             line = &line[filename + 10];
             l = 0;
             for (; line[l] != '\"' && line[l + 1]; l++)
@@ -355,27 +354,11 @@ int Request::parsingRequestPost(char *buffer)
     return (1);
 }
 
-// int Request::parsingRequestGet(int socket)
-// {
-//     int result;
-//     result = this->requestHeaders(socket);
-//     this->concatenation();
-//     if (result == 1)
-//         return (1);
-//     return (0);
-// }
-
 void Request::insetMapRequest(int socket)
 {
     m_requestMap.insert(std::pair<int, std::string>(socket, ""));
 }
 
-// int Request::parseRequest(int socket)
-// {
-//     this->requestHeaders(socket);
-//     this->concatenation();
-//     return (1);
-// }
 
 int Request::checkTheEndOfRequestGetAndDelete(char *buffer)
 {
@@ -479,15 +462,14 @@ void Request::chunkedEncodingPost(std::string &line, int &length)
     m_check = 2;
 }
 
-void Request::contentLengthPost(std::string &line, size_t &i)
+void Request::contentLengthPost(std::string &line, size_t i)
 {
     while (line[i + 16] != '\r')
     {
         m_contentLength += line[i + 16];
         if (line[i + 17] == '\r')
         {
-            line[i + 17] = '\0';
-            i = i + 21;
+            m_contentLength += '\0';
             break;
         }
         i++;
@@ -544,9 +526,15 @@ int Request::checkTheEndOfRequestPost(char *buffer, int &length)
     if (m_check == 0)
     {
         if (line.find("Transfer-Encoding: chunked") != std::string::npos || m_transferEncoding == "chunked")
+        {
             chunkedEncodingPost(line, length);
+        }
         else if ((i = line.find("Content-Length: ")) != std::string::npos || m_contentLength != "")
+        {
             contentLengthPost(line, i);
+            i = line.find("\r\n\r\n");
+            i += 4;
+        }
     }
     return (checkIfFinishedOrNot(line, i));
 }
@@ -567,7 +555,6 @@ int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSocket
     char buffer[3500] = {0};
     if ((result = read(socket, buffer, 3500)) > 0)
     {
-
         buffer[result] = '\0';
         m_requestMap[socket] += buffer;
         if (m_firstRequestheader == "")

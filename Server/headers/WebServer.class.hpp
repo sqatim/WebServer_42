@@ -35,7 +35,7 @@ public:
     void postMethod(int socket);
     void deleteMethod(int socket);
     void deleteMethodComparaison(int socket, LocaTion location, int &check);
-    void postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check);
+    void postMethodComparaison(int socket, int i, LocaTion &location, int &check);
     int location(int socket);
     int CheckingForCgi(int socket);
     int checkingForTheRightLocation(LocaTion &location, std::string &url, int &check, int socket);

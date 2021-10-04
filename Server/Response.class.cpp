@@ -7,11 +7,11 @@ Response::Response(/* args */) : m_type(0)
 
 void Response::initResponse()
 {
+    this->m_setCookies.clear();
     this->m_version = "HTTP/1.1";
     this->m_contentType = "Content-Type: ";
     this->m_contentLength = "Content-Length: ";
     this->m_location = "Location: ";
-    this->m_setCookies.clear();
 }
 
 static std::string readingTheFile(const char *filename)
@@ -37,6 +37,7 @@ void Response::contentHeader(std::string status, std::string type1, std::string 
     statusIndication(status);
     this->setContentType(type1, type2);
     this->m_body = body;
+    // std::cout << m_body << std::endl;
     this->m_contentLength += std::to_string(body.length());
 }
 
@@ -64,7 +65,6 @@ void Response::notFoundBody(Parse parse, std::string root)
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
-
         if (parse.geterror_page()[i].redirec == "404")
         {
             path = root;
@@ -315,7 +315,6 @@ void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();
-    std::cout << m_response << std::endl;
     write(socket, m_response.c_str(), m_response.length());
 }
 
