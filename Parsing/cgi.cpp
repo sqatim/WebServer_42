@@ -6,7 +6,7 @@
 /*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/01 18:11:19 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 00:34:21 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,73 @@ char **CGI::Maptomatrice(MyMap map)
 
 void CGI::set_value_to_maymap(Request m_request)
 {
+	// map["HTTP_IF_MODIFIED_SINCE"] = "Tue, 14  Sep 2021 11:47:07 GMT";
+	// map["HTTP_REFERER"] = "http://127.0.0.1:8002/cgi/";
+	// map["REDIRECT_STATUS"] = "200";
+	// map["SERVER_NAME"] = "default_server";
+	// std::cout << m_request.
+	// std::string str = " ";
+	// int i = 0;
+	// while (i < m_request.getm_keyvalue().size())
+	// {
+	// 	str += m_request.getm_keyvalue()[1].key;
+	// 	str += "=";
+	// 	str += m_request.getm_keyvalue()[1].value;
+	// 	if (i != (m_request.getm_keyvalue().size() - 1))
+	// 		str += "; ";
+	// 	i++;
+	// }
+	// std::cout << "{" << str << "}" << std::endl;
+	// map["HTTP_COOKIE"] = str;
+	map["AUTH_TYPE"] = "";
+	map["CONTENT_LENGTH"] = m_request.getContentLength();
+	map["CONTENT_TYPE"] = "text.html";
+	map["DOCUMENT_ROOT"] = "/home/amine/Desktop/test/";
+	map["GATEWAY_INTERFACE"] = "CGI/1.1";
+	map["HTTP_ACCEPT"] = m_request.getAccept();
+	map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
+	map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
+	map["HTTP_CACHE_CONTROL"] = "max-age=0";
+	map["HTTP_CONNECTION"] = "keep-alive";
+	map["HTTP_HOST"] = m_request.getHost();
+	map["HTTP_SEC_FETCH_DEST"] = "document";
+	map["HTTP_SEC_FETCH_MODE"] = "navigate";
+	map["HTTP_SEC_FETCH_SITE"] = "same-origin";
+	map["HTTP_SEC_FETCH_USER"] = "?1";
+	map["HTTP_UPGRADE_INSECURE_REQUESTS"] = "1";
+	map["HTTP_USER_AGENT"] = m_request.getUserAgent();
+	map["PATH_INFO"] = m_request.getPath();
+	// map["REMOTE_USER"] = "user";
+	map["PATH_TRANSLATED"] = "/home/amine/Desktop/WebServer_42/config/login.php";
+	map["QUERY_STRING"] = m_request.getquery();
+	map["REDIRECT_STATUS"] = "200";
+	map["REMOTE_ADDR"] = m_request.getHostSolo();
+	map["REQUEST_METHOD"] = m_request.getMethod();
+	map["REQUEST_URI"] = m_request.getPath();
+	map["SCRIPT_NAME"] = m_request.getFastCgi();
+	map["SERVER_PORT"] = m_request.getPortSolo();
+	map["SERVER_PROTOCOL"] = "HTTP/1.1";
+	map["SERVER_SOFTWARE"] = "webserv/1.0";
+
+	// setenv("HTTP_COOKIE", str.c_str(), 1);
+	// setenv("AUTH_TYPE", "", 1);
+	// setenv("HTTP_USER_AGENT", m_request.getUserAgent().c_str(), 1);
+	// setenv("CONTENT_LENGTH", m_request.getContentLength().c_str(), 1);
+	// setenv("CONTENT_TYPE", "text.html\n\n", 1);
+	// setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
+	// setenv("HTTP_ACCEPT", m_request.getAccept().c_str(), 1);
+	// setenv("HTTP_HOST", m_request.getHost().c_str(), 1);
+	// setenv("PATH_INFO", "/cgi/index.php", 1);
+	// setenv("QUERY_STRING", "", 1);
+	// setenv("REMOTE_ADDR", m_request.getHostSolo().c_str(), 1);
+	// setenv("REQUEST_METHOD", m_request.getMethod().c_str(), 1);
+	// setenv("REQUEST_URI", m_request.getPath().c_str(), 1);
+	// setenv("SCRIPT_NAME", m_request.getFastCgi().c_str(), 1);
+	// setenv("SERVER_PORT", m_request.getPortSolo().c_str(), 1);
+	// setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
+	// setenv("REDIRECT_STATUS", "200", 1);
+	// setenv("SERVER_SOFTWARE", "webserv/1.0", 1);
+	// map["HTTP_COOKIE"] = "amine=23";
 	// map["HTTP_ACCEPT_ENCODING"] = "gzip, deflate";
 	// map["HTTP_ACCEPT_LANGUAGE"] = "en-US,en;q=0.5";
 	// map["HTTP_CACHE_CONTROL"] = "max-age=0";
@@ -126,55 +193,55 @@ void CGI::set_value_to_maymap(Request m_request)
 	// map["SERVER_NAME"] = "default_server";
 	// map["HTTP_CONNECTION"] = m_request.getConnection();
 	// std::cout << m_request.
-	std::string str = " ";
-	int i = 0;
-	while (i < m_request.getm_keyvalue().size())
-	{
-		str += m_request.getm_keyvalue()[1].key;
-		str += "=";
-		str += m_request.getm_keyvalue()[1].value;
-		if (i != (m_request.getm_keyvalue().size() - 1))
-			str += "; ";
-		i++;
-	}
-	// std::cout << "{" << str << "}" << std::endl;
-	map["HTTP_COOKIE"] = str;
-	map["AUTH_TYPE"] = "";
-	map["HTTP_USER_AGENT"] = m_request.getUserAgent();
-	map["CONTENT_LENGTH"] = m_request.getContentLength();
-	map["CONTENT_TYPE"] = "text.html\n\n";
-	map["GATEWAY_INTERFACE"] = "CGI/1.1";
-	map["HTTP_ACCEPT"] = m_request.getAccept();
-	map["HTTP_HOST"] = m_request.getHost();
-	map["PATH_INFO"] = "/cgi/index.php";
-	map["QUERY_STRING"] = m_request.getquery();
-	map["REMOTE_ADDR"] = m_request.getHostSolo();
-	map["REQUEST_METHOD"] = m_request.getMethod();
-	map["REQUEST_URI"] = m_request.getPath();
-	map["SCRIPT_NAME"] = m_request.getFastCgi();
-	map["SERVER_PORT"] = m_request.getPortSolo();
-	map["SERVER_PROTOCOL"] = "HTTP/1.1";
-	map["REDIRECT_STATUS"] = "200";
-	map["SERVER_SOFTWARE"] = "webserv/1.0";
+	// std::string str = " ";
+	// int i = 0;
+	// while (i < m_request.getm_keyvalue().size())
+	// {
+	// 	str += m_request.getm_keyvalue()[1].key;
+	// 	str += "=";
+	// 	str += m_request.getm_keyvalue()[1].value;
+	// 	if (i != (m_request.getm_keyvalue().size() - 1))
+	// 		str += "; ";
+	// 	i++;
+	// }
+	// // std::cout << "{" << str << "}" << std::endl;
+	// map["HTTP_COOKIE"] = str;
+	// map["AUTH_TYPE"] = "";
+	// map["HTTP_USER_AGENT"] = m_request.getUserAgent();
+	// map["CONTENT_LENGTH"] = m_request.getContentLength();
+	// map["CONTENT_TYPE"] = "text.html\n\n";
+	// map["GATEWAY_INTERFACE"] = "CGI/1.1";
+	// map["HTTP_ACCEPT"] = m_request.getAccept();
+	// map["HTTP_HOST"] = m_request.getHost();
+	// map["PATH_INFO"] = "/cgi/index.php";
+	// map["QUERY_STRING"] = m_request.getquery();
+	// map["REMOTE_ADDR"] = m_request.getHostSolo();
+	// map["REQUEST_METHOD"] = m_request.getMethod();
+	// map["REQUEST_URI"] = m_request.getPath();
+	// map["SCRIPT_NAME"] = m_request.getFastCgi();
+	// map["SERVER_PORT"] = m_request.getPortSolo();
+	// map["SERVER_PROTOCOL"] = "HTTP/1.1";
+	// map["REDIRECT_STATUS"] = "200";
+	// map["SERVER_SOFTWARE"] = "webserv/1.0";
 
-	setenv("HTTP_COOKIE", str.c_str(), 1);
-	setenv("AUTH_TYPE", "", 1);
-	setenv("HTTP_USER_AGENT", m_request.getUserAgent().c_str(), 1);
-	setenv("CONTENT_LENGTH", m_request.getContentLength().c_str(), 1);
-	setenv("CONTENT_TYPE", "text.html\n\n", 1);
-	setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
-	setenv("HTTP_ACCEPT", m_request.getAccept().c_str(), 1);
-	setenv("HTTP_HOST", m_request.getHost().c_str(), 1);
-	setenv("PATH_INFO", "/cgi/index.php", 1);
-	setenv("QUERY_STRING", "", 1);
-	setenv("REMOTE_ADDR", m_request.getHostSolo().c_str(), 1);
-	setenv("REQUEST_METHOD", m_request.getMethod().c_str(), 1);
-	setenv("REQUEST_URI", m_request.getPath().c_str(), 1);
-	setenv("SCRIPT_NAME", m_request.getFastCgi().c_str(), 1);
-	setenv("SERVER_PORT", m_request.getPortSolo().c_str(), 1);
-	setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
-	setenv("REDIRECT_STATUS", "200", 1);
-	setenv("SERVER_SOFTWARE", "webserv/1.0", 1);
+	// setenv("HTTP_COOKIE", str.c_str(), 1);
+	// setenv("AUTH_TYPE", "", 1);
+	// setenv("HTTP_USER_AGENT", m_request.getUserAgent().c_str(), 1);
+	// setenv("CONTENT_LENGTH", m_request.getContentLength().c_str(), 1);
+	// setenv("CONTENT_TYPE", "text.html\n\n", 1);
+	// setenv("GATEWAY_INTERFACE", "CGI/1.1", 1);
+	// setenv("HTTP_ACCEPT", m_request.getAccept().c_str(), 1);
+	// setenv("HTTP_HOST", m_request.getHost().c_str(), 1);
+	// setenv("PATH_INFO", "/cgi/index.php", 1);
+	// setenv("QUERY_STRING", "", 1);
+	// setenv("REMOTE_ADDR", m_request.getHostSolo().c_str(), 1);
+	// setenv("REQUEST_METHOD", m_request.getMethod().c_str(), 1);
+	// setenv("REQUEST_URI", m_request.getPath().c_str(), 1);
+	// setenv("SCRIPT_NAME", m_request.getFastCgi().c_str(), 1);
+	// setenv("SERVER_PORT", m_request.getPortSolo().c_str(), 1);
+	// setenv("SERVER_PROTOCOL", "HTTP/1.1", 1);
+	// setenv("REDIRECT_STATUS", "200", 1);
+	// setenv("SERVER_SOFTWARE", "webserv/1.0", 1);
 	// map["HTTP_COOKIE"] = "amine=23";
 }
 
