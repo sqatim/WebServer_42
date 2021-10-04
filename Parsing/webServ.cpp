@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 15:56:05 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 18:39:19 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int check_line(std::string str)
     }
     if (vect_str.size() == 3)
     {
-        if (vect_str[0] != "error_page" && vect_str[0] != "return")
+        if (vect_str[0] != "error_page" && vect_str[0] != "return" && vect_str[0] != "index")
             check = -1;
     }
     if (vect_str.size() == 2)

@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/10/04 15:55:52 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 18:42:54 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,6 +334,8 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                     if (vect[i].find("upload_store") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
+                        if (check_index(vect_str) == -1)
+                            return -1;
                         if (vect_str[0] == "upload_store")
                             loc.setupload_store(vect_str[1]);
                     }
