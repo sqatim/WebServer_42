@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 15:19:46 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 15:43:06 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,9 @@ void CGI::check_cookie_and_body()
 		this->_to_set_cookies.push_back(tmp);
 		i++; 
 	}
+	int find_doc = _output.find("<!DOCTYPE html>");
+	if (find_doc != -1)
+		_output = _output.substr(find_doc);
 }
 
 char **CGI::Maptomatrice(MyMap map)

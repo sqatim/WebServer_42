@@ -1,5 +1,5 @@
 <?php
-setcookie("cgi", "value", time() + (86400 * 30), "/");
+setcookie("cgi", "amine", time() + (86400 * 30), "/");
 ?>
 
 <!DOCTYPE html>
