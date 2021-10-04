@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/10/04 18:42:54 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 18:48:21 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -325,17 +325,17 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                         if (vect_str[0] == "fastcgi_pass")
                             loc.setfascgi_pass(vect_str[1]);
                     }
-                    if (vect[i].find("upload_methods") != -1)
+                    if (vect[i].find("enable_upload") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
-                        if (vect_str[0] == "upload_methods")
+                        if (check_index(vect_str) == -1)
+                            return -1;
+                        if (vect_str[0] == "enable_upload")
                             loc.setupload_methods(vect_str[1]);
                     }
                     if (vect[i].find("upload_store") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
-                        if (check_index(vect_str) == -1)
-                            return -1;
                         if (vect_str[0] == "upload_store")
                             loc.setupload_store(vect_str[1]);
                     }
