@@ -1,27 +1,41 @@
 #include "WebServer.class.hpp"
 
+std::string firstSlash(std::string string)
+{
+    std::string str;
+    if (string[0] == '/')
+    {
+        str = &string.c_str()[1];
+        string = str;
+    }
+    return (string);
+}
 void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check)
 {
     std::string root;
     std::string locationName;
+    std::string error;
+    std::string upload_store;
 
-    root = getRoot(m_parse.getlocation()[i], this->m_parse, 1);
+    root = getRoot(location, this->m_parse, 1);
     slash(&root);
+    error = root;
     if (std::atoi(m_parse.getclient_max_body_size().c_str()) == 0 && std::atoi(m_request.getContentLength().c_str()) > 0)
-        throw BadRequest(m_parse, root);
+        throw BadRequest(m_parse, error);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
-        throw TooLarge(m_parse, root);
+        throw TooLarge(m_parse, error);
     if (location.get_POST() != 1)
-        throw MethodNotAllowed(m_parse, root);
+        throw MethodNotAllowed(m_parse, error);
     locationName = &location.getname()[1];
     root.insert(root.length(), locationName);
     slash(&root);
-    root.insert(root.length(), location.getupload_store());
+    upload_store = firstSlash(location.getupload_store());
+    root.insert(root.length(), upload_store);
     slash(&root);
     if (fileOrDir(root.c_str()) == 2)
         this->m_request.uploadInFile(root.c_str());
     else
-        throw NotFound();
+        throw NotFound(m_parse, error);
     m_response.fileUploaded();
     m_response.contentHeader(m_response.getStatus(), "text", "html", m_response.getBody());
     this->m_response.sendResponse(socket);
@@ -47,6 +61,7 @@ void WebServer::postMethod(int socket)
             if (ft_comparaison(locationName.c_str(), url.c_str()))
             {
                 postMethodComparaison(socket, i, location[i], check);
+                check = 1;
                 break;
             }
         }

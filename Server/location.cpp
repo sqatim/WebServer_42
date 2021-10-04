@@ -49,9 +49,11 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
     int check;
 
     check = -1;
+
     if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
         (cgi = ft_cgi(request.getPath().c_str()) == 2))
     {
+
         size_t k = 0;
         if (cgi == 1)
             while (parse.getlocation()[k].getname() != "*.php" &&
@@ -66,7 +68,6 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
         {
             location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
-            std::cout << "root ==> " << root << std::endl;
             check = appendUrlCgi(root, parse.getlocation()[k], request.getPath().c_str());
         }
     }
@@ -156,6 +157,7 @@ int WebServer::CheckingForCgi(int socket)
 
     if (fastCgi(m_request, m_parse, root, locationCgi) == 1)
     {
+
         if (locationCgi.get_GET() != 1)
         {
             lastSlash(root);
@@ -175,8 +177,13 @@ int WebServer::CheckingForCgi(int socket)
 int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url, int &check, int socket)
 {
     std::string locationName;
+    LocaTion empty;
     locationName = location.getname();
     locationName = locationName.c_str();
+    std::string error;
+
+    error = getRoot(empty, m_parse, 0);
+    slash(&error);
     if (ft_comparaison(locationName.c_str(), url.c_str()))
     {
         if ((check = whichLocation(location)) == 1)
@@ -185,7 +192,7 @@ int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url,
             return 1;
         }
         else
-            throw NotFound();
+            throw NotFound(m_parse, error);
     }
     return (0);
 }
@@ -194,12 +201,17 @@ int WebServer::location(int socket)
 {
     int check;
     std::vector<LocaTion> location;
+    LocaTion empty;
     std::string url;
+    std::string root;
 
+    root = getRoot(empty, m_parse, 0);
+    slash(&root);
     check = -1;
     if (CheckingForCgi(socket) == 1)
+    {
         return (1);
-
+    }
     if (check == -1 || check == 2)
     {
         url = m_request.getPath();
@@ -212,15 +224,13 @@ int WebServer::location(int socket)
                     return (1);
             }
             if (url == "/")
-            {
                 break;
-            }
             lastSlash(url);
         }
         if (m_request.getPath() != "/" && this->m_parse.getlocation().size() != 0)
             check = 0;
     }
     if (check == 0)
-        throw NotFound();
+        throw NotFound(m_parse, root);
     return (-1);
 }

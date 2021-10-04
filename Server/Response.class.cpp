@@ -11,12 +11,10 @@ void Response::initResponse()
     this->m_contentType = "Content-Type: ";
     this->m_contentLength = "Content-Length: ";
     this->m_location = "Location: ";
-    this->m_connection = "Connection: close";
 }
 
 static std::string readingTheFile(const char *filename)
 {
-
     std::ifstream myReadFile(filename);
     std::string text;
     std::string line;
@@ -312,14 +310,11 @@ std::string Response::autoIndexBody(const char *fileName, const char *url)
     return (body);
 }
 
-void Response::simpleLocation()
-{
-}
-
 void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();
+    // std::cout << m_response << std::endl;
     write(socket, m_response.c_str(), m_response.length());
 }
 
@@ -387,8 +382,7 @@ void Response::setHeader()
     this->m_header += this->m_contentType + "\n";
     if (m_type != REDIRECT)
     {
-        this->m_header += this->m_contentLength + "\n";
-        this->m_header += this->m_connection + "\n";
+        this->m_header += this->m_contentLength;
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";

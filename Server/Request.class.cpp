@@ -98,7 +98,7 @@ void Request::parsingKeyValue(std::string body)
     }
 }
 
-int Request::requestHeaders(int socket)
+int Request::requestHeaders(int socket, int &check)
 {
     std::istringstream stringStream(m_requestMap[socket]);
     std::string line;
@@ -138,7 +138,7 @@ int Request::requestHeaders(int socket)
     {
         value = justValue(m_contentType);
         if (value == "multipart/form-data;")
-            parsingBetweenBoundary();
+            parsingBetweenBoundary(check);
         else if (value == "application/x-www-form-urlencoded")
             parsingKeyValue(m_body);
     }
@@ -231,7 +231,7 @@ void Request::uploadInFile(const char *path)
     }
 }
 
-void Request::parsingBetweenBoundary()
+void Request::parsingBetweenBoundary(int &checkRequest)
 {
     std::stringstream countBoundary(m_body);
     std::string buffer = m_body;
@@ -254,13 +254,21 @@ void Request::parsingBetweenBoundary()
         {
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
-            t_keyValue value = {"", ""};
-            m_keyValue.push_back(value);
+            t_bodyPost value = {"", ""};
+            m_bodyPost.push_back(value);
             filename = line.find("filename");
             line = &line[filename + 10];
             l = 0;
+            if (line[0] == '\"')
+            {
+                std::cout << "==>" << line[0] << "<==" << std::endl;
+                checkRequest = -2;
+                return;
+            }
             for (; line[l] != '\"' && line[l + 1]; l++)
+            {
                 m_bodyPost[0].filename += line[l];
+            }
             m_bodyPost[0].filename += "\0";
             l = 0;
             while (std::getline(stringStream, line, '\r') && l < 2)
@@ -278,8 +286,8 @@ void Request::parsingBetweenBoundary()
         }
         else
         {
-            t_keyValue value = {"", ""};
-            m_keyValue.push_back(value);
+            t_bodyPost value = {"", ""};
+            m_bodyPost.push_back(value);
             line = "";
             std::getline(stringStream, line, '\r');
             std::getline(stringStream, line, '\r');
@@ -347,28 +355,27 @@ int Request::parsingRequestPost(char *buffer)
     return (1);
 }
 
-int Request::parsingRequestGet(int socket)
-{
-    int result;
-    result = this->requestHeaders(socket);
-    this->concatenation();
-    if (result == 1)
-        return (1);
-    return (0);
-}
+// int Request::parsingRequestGet(int socket)
+// {
+//     int result;
+//     result = this->requestHeaders(socket);
+//     this->concatenation();
+//     if (result == 1)
+//         return (1);
+//     return (0);
+// }
 
 void Request::insetMapRequest(int socket)
 {
     m_requestMap.insert(std::pair<int, std::string>(socket, ""));
 }
 
-int Request::parseRequest(int socket)
-{
-
-    this->requestHeaders(socket);
-    this->concatenation();
-    return (1);
-}
+// int Request::parseRequest(int socket)
+// {
+//     this->requestHeaders(socket);
+//     this->concatenation();
+//     return (1);
+// }
 
 int Request::checkTheEndOfRequestGetAndDelete(char *buffer)
 {
@@ -557,10 +564,10 @@ int Request::checkTheEndOfRequest(char *buffer)
 int Request::concatRequest(int socket, fd_set *readySockets, fd_set *writeSockets, std::vector<int> &clientSocket, int i)
 {
     int result;
-    char buffer[35001] = {0};
-    if ((result = read(socket, buffer, 35000)) > 0)
-
+    char buffer[3500] = {0};
+    if ((result = read(socket, buffer, 3500)) > 0)
     {
+
         buffer[result] = '\0';
         m_requestMap[socket] += buffer;
         if (m_firstRequestheader == "")

@@ -19,7 +19,6 @@ private:
     std::string m_contentType;
     std::string m_location;
     std::string m_contentLength;
-    std::string m_connection;
     std::string m_response;
     std::string m_header;
     std::string m_body;

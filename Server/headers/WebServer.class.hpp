@@ -55,7 +55,6 @@ public:
         std::string m_fileName;
 
     public:
-        NotFound(){};
         NotFound(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
@@ -67,7 +66,6 @@ public:
         std::string m_fileName;
 
     public:
-        Forbidden(){};
         Forbidden(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
@@ -79,7 +77,6 @@ public:
         std::string m_fileName;
 
     public:
-        TooLarge(){};
         TooLarge(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
@@ -91,7 +88,6 @@ public:
         std::string m_fileName;
 
     public:
-        MethodNotAllowed(){};
         MethodNotAllowed(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };
@@ -104,7 +100,6 @@ public:
         std::string m_fileName;
 
     public:
-        BadRequest(){};
         BadRequest(Parse parse, std::string fileName) : m_parse(parse), m_fileName(fileName){};
         Parse getParse() { return m_parse; };
         std::string getFileName() { return m_fileName; };

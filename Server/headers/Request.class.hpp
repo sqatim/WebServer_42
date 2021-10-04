@@ -63,7 +63,7 @@ public:
     int readingRequest(int socket, int &result);
     int parseRequest(int socket);
     void getWords();
-    int requestHeaders(int socket);
+    int requestHeaders(int socket, int& check);
     void concatenation();
     void parsingRequestLine(std::string line);
     int parsingRequestGet(int socket);
@@ -74,7 +74,7 @@ public:
     void chunkedContentTypeMultipartFirstBoundary(std::string &line, int &length);
     void contentLengthPost(std::string &line, size_t &i);
     int checkIfFinishedOrNot(std::string &line, size_t &i);
-    void parsingBetweenBoundary();
+    void parsingBetweenBoundary(int& check);
     void parseHost(std::string host);
     void uploadInFile(const char *path);
     void insetMapRequest(int socket);

@@ -15,9 +15,10 @@ std::string WebServer::readingTheFile(char *filename)
     std::ifstream myReadFile(filename);
     std::string text;
     std::string line;
+    Parse parse;
 
     if (!myReadFile)
-        throw WebServer::Forbidden();
+        throw WebServer::Forbidden(parse, "");
     text = "";
     while (std::getline(myReadFile, line))
     {
@@ -46,15 +47,19 @@ std::string ft_joinSlash(char **array)
 void WebServer::manageRequest(int socket, int check, int request)
 {
     std::string response;
+    std::string root;
+    LocaTion empty;
     Parse parse;
     try
     {
+        root = getRoot(empty, this->m_parse, 0);
+        slash(&root);
         if (request == -2)
-            throw BadRequest();
+            throw BadRequest(m_parse, root);
         if (this->m_request.getMethod() != "GET" && this->m_request.getMethod() != "POST" && this->m_request.getMethod() != "DELETE")
-            throw MethodNotAllowed(parse, "");
+            throw MethodNotAllowed(m_parse, root);
         if (check == 0)
-            throw NotFound(parse, "");
+            throw NotFound(m_parse, root);
         else if (this->m_request.getMethod() == "GET")
             getMethod(socket);
         else if (this->m_request.getMethod() == "POST")

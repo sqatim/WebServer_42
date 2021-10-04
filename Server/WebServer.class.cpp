@@ -87,8 +87,6 @@ void WebServer::choosingTheRightServer(std::string &requestHost, int &check)
             host += std::to_string(parse.getlisten()[j]);
             if (host == requestHost || requestHost.compare(0, 10, "localhost:") == 0 || host.compare(0, 7, "0.0.0.0") == 0)
             {
-                std::cout << "host: > " << host << "length: " << host.length() << std::endl;
-                std::cout << "requestHost: > " << requestHost << "length: " << host.length() << std::endl;
                 m_parse = parse;
                 check = 1;
                 break;
@@ -98,6 +96,7 @@ void WebServer::choosingTheRightServer(std::string &requestHost, int &check)
         }
     }
 }
+
 void WebServer::checkingClient()
 {
     int request;
@@ -114,7 +113,7 @@ void WebServer::checkingClient()
             check = 0;
             if ((request = this->m_request.concatRequest(socket, &m_currentSocket, &m_writeSocket, m_clientSocket, i)) < 0)
             {
-                this->m_request.requestHeaders(socket);
+                this->m_request.requestHeaders(socket, request);
                 requestHost = justValue(this->m_request.getHost());
                 choosingTheRightServer(requestHost, check);
                 if (FD_ISSET(socket, &m_writeSocket))

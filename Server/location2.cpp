@@ -27,7 +27,7 @@ int ft_cgi(std::string path)
         return (1);
     if (len >= 3 && path[len - 1] == 'y' && path[len - 2] == 'p' && path[len - 3] == '.')
     {
-                return (2);
+        return (2);
     }
     return (0);
 }

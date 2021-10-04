@@ -1,11 +1,22 @@
 #include <arpa/inet.h>
 #include "WebServer.class.hpp"
 
-int main()
+int main(int ac, char **av)
 {
     try
     {
-        WebServ parse("webserv.conf");
+        std::string file;
+        if (ac > 2)
+            throw std::string("you need to enter one Config File");
+        else if (ac == 1)
+        {
+            if (fileOrDir("./webserv.conf") == 0)
+                throw std::string("webserv.conf not found");
+            file = "./webserv.conf";
+        }
+        else
+            file = av[1];
+        WebServ parse(file);
         WebServer webServer(parse);
         for (size_t i = 0; i < parse.getwebserv().size(); i++)
         {
