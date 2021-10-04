@@ -166,9 +166,10 @@ int WebServer::CheckingForCgi(int socket)
         }
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
         CGI cg;
-        cg.set_value_to_maymap(m_request);
+        cg.set_value_to_maymap(m_request, root);
         cg.execute(root, m_request.getFastCgi());
         cg.check_cookie_and_body();
+        this->m_response.setCookies(cg.getto_set_cookies());
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

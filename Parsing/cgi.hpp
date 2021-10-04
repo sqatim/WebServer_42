@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:01:44 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 14:34:37 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 17:14:29 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ public:
     CGI(/* args */);
     char		 **Maptomatrice(MyMap param);
     void execute(std::string target, std::string bin);
-    void set_value_to_maymap(Request m_request);
+    void set_value_to_maymap(Request m_request, std::string root);
     std::string get_outpout();
     std::vector<std::string> getto_set_cookies();
     void check_cookie_and_body();

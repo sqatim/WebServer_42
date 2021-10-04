@@ -11,6 +11,7 @@ void Response::initResponse()
     this->m_contentType = "Content-Type: ";
     this->m_contentLength = "Content-Length: ";
     this->m_location = "Location: ";
+    this->m_setCookies.clear();
 }
 
 static std::string readingTheFile(const char *filename)
@@ -314,7 +315,7 @@ void Response::sendResponse(int socket)
 {
     setHeader();
     setResponse();
-    // std::cout << m_response << std::endl;
+    std::cout << m_response << std::endl;
     write(socket, m_response.c_str(), m_response.length());
 }
 
@@ -386,16 +387,16 @@ void Response::setHeader()
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";
-    // if (this->m_setCookies.size() > 0)
-    // {
-    //     this->m_header += "\n";
-    //     for (size_t i = 0; i < this->m_setCookies.size(); i++)
-    //     {
-    //         this->m_header += this->m_setCookies[i];
-    //         if (i + 1 != this->m_setCookies.size())
-    //             this->m_header += "\n";
-    //     }
-    // }
+    if (this->m_setCookies.size() > 0)
+    {
+        this->m_header += "\n";
+        for (size_t i = 0; i < this->m_setCookies.size(); i++)
+        {
+            this->m_header += this->m_setCookies[i];
+            if (i + 1 != this->m_setCookies.size())
+                this->m_header += "\n";
+        }
+    }
 }
 
 void Response::setResponse()

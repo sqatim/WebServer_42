@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 16:21:59 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/10/04 17:13:32 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void CGI::execute(std::string target, std::string bin)
 		}
 		close(output_fd);
 		close(input_fd);
+		dup2(_fd[0], STDIN_FILENO);
+		dup2(_fd[1], STDOUT_FILENO);
 	}
 }
 
@@ -146,15 +148,16 @@ char **CGI::Maptomatrice(MyMap map)
 	return (ret);
 }
 
-void CGI::set_value_to_maymap(Request m_request)
+void CGI::set_value_to_maymap(Request m_request, std::string root)
 {
 	map["AUTH_TYPE"] = "";
 	map["CONTENT_LENGTH"] = m_request.getContentLength();
 	map["CONTENT_TYPE"] = "text.html";
-	map["DOCUMENT_ROOT"] = "/Users/sqatim/Desktop/WebServer_42/";
+	map["DOCUMENT_ROOT"] = "/Users/ahaddad/Desktop/WebServer_42/";
 	map["GATEWAY_INTERFACE"] = "CGI/1.1";
 	map["PATH_INFO"] = m_request.getPath();
-	map["PATH_TRANSLATED"] = "/Users/sqatim/Desktop/WebServer_42/Config/login.php";
+	map["PATH_TRANSLATED"] = root;
+	// map["PATH_TRANSLATED"] = m_request.getPath();
 	map["QUERY_STRING"] = m_request.getquery();
 	map["REDIRECT_STATUS"] = "200";
 	map["REMOTE_ADDR"] = m_request.getHostSolo();
