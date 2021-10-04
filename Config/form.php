@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html>
 <?php
-// session_start();
-// print_r($_SERVER);
-
-//     $_SERVER['QUERY_STRING'];
-// if (isset($_COOKIE['name']) && isset($_COOKIE['email'])) {
-
-//     $str = "name=" . $_COOKIE['name'] . "&email=" . $_COOKIE['email'];
-//     parse_str($str, $output);
-//     echo "Welcome Mr " . $output['name'] . " To your session</br> Your Email is " . $output['email'];
-//     exit;
-// }
 ?>
 
 <head>
