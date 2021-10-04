@@ -13,6 +13,7 @@ std::string firstSlash(std::string string)
 void WebServer::postMethodComparaison(int socket, size_t &i, LocaTion &location, int &check)
 {
     std::string root;
+    std::string cgi;
     std::string locationName;
     std::string error;
     std::string upload_store;

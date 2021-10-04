@@ -7,11 +7,11 @@ Response::Response(/* args */) : m_type(0)
 
 void Response::initResponse()
 {
+    this->m_setCookies.clear();
     this->m_version = "HTTP/1.1";
     this->m_contentType = "Content-Type: ";
     this->m_contentLength = "Content-Length: ";
     this->m_location = "Location: ";
-    this->m_setCookies.clear();
 }
 
 static std::string readingTheFile(const char *filename)
