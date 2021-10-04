@@ -66,6 +66,7 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
         if (parse.getlocation()[k].getname() == "*.php" ||
             parse.getlocation()[k].getname() == "*.py")
         {
+
             location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
             check = appendUrlCgi(root, parse.getlocation()[k], request.getPath().c_str());
@@ -167,6 +168,7 @@ int WebServer::CheckingForCgi(int socket)
         CGI cg;
         cg.set_value_to_maymap(m_request);
         cg.execute(root, m_request.getFastCgi());
+        cg.check_cookie_and_body();
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

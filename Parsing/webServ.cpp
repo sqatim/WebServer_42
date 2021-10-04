@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/30 16:49:14 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 15:56:05 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ WebServ::WebServ(std::string _filename)
         if (get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]) == -1)
         {
             std::cout << "wa ra keyn error f listen" << std::endl;
-            return ;
+            exit(0);
         }
         this->_webserv.push_back(parse);        
         i++;

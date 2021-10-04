@@ -22,6 +22,7 @@ private:
     std::string m_response;
     std::string m_header;
     std::string m_body;
+    std::vector<std::string> m_setCookies;
     int m_type;
 
 public:
@@ -55,6 +56,7 @@ public:
     void setResponse();
     void setType(int type);
     void statusIndication(std::string status);
+    void setCookies(std::vector<std::string> cookies);
 
     // Getters
     std::string getLocation() const;

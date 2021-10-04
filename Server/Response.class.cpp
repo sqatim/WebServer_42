@@ -386,6 +386,16 @@ void Response::setHeader()
     }
     if (m_type == REDIRECT)
         this->m_header += this->m_location + "\n";
+    // if (this->m_setCookies.size() > 0)
+    // {
+    //     this->m_header += "\n";
+    //     for (size_t i = 0; i < this->m_setCookies.size(); i++)
+    //     {
+    //         this->m_header += this->m_setCookies[i];
+    //         if (i + 1 != this->m_setCookies.size())
+    //             this->m_header += "\n";
+    //     }
+    // }
 }
 
 void Response::setResponse()
@@ -400,6 +410,13 @@ void Response::setResponse()
 void Response::setType(int type)
 {
     this->m_type = type;
+}
+void Response::setCookies(std::vector<std::string> cookies)
+{
+    for (size_t i = 0; i < cookies.size(); i++)
+    {
+        this->m_setCookies.push_back(cookies[i]);
+    }
 }
 // ======================================Getters======================================
 
