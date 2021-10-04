@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/09/13 17:47:27 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 23:54:07 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,10 @@ std::string LocaTion::getoption()
     return this->option;
 }
 
+// std::string LocaTion::getenable_upload()
+// {
+//     return (this->upload_methods);
+// }
 void LocaTion::set_GET(int val)
 {
     get = val;

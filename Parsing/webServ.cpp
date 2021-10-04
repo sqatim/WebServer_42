@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 23:27:29 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 23:51:55 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ WebServ::WebServ(std::string _filename)
         std::vector<std::string> vect_str = splitstring(file_in_vector[i], " ");
         if (vect_str[0][0] == '#')
         {
-            file_in_vector.erase(file_in_vector.begin()+i);
+            file_in_vector.erase(file_in_vector.begin() + i);
             i--;
         }
         i++;
@@ -64,6 +64,7 @@ WebServ::WebServ(std::string _filename)
     check = handle_error(file_in_vector);
     if (check == -1)
     {
+
         std::cout << "wa ra keyn error" << std::endl;
         exit(0);
     }
@@ -71,12 +72,13 @@ WebServ::WebServ(std::string _filename)
     while (i < count_server)
     {
         Parse parse(_filename);
-        if (get_attributs(file_in_vector, & parse, this->server_end_index[i], this->server_begin_index[i]) == -1)
+        if (get_attributs(file_in_vector, &parse, this->server_end_index[i], this->server_begin_index[i]) == -1)
         {
+
             std::cout << "wa ra keyn error f listen" << std::endl;
             exit(0);
         }
-        this->_webserv.push_back(parse);        
+        this->_webserv.push_back(parse);
         i++;
     }
 }
@@ -97,8 +99,8 @@ int check_line(std::string str)
     }
     if (vect_str.size() == 1)
     {
-        if (vect_str[0] != "["  && vect_str[0] != "]" && vect_str[0] != "server" && vect_str[0] != "}" && vect_str[0] != "{")
-            check  = -1;
+        if (vect_str[0] != "[" && vect_str[0] != "]" && vect_str[0] != "server" && vect_str[0] != "}" && vect_str[0] != "{")
+            check = -1;
     }
     // if (vect_str.size() == 3)
     // {
@@ -110,8 +112,9 @@ int check_line(std::string str)
         if (vect_str[0] != "listen" && vect_str[0] != "server_name" && vect_str[0] != "index" &&
             vect_str[0] != "root" && vect_str[0] != "location" && vect_str[0] != "client_max_body_size" &&
             vect_str[0] != "host" && vect_str[0] != "auto_index" && vect_str[0] != "fastcgi_pass" &&
-            vect_str[0] != "allow_methods" && vect_str[0] != "upload_methods" &&vect_str[0] != "upload_store")
-        check = -1;
+            vect_str[0] != "allow_methods" && vect_str[0] != "upload_methods" && vect_str[0] != "upload_store" &&
+            vect_str[0] != "enable_upload")
+            check = -1;
     }
     return check;
 }
@@ -153,8 +156,9 @@ int WebServ::handle_error(std::vector<std::string> file_in_vect)
     int check(1);
     int i = 0;
     if (this->server_begin_index.size() < 1 || this->server_end_index.size() < 1 ||
-            this->server_end_index.size() != this->server_begin_index.size())
+        this->server_end_index.size() != this->server_begin_index.size())
     {
+
         return -1;
     }
     while (i < file_in_vect.size())
@@ -184,22 +188,22 @@ void WebServ::count_and_set_index(std::vector<std::string> vect)
     int count = 0;
     std::vector<int> tmp;
     i = 0;
-    while (i <vect.size())
+    while (i < vect.size())
     {
         std::vector<std::string> vect_str = splitstring(vect[i], " ");
         if (vect_str.size() == 1)
         {
             if (vect_str[0] == "server")
             {
-                this->count_server++;                          
+                this->count_server++;
             }
             if (vect_str[0] == "]")
             {
-                this->server_end_index.push_back(i);                          
+                this->server_end_index.push_back(i);
             }
             if (vect_str[0] == "[")
             {
-                this->server_begin_index.push_back(i);                          
+                this->server_begin_index.push_back(i);
             }
         }
         i++;

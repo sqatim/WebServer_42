@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_val_to_attr.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/10/04 18:48:21 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/05 00:00:23 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,6 @@ int check_listen(std::vector<std::string> vect_str)
     return 1;
 }
 
-
-
 int check_error_page(std::vector<std::string> vect_str)
 {
     if (vect_str.size() != 3)
@@ -91,14 +89,14 @@ int check_index(std::vector<std::string> vect_str)
 
 int check_client_max_body_size(std::vector<std::string> vect_str)
 {
-    if (vect_str.size() != 2)   
+    if (vect_str.size() != 2)
         return -1;
     if (vect_str[0] != "client_max_body_size")
         return -1;
-    if (vect_str[1][vect_str[1].length()-1] != 'm')
+    if (vect_str[1][vect_str[1].length() - 1] != 'm')
         return -1;
     int i = 0;
-    while (i < (vect_str[1].length() -1))
+    while (i < (vect_str[1].length() - 1))
     {
         if (std::isdigit(vect_str[1][i]) == 0)
             return -1;
@@ -115,7 +113,7 @@ int check_host(std::vector<std::string> vect_str)
         return -1;
     std::vector<std::string> vect = splitstring_with_point(vect_str[1], ".");
     int i = 0;
-    if (vect_str[1][0] == '.' || vect_str[1][vect_str[1].length() -1] == '.')
+    if (vect_str[1][0] == '.' || vect_str[1][vect_str[1].length() - 1] == '.')
         return -1;
     while (i < vect_str[1].length())
     {
@@ -158,17 +156,16 @@ int check_return(std::vector<std::string> vect_str)
     return 1;
 }
 
-
-int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len, int _begin)
+int get_attributs(std::vector<std::string> vect, Parse *parse, int server_len, int _begin)
 {
     int i = 0;
     int j;
-    std::vector <LocaTion> tmp;
+    std::vector<LocaTion> tmp;
     std::vector<std::string> tmp1;
     std::vector<t_ret> tmp2;
     std::vector<int> tmp4;
     i = _begin;
-    while (i < vect.size() &&  i < server_len)
+    while (i < vect.size() && i < server_len)
     {
         if (vect[i].find("listen") != -1)
         {
@@ -248,7 +245,7 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
             parse->sethost(vect_str[1]);
         }
         std::string str = vect[i];
-        
+
         if (vect[i].find("location") != -1)
         {
             LocaTion loc = LocaTion();
@@ -329,7 +326,9 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
                         if (check_index(vect_str) == -1)
+                        {
                             return -1;
+                        }
                         if (vect_str[0] == "enable_upload")
                             loc.setupload_methods(vect_str[1]);
                     }

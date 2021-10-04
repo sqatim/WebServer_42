@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/29 15:38:37 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/13 17:47:31 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/04 23:55:22 by ragegodthor      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ public:
     std::string getroot();
     void setoption(std::string val);
     std::string getoption();
+    // std::string getenable_upload();
     void set_GET(int val);
     int get_GET();
     void set_POST(int val);

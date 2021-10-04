@@ -21,14 +21,12 @@ void WebServer::postMethodComparaison(int socket, int i, LocaTion &location, int
     root = getRoot(location, this->m_parse, 1);
     slash(&root);
     error = root;
-    if (std::stoi(m_parse.getclient_max_body_size()) == 0 && std::stoi(m_request.getContentLength()) > 0)
+    if ((std::stoi(m_parse.getclient_max_body_size()) == 0 && std::stoi(m_request.getContentLength()) > 0) || location.getupload_methods() != "on")
         throw BadRequest(m_parse, error);
     if (std::atoi(m_request.getContentLength().c_str()) / 1048576 > std::atoi(m_parse.getclient_max_body_size().c_str()))
         throw TooLarge(m_parse, error);
     if (location.get_POST() != 1)
-    {
         throw MethodNotAllowed(m_parse, error);
-    }
     if (i != -1)
     {
         locationName = &location.getname()[1];
