@@ -6,7 +6,7 @@
 /*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 22:25:57 by amine             #+#    #+#             */
-/*   Updated: 2021/10/03 14:31:47 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 15:55:52 by ahaddad          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,10 +195,9 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
         }
         if (vect[i].find("index") != -1)
         {
-            // std::vector<std::string> tmp;
             std::vector<std::string> vect_str = splitstring(vect[i], " ");
-            if (check_index(vect_str) == -1)
-                return -1;
+            // if (check_index(vect_str) == -1)
+            //     return -1;
             if (vect_str[0] == "index")
             {
                 int k = 1;
@@ -268,8 +267,6 @@ int get_attributs(std::vector<std::string> vect, Parse  * parse, int server_len,
                     if (vect[i].find("index") != -1)
                     {
                         std::vector<std::string> vect_str = splitstring(vect[i], " ");
-                        if (check_index(vect_str) == -1)
-                            return -1;
                         if (vect_str[0] == "index")
                         {
                             vect_str.erase(vect_str.begin());
