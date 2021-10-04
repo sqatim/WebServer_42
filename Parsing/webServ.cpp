@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/30 12:23:12 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 18:39:19 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/04 23:27:29 by amine            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,18 +90,21 @@ int check_line(std::string str)
     int check = 1;
     std::vector<std::string> vect_str = splitstring(str, " ");
     int i = 0;
-    if (vect_str.size() > 3)
-        check = -1;
+    if (vect_str.size() >= 3)
+    {
+        if (vect_str[0] != "error_page" && vect_str[0] != "return" && vect_str[0] != "index")
+            check = -1;
+    }
     if (vect_str.size() == 1)
     {
         if (vect_str[0] != "["  && vect_str[0] != "]" && vect_str[0] != "server" && vect_str[0] != "}" && vect_str[0] != "{")
             check  = -1;
     }
-    if (vect_str.size() == 3)
-    {
-        if (vect_str[0] != "error_page" && vect_str[0] != "return" && vect_str[0] != "index")
-            check = -1;
-    }
+    // if (vect_str.size() == 3)
+    // {
+    //     if (vect_str[0] != "error_page" && vect_str[0] != "return" && vect_str[0] != "index")
+    //         check = -1;
+    // }
     if (vect_str.size() == 2)
     {
         if (vect_str[0] != "listen" && vect_str[0] != "server_name" && vect_str[0] != "index" &&
