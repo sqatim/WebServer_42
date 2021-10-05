@@ -45,15 +45,14 @@ std::vector<LocaTion> locationSorted(std::vector<LocaTion> location)
 
 int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &location)
 {
-    int cgi;
+    int cgi = 0;
     int check;
 
     check = -1;
 
-    if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
-        (cgi = ft_cgi(request.getPath().c_str()) == 2))
+    if ((cgi = ft_cgi(request.getPath().c_str()) == 1) || (cgi = ft_cgi(request.getPath().c_str()) == 2))
     {
-
+        cgi = ft_cgi(request.getPath().c_str());
         size_t k = 0;
         if (cgi == 1)
             while (parse.getlocation()[k].getname() != "*.php" &&
@@ -66,7 +65,6 @@ int fastCgi(Request &request, Parse &parse, std::string &root, LocaTion &locatio
         if (parse.getlocation()[k].getname() == "*.php" ||
             parse.getlocation()[k].getname() == "*.py")
         {
-
             location = parse.getlocation()[k];
             root = getRoot(parse.getlocation()[k], parse, 1);
             check = appendUrlCgi(root, parse.getlocation()[k], request.getPath().c_str());
@@ -84,7 +82,7 @@ int fastCgiPost(Request &request, Parse &parse, std::string &root, LocaTion &loc
     if ((cgi = ft_cgi(request.getPath().c_str()) == 1) ||
         (cgi = ft_cgi(request.getPath().c_str()) == 2))
     {
-
+        cgi = ft_cgi(request.getPath().c_str());
         size_t k = 0;
         if (cgi == 1)
             while (parse.getlocation()[k].getname() != "*.php" &&

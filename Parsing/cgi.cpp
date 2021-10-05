@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/05 11:04:48 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/10/05 11:23:02 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ void CGI::set_value_to_maymap(Request m_request, std::string root)
 	map["AUTH_TYPE"] = "";
 	map["CONTENT_LENGTH"] = m_request.getContentLength();
 	map["CONTENT_TYPE"] = "text.html";
-	map["DOCUMENT_ROOT"] = "/Users/ahaddad/Desktop/WebServer_42/";
+	// map["DOCUMENT_ROOT"] = "/Users/ahaddad/Desktop/WebServer_42/";
 	map["GATEWAY_INTERFACE"] = "CGI/1.1";
 	map["PATH_INFO"] = m_request.getPath();
 	map["PATH_TRANSLATED"] = root;
