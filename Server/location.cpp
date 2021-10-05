@@ -199,6 +199,11 @@ int WebServer::CheckingForCgi(int socket)
             lastSlash(root);
             throw MethodNotAllowed(m_parse, root);
         }
+        if (fileOrDir(locationCgi.getfascgi_pass().c_str()) != 1)
+        {
+            lastSlash(root);
+            throw BadRequest(m_parse, root);
+        }
         this->m_request.setFastCgi(locationCgi.getfascgi_pass());
         CGI cg;
         cg.set_value_to_maymap(m_request, root);
