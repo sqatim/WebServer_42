@@ -105,7 +105,7 @@ int fastCgiPost(Request &request, Parse &parse, std::string &root, LocaTion &loc
     return (0);
 }
 
-int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check)
+int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std::string &root, int &check, std::string error)
 {
     std::string body;
     std::string path;
@@ -113,12 +113,16 @@ int WebServer::theRestOfAppendLocation(LocaTion &location, std::string &url, std
     slash(&root);
     if ((check = getIndex(location, m_parse, 1, root)) == 0)
     {
-
         if (location.getauto_index() == "on" && fileOrDir(root.c_str()) == 2)
         {
             body = this->m_response.autoIndexBody(root.c_str(), url.c_str());
             m_response.contentHeader("200", "text", "html", body);
             return (1);
+        }
+        else if (fileOrDir(root.c_str()) == 2)
+        {
+            // std::cout << error << std::endl;
+            throw Forbidden(m_parse, error);
         }
     }
     else
@@ -135,10 +139,12 @@ int WebServer::appendLocation(LocaTion location)
     int check = 0;
     std::string url;
     std::string path;
+    std::string error;
 
     url = getUrl(this->m_request);
     root = getRoot(location, this->m_parse, 1);
     slash(&root);
+    error = root;
     if (location.get_GET() != 1)
         throw MethodNotAllowed(m_parse, root);
     root.insert(root.length(), url.c_str());
@@ -153,7 +159,7 @@ int WebServer::appendLocation(LocaTion location)
         m_response.redirectHeaderToPath("301", m_request.getHost(), url);
         return (2);
     }
-    return (theRestOfAppendLocation(location, url, root, check));
+    return (theRestOfAppendLocation(location, url, root, check, error));
 }
 
 int WebServer::whichLocation(LocaTion location)
@@ -224,7 +230,7 @@ int WebServer::checkingForTheRightLocation(LocaTion &location, std::string &url,
             return 1;
         }
         else
-            throw Forbidden(m_parse, error);
+            throw NotFound(m_parse, error);
     }
     return (0);
 }

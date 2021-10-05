@@ -14,6 +14,17 @@ void Response::initResponse()
     this->m_location = "Location: ";
 }
 
+static std::string firstSlash(std::string string)
+{
+    std::string str;
+    if (string[0] == '/')
+    {
+        str = &string.c_str()[1];
+        string = str;
+    }
+    return (string);
+}
+
 static std::string readingTheFile(const char *filename)
 {
     std::ifstream myReadFile(filename);
@@ -61,13 +72,16 @@ void Response::notFoundBody(Parse parse, std::string root)
 {
     this->m_status = "404 Not Found";
     std::string path;
+    std::string error;
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
         if (parse.geterror_page()[i].redirec == "404")
         {
             path = root;
-            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            firstSlash(path);
+            error = firstSlash(parse.geterror_page()[i].path.c_str());
+            path.insert(path.length(), error);
             if (fileOrDir(path.c_str()) == 1)
             {
                 this->m_body = readingTheFile(path.c_str());
@@ -91,6 +105,7 @@ void Response::toLargeBody(Parse parse, std::string root)
 {
     this->m_status = "413 Payload Too Large";
     std::string path;
+    std::string error;
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
@@ -98,7 +113,9 @@ void Response::toLargeBody(Parse parse, std::string root)
         if (parse.geterror_page()[i].redirec == "413")
         {
             path = root;
-            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            firstSlash(path);
+            error = firstSlash(parse.geterror_page()[i].path.c_str());
+            path.insert(path.length(), error);
             if (fileOrDir(path.c_str()) == 1)
             {
                 this->m_body = readingTheFile(path.c_str());
@@ -122,14 +139,16 @@ void Response::badRequestBody(Parse parse, std::string root)
 {
     this->m_status = "400 Bad Request";
     std::string path;
+    std::string error;
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
-
         if (parse.geterror_page()[i].redirec == "400")
         {
             path = root;
-            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            firstSlash(path);
+            error = firstSlash(parse.geterror_page()[i].path.c_str());
+            path.insert(path.length(), error);
             if (fileOrDir(path.c_str()) == 1)
             {
                 this->m_body = readingTheFile(path.c_str());
@@ -153,6 +172,7 @@ void Response::methodNotAllowedBody(Parse parse, std::string root)
 {
     this->m_status = "405 Method Not Allowed";
     std::string path;
+    std::string error;
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
@@ -160,7 +180,9 @@ void Response::methodNotAllowedBody(Parse parse, std::string root)
         if (parse.geterror_page()[i].redirec == "405")
         {
             path = root;
-            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            firstSlash(path);
+            error = firstSlash(parse.geterror_page()[i].path.c_str());
+            path.insert(path.length(), error);
             if (fileOrDir(path.c_str()) == 1)
             {
                 this->m_body = readingTheFile(path.c_str());
@@ -184,13 +206,16 @@ void Response::forbiddenBody(Parse parse, std::string root)
 {
     this->m_status = "403 Forbidden";
     std::string path;
+    std::string error;
     int check = 0;
     for (size_t i = 0; i < parse.geterror_page().size(); i++)
     {
         if (parse.geterror_page()[i].redirec == "403")
         {
             path = root;
-            path.insert(path.length(), parse.geterror_page()[i].path.c_str());
+            firstSlash(path);
+            error = firstSlash(parse.geterror_page()[i].path.c_str());
+            path.insert(path.length(), error);
             if (fileOrDir(path.c_str()) == 1)
             {
                 this->m_body = readingTheFile(path.c_str());
@@ -198,14 +223,17 @@ void Response::forbiddenBody(Parse parse, std::string root)
             }
         }
     }
-    this->m_body = "<html>\n";
-    this->m_body += "<head>\n";
-    this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
-    this->m_body += "<title>403 Forbidden</title>\n";
-    this->m_body += "</head>\n";
-    this->m_body += "<center><h1>403 Forbidden</h1></center>\n";
-    this->m_body += "<hr><center>Barnatouti</center>\n";
-    this->m_body += "</html>";
+    if (check == 0)
+    {
+        this->m_body = "<html>\n";
+        this->m_body += "<head>\n";
+        this->m_body += "<link rel=\"shortcut icon\" href=\"data:image/x-icon;,\" type=\"image/x-icon\"><meta charset=\"UTF-8\">\n";
+        this->m_body += "<title>403 Forbidden</title>\n";
+        this->m_body += "</head>\n";
+        this->m_body += "<center><h1>403 Forbidden</h1></center>\n";
+        this->m_body += "<hr><center>Barnatouti</center>\n";
+        this->m_body += "</html>";
+    }
 }
 
 void Response::fileDeleted()
