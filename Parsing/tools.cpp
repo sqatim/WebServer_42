@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/10/01 17:59:17 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/05 10:45:31 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void error(std::string str)
 
 int is_printable(std::string str)
 {
-    int i = 0;
+    size_t i = 0;
     while (i < str.size())
     {
         if (isprint(str[i]))
@@ -32,7 +32,7 @@ int is_printable(std::string str)
 
 int CountWords(std::string str)
 {
-    int i = 0;
+    size_t i = 0;
     int countword = -1;
     while (i < str.length())
     {
@@ -41,7 +41,7 @@ int CountWords(std::string str)
         else
             break;
     }
-    int end = str.length() - 1;
+    size_t end = str.length() - 1;
     while (end > 0)
     {
         if (str[end] == ' ')
@@ -63,9 +63,9 @@ int CountWords(std::string str)
 std::string get_key(std::string str)
 {
     std::string ret;
-    int i = 0;
+    size_t i = 0;
     int j = 0;
-    int k = 0;
+    size_t k = 0;
     while (i < str.length())
     {
         if (str[i] == ' ' || str[i] == '\t')
@@ -101,9 +101,9 @@ std::string get_value(std::string str)
 std::string get_key_tab(std::string str)
 {
     std::string ret;
-    int i = 0;
+    size_t i = 0;
     int j = 0;
-    int k = 0;
+    size_t k = 0;
     while (i < str.length())
     {
         if (str[i] == ' ' || str[i] == '\t')
@@ -130,7 +130,7 @@ std::string get_key_tab(std::string str)
 std::vector<std::string> splitstring_with_point(std::string str, std::string to_split_with)
 {
     std::vector<std::string> vect_str;
-    int start = 0;
+    size_t start = 0;
     while (start < str.size())
     {
         if (str[start] != '\t' && str[start] != ' ')
@@ -150,7 +150,7 @@ std::vector<std::string> splitstring_with_point(std::string str, std::string to_
         end = _str.find(to_split_with, start);
     }
     vect_str.push_back(_str.substr(start, end - start));
-    int i = 0;
+    size_t i = 0;
     while (i < vect_str.size())
     {
         if (vect_str[i].length() == 0)
@@ -163,7 +163,7 @@ std::vector<std::string> splitstring_with_point(std::string str, std::string to_
 std::vector<std::string> splitstring(std::string str, std::string to_split_with)
 {
     std::vector<std::string> vect_str;
-    int start = 0;
+    size_t start = 0;
     while (start < str.size())
     {
         if (str[start] != '\t' && str[start] != ' ')
@@ -183,7 +183,7 @@ std::vector<std::string> splitstring(std::string str, std::string to_split_with)
         end = _str.find(to_split_with, start);
     }
     vect_str.push_back(_str.substr(start, end - start));
-    int i = 0;
+    size_t i = 0;
     while (i < vect_str.size())
     {
         // std::string str  = get_key_tab

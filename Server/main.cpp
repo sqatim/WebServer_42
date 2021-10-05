@@ -10,12 +10,16 @@ int main(int ac, char **av)
             throw std::string("you need to enter one Config File");
         else if (ac == 1)
         {
-            if (fileOrDir("./webserv.conf") == 0)
-                throw std::string("webserv.conf not found");
-            file = "./webserv.conf";
+            file = "./Config/ConfigurationFiles/default.conf";
+            if (fileOrDir(file.c_str()) == 0)
+                throw std::string("Default ConfigFile not found");
         }
         else
+        {
+            if (fileOrDir(av[1]) == 0)
+                throw std::string("Configuration file not found");
             file = av[1];
+        }
         WebServ parse(file);
         WebServer webServer(parse);
         for (size_t i = 0; i < parse.getwebserv().size(); i++)

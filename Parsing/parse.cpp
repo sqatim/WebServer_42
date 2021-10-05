@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/02 16:25:30 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/09/21 11:32:15 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/05 10:40:23 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Parse::Parse()
 
 Parse::Parse(std::string _filename) : listen(0), server_name(0), root(""), error_page(0), client_max_body_size(""), host("0.0.0.0")
 {
+    _filename = "";
     index.clear();
     error_page.clear();
     // std::string word;
@@ -70,7 +71,7 @@ Parse &Parse::operator=(const Parse &src)
 void Parse::setlisten(std::vector<int> val)
 {
     listen.clear();
-    int i = 0;
+    size_t i = 0;
     while (i < val.size())
     {
         this->listen.push_back(val[i]);
@@ -86,7 +87,7 @@ std::vector<int> Parse::getlisten()
 void Parse::setserver_name(std::vector<std::string> val)
 {
     this->server_name.clear();
-    int i = 0;
+    size_t i = 0;
     while (i < val.size())
     {
         this->server_name.push_back(val[i]);
@@ -146,7 +147,7 @@ std::string Parse::getclient_max_body_size()
 
 void Parse::seterror_page(std::vector<t_ret> val)
 {
-    int i = 0;
+    size_t i = 0;
     this->error_page.clear();
     while (i < val.size())
     {
@@ -162,7 +163,7 @@ std::vector<t_ret> Parse::geterror_page()
 
 void Parse::setlocation(std::vector<LocaTion> val)
 {
-    int i = 0;
+    size_t i = 0;
     this->location.clear();
     while (i < val.size())
     {
@@ -179,7 +180,7 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
 {
     if (in.getlisten().size() > 0)
     {
-        int i = 0;
+        size_t i = 0;
         while (i < in.getlisten().size())
         {
             out << "listen " << i + 1 << " " << in.getlisten()[i] << std::endl;
@@ -188,7 +189,7 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
     }
     if (in.getserver_name().size() > 0)
     {
-        int i = 0;
+        size_t i = 0;
         while (i < in.getserver_name().size())
         {
             out << "server_name " << i + 1 << " " << in.getserver_name()[i] << std::endl;
@@ -197,7 +198,7 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
     }
     if (in.get_Index().size() > 0)
     {
-        int i = 0;
+        size_t i = 0;
         while (i < in.get_Index().size())
         {
             out << "index " << i + 1 << " {" << in.get_Index()[i] << "}" << std::endl;
@@ -206,7 +207,7 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
     }
     if (in.geterror_page().size() > 0)
     {
-        int i = 0;
+        size_t i = 0;
         while (i < in.geterror_page().size())
         {
             out << "error_page " << i + 1 << " redirect: " << in.geterror_page()[i].redirec << std::endl;
@@ -226,12 +227,12 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
     {
         out << "host " << in.gethost() << std::endl;
     }
-    int i = 0;
+    size_t i = 0;
     while (i < in.getlocation().size())
     {
         if (in.getlocation()[i].getindex().size() > 0)
         {
-            int k = 0;
+            size_t k = 0;
             while (k < in.getlocation()[i].getindex().size())
             {
                 out << "index in location number " << i + 1 << " is: {" << in.getlocation()[i].getindex()[k] << "}" << std::endl;
@@ -244,7 +245,7 @@ std::ostream &operator<<(std::ostream &out, Parse &in)
             out << "allow_methods in location number " << i + 1 << " is: {" << in.getlocation()[i].getallow_methods() << "}" << std::endl;
         if (in.getlocation()[i].get_return().size() != 0)
         {
-            int k = 0;
+            size_t k = 0;
             while (k < in.getlocation()[i].get_return().size())
             {
                 out << "_return in location number " << i + 1 << "int  is: {" << in.getlocation()[i].get_return()[k].redirec << "}" << std::endl;

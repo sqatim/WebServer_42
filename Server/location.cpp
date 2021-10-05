@@ -201,7 +201,6 @@ int WebServer::CheckingForCgi(int socket)
         cg.execute(root, m_request.getFastCgi());
         cg.check_cookie_and_body();
         this->m_response.setCookies(cg.getto_set_cookies());
-        std::cout << cg.get_outpout().length() << std::endl;
         m_response.contentHeader("200", "text", "html", cg.get_outpout());
         m_response.sendResponse(socket);
         return (1);

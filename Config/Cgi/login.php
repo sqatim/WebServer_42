@@ -58,7 +58,7 @@ input {
             <!-- <input type="text" name="email" placeholder="Enter Email" size="30"><br>   -->
             <!-- <br><input type="submit" value="Home"> -->
             <!-- <a href="home.php" br><input type="submit" value="Home"> >Go Home</a> -->
-            <input type="button"  class="button_active" onclick="location.href='home.php';" value="Home"/>
+            <input type="button"  class="button_active" onclick="location.href='home1.php';" value="Home"/>
         </form>
     </div>
 </body>

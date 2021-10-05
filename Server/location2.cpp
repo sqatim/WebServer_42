@@ -24,10 +24,9 @@ int ft_cgi(std::string path)
 
     len = ft_strlen(path.c_str());
     if (len >= 4 && path[len - 1] == 'p' && path[len - 2] == 'h' && path[len - 3] == 'p' && path[len - 4] == '.')
-       {
-    std::cout << "amine haddad " << std::endl;
+    {
         return (1);
-       }
+    }
     if (len >= 3 && path[len - 1] == 'y' && path[len - 2] == 'p' && path[len - 3] == '.')
     {
         return (2);
@@ -47,7 +46,6 @@ int appendUrlCgi(std::string &path, LocaTion location, std::string url)
     int check;
     if (location.getname() != "/")
         path.insert(path.length(), url.c_str());
-    std::cout << "path [" << path << "]" << std::endl;
     check = fileOrDir(path.c_str());
     return (check);
 }

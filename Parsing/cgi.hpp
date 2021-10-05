@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:01:44 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 17:34:55 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/05 10:49:33 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ class CGI
 private:
     MyMap           map;
     std::string     executable;
-    int				_stdin;
-	int				_stdout;
     std::string		_binary;
 	std::string		_output;
 	std::string		_input;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgi.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahaddad <ahaddad@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/04 18:17:34 by ahaddad          ###   ########.fr       */
+/*   Updated: 2021/10/05 10:49:02 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void CGI::execute(std::string target, std::string bin)
 std::vector<std::string> splitstring_with_coma(std::string str, std::string to_split_with)
 {
 	std::vector<std::string> vect_str;
-	int start = 0;
+	size_t start = 0;
 	while (start < str.size())
 	{
 		if (str[start] != '\t' && str[start] != ' ')
@@ -100,7 +100,7 @@ std::vector<std::string> splitstring_with_coma(std::string str, std::string to_s
 		end = _str.find(to_split_with, start);
 	}
 	vect_str.push_back(_str.substr(start, end - start));
-	int i = 0;
+	size_t i = 0;
 	while (i < vect_str.size())
 	{
 		if (vect_str[i].length() == 0)
@@ -116,7 +116,7 @@ void CGI::check_cookie_and_body()
 	int find_Content = _output.find("Content-type");
 	std::string str = _output.substr(find_cookie + 11, find_Content - (find_cookie + 11));
 	std::vector<std::string> vect = splitstring_with_coma(str, "");
-	int i = 0;
+	size_t i = 0;
 	while (i < vect.size())
 	{
 		std::string tmp = "Set-Cookie: " + vect[i];
@@ -131,7 +131,7 @@ void CGI::check_cookie_and_body()
 	if (this->Query.length() > 0)
 	{
 		std::vector<std::string> vect = splitstring_with_coma(this->Query, "");
-		int i = 0;
+		size_t i = 0;
 		while (i < vect.size())
 		{
 			std::string tmp = "Set-Cookie: " + vect[i];
@@ -163,7 +163,7 @@ char **CGI::Maptomatrice(MyMap map)
 void CGI::set_value_to_maymap(Request m_request, std::string root)
 {
 	this->Query = " ";
-	int i = 0;
+	size_t i = 0;
 	while (i < m_request.getm_keyvalue().size())
 	{
 		this->Query += m_request.getm_keyvalue()[i].key;

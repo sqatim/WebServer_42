@@ -15,7 +15,7 @@ SRC_NAME = parse.cpp\
 OBJ_NAME = $(SRC_NAME:.cpp=.o)
 OBJ= $(addprefix $(OBJ_PATH)/,$(OBJ_NAME))
 
-CFLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror
 COMP= clang++
 
 all : $(NAME)

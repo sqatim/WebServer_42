@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_error.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amine <amine@student.42.fr>                +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/12 16:49:42 by amine             #+#    #+#             */
-/*   Updated: 2021/08/25 17:18:58 by amine            ###   ########.fr       */
+/*   Updated: 2021/10/05 10:46:00 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int check_accolades(FreqMap wf, std::string filename)
 {
+    (void)wf;
     std::fstream file;
     std::string word;
     int i = 0;

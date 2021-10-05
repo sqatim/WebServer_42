@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ragegodthor <ragegodthor@student.42.fr>    +#+  +:+       +#+        */
+/*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/28 22:35:12 by amine             #+#    #+#             */
-/*   Updated: 2021/10/04 23:54:07 by ragegodthor      ###   ########.fr       */
+/*   Updated: 2021/10/05 10:46:41 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ LocaTion &LocaTion::operator=(const LocaTion &src)
 
 void LocaTion::setindex(std::vector<std::string> val)
 {
-    int i = 0;
+    size_t i = 0;
     index.clear();
     while (i < val.size())
     {
@@ -99,7 +99,7 @@ std::string LocaTion::getallow_methods()
 }
 void LocaTion::set_return(std::vector<t_ret> val)
 {
-    int i = 0;
+    size_t i = 0;
     _return.clear();
     while (i < val.size())
     {

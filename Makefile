@@ -35,7 +35,7 @@ HDR_SERVER= $(addprefix $(HDR_SERVER_PATH)/,$(HDR_SERVER_NAME))
 H_SERVER_FLAG= -I $(HDR_SERVER_PATH)
 
 
-# FLAGS= -Wall -Wextra -Werror
+FLAGS= -Wall -Wextra -Werror
 LPARSING_FLAG= -L$(PARSING_PATH) Parsing/libparsing.a
 
 COMP= clang++ 
@@ -44,14 +44,14 @@ all: Parse $(NAME)
 
 WebServer : $(PARSING_PATH)/$(PARSING) $(OBJ_SERVER)
 	@$(COMP) $(H_SERVER_FLAG) $(FLAGS) $(OBJ_SERVER) $(LPARSING_FLAG) -o $@
-	@echo "Compilation of WebServer:  \033[1;32mOK\033[m"
+	@echo "Compilation of WebServer: \033[1;32mOK\033[m"
 
 Parse:
 	@make -sC $(PARSING_PATH)
 
 $(OBJ_PATH_SERVER)/%.o:  $(SRC_SERVER_PATH)/%.cpp $(HDR_SERVER)
 	@mkdir -p $(OBJ_PATH_SERVER) 
-	@$(COMP) -g $(FLAGS) $(H_SERVER_FLAG) -o $@ -c $<
+	@$(COMP) $(FLAGS) $(H_SERVER_FLAG) -o $@ -c $<
 
 clean:
 	@rm -rf $(OBJ_PATH_SERVER)
