@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/10 13:02:19 by ahaddad           #+#    #+#             */
-/*   Updated: 2021/10/05 10:49:02 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/10/05 11:04:48 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,6 @@ std::vector<std::string> splitstring_with_coma(std::string str, std::string to_s
 		start++;
 	}
 	std::string _str = str.substr(start, str.length());
-	// std::cout << _str << std::endl;
 	to_split_with = ";";
 	start = 0;
 	int end = _str.find(to_split_with);
@@ -174,7 +173,6 @@ void CGI::set_value_to_maymap(Request m_request, std::string root)
 		i++;
 	}
 	this->Query += "\0";
-	// std::cout << "{{{" << this->Query << "}}}" << std::endl;
 	map["AUTH_TYPE"] = "";
 	map["CONTENT_LENGTH"] = m_request.getContentLength();
 	map["CONTENT_TYPE"] = "text.html";

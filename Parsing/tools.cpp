@@ -6,7 +6,7 @@
 /*   By: sqatim <sqatim@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/07 19:26:05 by amine             #+#    #+#             */
-/*   Updated: 2021/10/05 10:45:31 by sqatim           ###   ########.fr       */
+/*   Updated: 2021/10/05 11:04:59 by sqatim           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,6 @@ std::vector<std::string> splitstring_with_point(std::string str, std::string to_
         start++;
     }
     std::string _str = str.substr(start, str.length());
-    // std::cout << _str << std::endl;
     to_split_with = ".";
     start = 0;
     int end = _str.find(to_split_with);
@@ -171,7 +170,6 @@ std::vector<std::string> splitstring(std::string str, std::string to_split_with)
         start++;
     }
     std::string _str = str.substr(start, str.length());
-    // std::cout << _str << std::endl;
     to_split_with = " ";
     start = 0;
     int end = _str.find(to_split_with);
